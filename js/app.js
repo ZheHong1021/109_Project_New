@@ -92,12 +92,25 @@ $(function () {
   // 建立 map容器(空間)並設定到 id=map的div上，之後可以加入 '底圖'、'圖層'、'物件(icon)'
   /* 因為在函式中也要使用到 map變數，所以直接用全域變數來定義他 */
   window.map = new L.Map('map', {
-    zoomControl: false
+    // zoomControl: false,
   });
 
-  new L.Control.Zoom({
-    position: 'topleft'
+  // new L.Control.Zoom({
+  //   position: 'topleft'
+  // }).addTo(map);
+
+  // create a fullscreen button and add it to the map
+  L.control.fullscreen({
+    position: 'topleft', // change the position of the button can be topleft, topright, bottomright or bottomleft, defaut topleft
+    title: 'Show me the fullscreen !', // change the title of the button, default Full Screen
+    titleCancel: 'Exit fullscreen mode', // change the title of the button when fullscreen is on, default Exit Full Screen
+    content: null, // change the content of the button, can be HTML, default null
+    forceSeparateButton: true, // force seperate button to detach from zoom buttons, default false
+    // forcePseudoFullscreen: true, // force use of pseudo full screen even if full screen API is available, default false
+    fullscreenElement: false // Dom element to render in full screen, false by default, fallback to map._container
   }).addTo(map);
+
+
   // var map = L.map('map');  // 區域變數(建議不要)
 
 
@@ -107,12 +120,22 @@ $(function () {
   // {z} 地圖的zoom等級
   // {y} 圖磚的y座標
   // {x} 圖磚的x座標
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  const tileLayer1 = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 18, // 預設為14，限制縮放大小；最大限制到 19，最小到 0
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     // 讀取地圖失敗時，會顯現後面連結的圖片
     errorTileUrl: 'http://bpic.588ku.com/element_pic/16/12/07/706f7ff4f15725b17ba1d30d384e6468.jpg'
   }).addTo(map);
+
+
+  const tileLayers = L.layerGroup([tileLayer1]);
+
+  const tileLoadingProgress = new L.Control.TileLoadingProgress({
+    leafletElt: tileLayers,
+    position: 'bottomleft'
+  });
+  tileLoadingProgress.addTo(map);
+
 
 
   // 設立變數
@@ -133,8 +156,8 @@ $(function () {
   // leaflet-control-container
   // https://stackoverflow.com/questions/48291870/how-to-add-custom-ui-to-leaflet-map
   // L_Control_Add('leaflet-bar sideBar-control', '<i class="fas fa-arrows-alt-h"></i>', 'topleft');
-  L_Control_Add('a', 'goBackPosition js-goBackPosition', '<i class="fas fa-crosshairs" style="color:rgb(82, 81, 81)"></i>', 'topright');
-  L_Control_Add('a', 'goBackTaiwan', '<i class="twicon-main-island"></i>', 'topright');
+  L_Control_Add('a', 'goBackPosition js-goBackPosition', '<i class="fas fa-crosshairs" style="color:rgb(82, 81, 81)" title="回到目前位置"></i>', 'topright');
+  L_Control_Add('a', 'goBackTaiwan', '<i class="twicon-main-island" title="台灣"></i>', 'topright');
 
 
 
@@ -431,7 +454,7 @@ $(function () {
       L.control.groupedLayers({}, overlayMaps, {
         // 將圖層拉開
         collapsed: false,
-        position: 'topright'
+        position: 'topleft'
       }).addTo(map);
       L.control.scale().addTo(map);
 
@@ -447,13 +470,13 @@ $(function () {
   });
 
 
-
+  // 路徑規劃
   let routing = L.Routing.control({
     waypoints: [
       L.latLng(22.751425, 120.33138),
       L.latLng(22.74819, 120.331169)
     ],
-    position: 'topleft',
+    position: 'topright',
     geocoder: L.Control.Geocoder.nominatim(),
     routeWhileDragging: true,
     showAlternatives: true,
@@ -461,6 +484,30 @@ $(function () {
     defaultMarkGeocode: false,
     show: false,
   }).addTo(map);
+
+
+  // 開關 routing-machine
+  // 來源：https://gis.stackexchange.com/questions/324016/leaflet-routing-machine-show-option-doesnt-work
+  var itineraryShown = false;
+  var controlContainer = routing.getContainer();
+  var legendClickArea = document.createElement("DIV");
+
+  legendClickArea.classList.add('legendClickArea');
+  controlContainer.appendChild(legendClickArea);
+
+  var routing_img = document.createElement("img");
+  routing_img.src = 'img/route.png';
+  routing_img.title = '點擊規劃路徑';
+  legendClickArea.appendChild(routing_img);
+
+  legendClickArea.onclick = function () {
+    if (itineraryShown)
+      routing.hide();
+    else {
+      routing.show();
+    }
+    itineraryShown = !itineraryShown;
+  };
 
 
 

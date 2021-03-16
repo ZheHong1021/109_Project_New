@@ -1,0 +1,116 @@
+<!--程式碼範例-->
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <!-- 網頁編碼為萬國碼 UTF-8  	【也可以簡寫成這樣】<meta charset="UTF-8"> -->
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+  <!-- 網頁相容性 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <!-- RWD響應式 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- 網頁標題 -->
+  <title>旅遊軌跡地圖</title>
+
+  <!-- 網頁的title_icon -->
+  <link rel="shortcut icon" type="text/css" href="img/marker_O.png">
+
+  <!-- Boostrap -->
+
+
+
+  <!-- Leaflet官網的 CDN -->
+  <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css">
+  <script src="node_modules/leaflet/dist/leaflet.js"></script>
+
+  <!-- MarkerCluster Plugin CSS CDN-->
+  <!-- 使用方法: https://ithelp.ithome.com.tw/articles/10229982 -->
+  <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css">
+  <script src="node_modules/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
+  <!-- L.Control.Layer的Group設定 -->
+  <!-- 來源: https://github.com/ismyrnow/leaflet-groupedlayercontrol -->
+  <link rel="stylesheet" href="node_modules/leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.css">
+  <script src="node_modules/leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.js"></script>
+
+  <!-- fontawesome的 CDN -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"
+    integrity="sha384-vSIIfh2YWi9wW0r9iZe7RJPrKwp6bG+s9QZMoITbCckVJqGCCRhc+ccxNcdpHuYu" crossorigin="anonymous">
+  <!-- awesome-markers -->
+  <!-- 來源：https://github.com/lvoogdt/Leaflet.awesome-markers -->
+  <link rel="stylesheet" href="node_modules/leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+  <script src="node_modules/leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
+
+  <!-- Leaflet Sidebar -->
+  <link rel="stylesheet" href="node_modules/leaflet-sidebar-v2/css/leaflet-sidebar.css">
+  <script src="node_modules/leaflet-sidebar-v2/js/leaflet-sidebar.js"></script>
+
+  <!-- 用來顯示當前位置的 icon -->
+  <!-- 來源： https://github.com/mapshakers/leaflet-icon-pulse -->
+  <link rel="stylesheet" href="node_modules/@ansur/leaflet-pulse-icon/dist/L.Icon.Pulse.css">
+  <script src="node_modules/@ansur/leaflet-pulse-icon/dist/L.Icon.Pulse.js"></script>
+
+  <!-- Loading -->
+  <!-- 來源：https://github.com/jbccollins/leaflet-tile-loading-progress-controla -->
+  <link rel="stylesheet" href="css/Control.TileLoadingProgress.css">
+  <script src="js/Control.TileLoadingProgress.js"></script>
+
+  <!-- FullScreen -->
+  <!-- 來源： https://www.npmjs.com/package/leaflet.fullscreen -->
+  <link rel="stylesheet" href="node_modules/leaflet.fullscreen/Control.FullScreen.css">
+  <script src='node_modules/leaflet.fullscreen/Control.FullScreen.js'></script>
+
+  <!-- Leaflet-Routing-Machine 路徑規劃 CDN -->
+  <!-- 來源：https://www.liedman.net/leaflet-routing-machine/ -->
+  <link rel="stylesheet" href="node_modules/leaflet-routing-machine/dist/leaflet-routing-machine.css">
+  <script src="node_modules/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+  <!-- TW_ICON_FONT -->
+  <!-- 來源： https://www.twicon.page/ -->
+  <link rel="stylesheet" href="img/twicon/twicon.css">
+
+  <!-- Control.Geocorder -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+  <!-- Reset CSS -->
+  <link rel="stylesheet" href="css/reset.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/marker-cluster.css">
+  <link rel="stylesheet" href="css/mrt.css">
+  <link rel="stylesheet" href="css/map.css">
+
+  <!-- Jquery CDN: 沒有這行就不能執行 javascript的指令 -->
+  <script src="node_modules/jquery/dist/jquery.js"></script>
+
+      <!-- Boostrap-select(只能用在 Boostrap4 跟 3) -->
+  <!-- 來源：https://developer.snapappointments.com/bootstrap-select/ -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
+
+
+</head>
+
+<body style="margin:0px;">
+
+
+  <select class="selectpicker" data-live-search="true">
+    <option data-tokens="ketchup mustard">Hot Dog, Fries and a Soda</option>
+    <option data-tokens="mustard">Burger, Shake and a Smile</option>
+    <option data-tokens="frosting">Sugar, Spice and all things nice</option>
+  </select>
+
+
+</body>
+
+
+
+
+</html>
