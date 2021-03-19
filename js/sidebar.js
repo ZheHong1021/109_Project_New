@@ -1,18 +1,42 @@
 $(function () {
-  var userid = 0
 
-  addUser = function () {
-    sidebar.addPanel({
-      id: 'user' + userid++,
-      tab: '<i class="fa fa-user"></i>',
-      title: 'User Profile ' + userid,
-      pane: '<p>user ipsum dolor sit amet</p>',
-    });
-  }
+  // tra-sidebar-body
+  let tra_html = `
+   <div class='container-List'>
+          <div class="TRA_Origination">
+            <select id="TRA_Origination_Station_List" class="selectpicker" data-live-search="true">
+              <option selected disabled value="null">請選擇起站</option>
 
+            </select>
+
+          </div>
+
+          <div class="TRA_Destination">
+            <select id="TRA_Destination_Station_List" class="selectpicker" data-live-search="true">
+              <option selected disabled value="null">請選擇迄站</option>
+            </select>
+          </div>
+
+          <!-- Button trigger modal -->
+          <button type="button" id='go_Ticket_Search_TRA' class="btn btn-success">
+            查詢票價
+            <span class="spinner-border spinner-border-sm" id='spinner-TRA-Ticket' role="status" aria-hidden="true" hidden></span>
+          <button type="button" id='go_Time_Search_TRA' class="btn btn-primary">
+            查詢車班
+            <span class="spinner-border spinner-border-sm" id='spinner-TRA-Time' role="status" aria-hidden="true" hidden></span>
+
+
+        </div>
+
+        <div class="alert alert-warning  fade show d-flex justify-content-center" role="alert">
+          <div id='tra_result' lass="alert-body text-center">尚無查詢紀錄</div>
+        </div>
+  `;
+
+  // mrt-sidebar-body
   let mrt_html =
-    `<div class="container">
-    <div class="City">
+    `<div class="container-List">
+    <div class="City d-flex my-3">
       <label for="City_List" class="select_Label">縣市</label>
       <select class="form-select form-select-sm" id="City_List" aria-label="Default select example">
         <option selected value="KRTC">高雄捷運</option>
@@ -23,14 +47,14 @@ $(function () {
       </select>
     </div>
 
-    <div class="Origin_Station">
+    <div class="Origin_Station d-flex my-3">
       <label for="Origin_StationName_List " class='select_Label'>起站</label>
       <select class="form-select form-select-sm" id="Origin_StationName_List" aria-label="Default select example">
 
       </select>
     </div>
 
-    <div class="Destination_Station">
+    <div class="Destination_Station d-flex my-3">
       <label for="Destination_StationName_List" class='select_Label'>迄站</label>
       <select class="form-select form-select-sm" id="Destination_StationName_List"
         aria-label="Default select example">
@@ -43,6 +67,7 @@ $(function () {
       查詢
         <span
       class="spinner-border spinner-border-sm"
+      id='spinner-MRT'
       role="status"
       aria-hidden="true"
       hidden
@@ -74,18 +99,30 @@ $(function () {
   </div>
 
   <div class = "alert alert-warning  fade show d-flex justify-content-center" role = "alert" >
-      <div id='mrt-result' class = "alert-body text-center">尚無查詢紀錄</div>
+      <div id='mrt_result' class = "alert-body text-center">尚無查詢紀錄</div>
     </div>
     `;
 
+  // 【addUser函式】
+  // 用來計算目前共新增了幾個使用者(暫時用不到)
+  var userid = 0
+  addUser = function () {
+    sidebar.addPanel({
+      id: 'user' + userid++,
+      tab: '<i class="fa fa-user"></i>',
+      title: 'User Profile ' + userid,
+      pane: '<p>user ipsum dolor sit amet</p>',
+    });
+  }
 
 
+  // 建立並加入到地圖中
   // create the sidebar instance and add it to the map
   var sidebar = L.control.sidebar({
       container: 'sidebar',
     })
     .addTo(map)
-    .open('home');
+    .open('home'); // 起始 panel為 home
 
   // add panels dynamically to the sidebar
   sidebar
@@ -95,6 +132,7 @@ $(function () {
       title: '旅遊',
       pane: '<p>123</p>',
     })
+
   // add panels dynamically to the sidebar
   sidebar
     .addPanel({
@@ -103,13 +141,15 @@ $(function () {
       title: '公車',
       pane: '<p>123</p>',
     })
+
     // add panels dynamically to the sidebar
     .addPanel({
       id: 'train',
       tab: '<i class="fas fa-subway"></i>',
       title: '火車',
-      pane: '<p>123</p>',
+      pane: tra_html,
     })
+
     // add panels dynamically to the sidebar
     .addPanel({
       id: 'mrt',
@@ -146,7 +186,7 @@ $(function () {
       disabled: true,
     })
 
-  // be notified when a panel is opened
+  // 打開面板時收到通知
   sidebar.on('content', function (ev) {
     switch (ev.id) {
       case 'autopan':
@@ -158,33 +198,7 @@ $(function () {
   });
 
 
-  $.ajax({
-    url: "https://ptx.transportdata.tw/MOTC/v2/Rail/TRA/Station?$format=JSON",
-    dataType: "json",
 
-    // 當成功從 php回傳 json結果(result)的話
-    success: function (result) {
-      console.log(result);
-      let city_arr = [];
-      for (let i = 0; i < result.length; i++) {
-        // console.log(result[i]['LocationCity']);
-        let city = result[i]['LocationCity'].substr(0, 2);
-        if (!(city_arr.includes(city))) {
-          city_arr.push(city);
-          $('select.selectpicker').append($('<optgroup></optgroup>').prop('label', city));
-        }
-        $('optgroup[label=' + city + ']').append($('<option></option>').html(result[i]['StationName']['Zh_tw']));
-
-      }
-      // console.log(city_arr);
-    },
-    // 當Ajax請求失敗
-    error: function (XMLHttpRequest, textStatus, errorThrown) {
-      console.log(XMLHttpRequest);
-      console.log(textStatus);
-      console.log(errorThrown);
-    }
-  });
 
 
 });

@@ -13,6 +13,7 @@
     "bootstrap": "^5.0.0-beta2",
     "bootstrap-select": "^1.13.18",
     "jquery": "^3.6.0",
+    "jssha": "^3.2.0",
     "leaflet": "^1.7.1",
     "leaflet-groupedlayercontrol": "^0.6.1",
     "leaflet-routing-machine": "^3.2.12",

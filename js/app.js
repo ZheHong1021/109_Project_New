@@ -11,7 +11,6 @@
 $(function () {
 
   /*  定義變數  */
-
   // ==設立marker icon==
   // -----------------------------------
   // 【參數說明】
@@ -65,6 +64,7 @@ $(function () {
     shadowSize: [41, 41]
   })
 
+  /* 透過 Plugin- AwesomeMarker，讓座標可以用 icon來呈現內容 */
   let TRA_Marker = L.AwesomeMarkers.icon({
     markerColor: 'red',
     prefix: 'fa',
@@ -91,13 +91,8 @@ $(function () {
 
   // 建立 map容器(空間)並設定到 id=map的div上，之後可以加入 '底圖'、'圖層'、'物件(icon)'
   /* 因為在函式中也要使用到 map變數，所以直接用全域變數來定義他 */
-  window.map = new L.Map('map', {
-    // zoomControl: false,
-  });
+  window.map = new L.Map('map');
 
-  // new L.Control.Zoom({
-  //   position: 'topleft'
-  // }).addTo(map);
 
   // create a fullscreen button and add it to the map
   L.control.fullscreen({
@@ -109,9 +104,6 @@ $(function () {
     // forcePseudoFullscreen: true, // force use of pseudo full screen even if full screen API is available, default false
     fullscreenElement: false // Dom element to render in full screen, false by default, fallback to map._container
   }).addTo(map);
-
-
-  // var map = L.map('map');  // 區域變數(建議不要)
 
 
   // 匯入圖資(底圖)； tileLayer: 以圖磚的方式存取圖層，當網路或是電腦跑比較慢的時候就可以看出一塊一塊的圖片在讀取中。
@@ -130,12 +122,12 @@ $(function () {
 
   const tileLayers = L.layerGroup([tileLayer1]);
 
+  // 使用 Plugin- Control.TileLoadingProgress，在縮放地圖時會有一個進度表動畫呈現縮放情況
   const tileLoadingProgress = new L.Control.TileLoadingProgress({
     leafletElt: tileLayers,
     position: 'bottomleft'
   });
   tileLoadingProgress.addTo(map);
-
 
 
   // 設立變數
@@ -153,10 +145,10 @@ $(function () {
   }
 
 
-  // leaflet-control-container
+  // leaflet-control-container (透過 L_Control_Add [function.js中] )
   // https://stackoverflow.com/questions/48291870/how-to-add-custom-ui-to-leaflet-map
   // L_Control_Add('leaflet-bar sideBar-control', '<i class="fas fa-arrows-alt-h"></i>', 'topleft');
-  L_Control_Add('a', 'goBackPosition js-goBackPosition', '<i class="fas fa-crosshairs" style="color:rgb(82, 81, 81)" title="回到目前位置"></i>', 'topright');
+  L_Control_Add(tag = 'a', class_name = 'goBackPosition js-goBackPosition', i_Control = '<i class="fas fa-crosshairs" style="color:rgb(82, 81, 81)" title="回到目前位置"></i>', position = 'topright');
   L_Control_Add('a', 'goBackTaiwan', '<i class="twicon-main-island" title="台灣"></i>', 'topright');
 
 
@@ -165,7 +157,6 @@ $(function () {
   // 參數1 - success: 一個回傳函式(callback function) 會被傳入一個Position 的物件。
   // 參數2 - error: 一個選擇性的錯誤回傳函式(callback function)，會被傳入一個 PositionError 的物件。
   // 參數3 - options: 一個選擇性的 PositionOptions 的物件。
-
   // 參數1為 function.js中的 showPosition函式；參數1為 function.js中的 showError函式
   navigator.geolocation.getCurrentPosition(showPosition, showError, {
     enableHighAccuracy: true,
@@ -177,20 +168,19 @@ $(function () {
 
 
   // 把 Ajax用成函式，在其他功能的使用上可以透過呼叫來執行。
-  var filter_Map_Data = function (func, search_val) {
-
+  var filter_Map_Data = function (func) {
     /* AJax  */
     $.ajax({
-      url: "OSM.php",
+      url: "osm.php",
       data: {
         // check_val: checked_arr,
         action: func, // ajax到 OSM.php，並執行 Get_Transportation函式
-        search_val: search_val
       },
       dataType: 'json',
       type: 'post',
+      headers: GetAuthorizationHeader(), // 憑證 API token
       success: function (result) {
-        console.log(result); // 確認 Ajax回傳的結果
+        // console.log(result); // 確認 Ajax回傳的結果
 
         // 參考下方網址(Foreach)
         // https://stackoverflow.com/questions/32168394/how-do-i-loop-through-deeply-nested-json-object
@@ -292,19 +282,16 @@ $(function () {
   };
 
   // 一開始進來時，就執行 Ajax (參數一: 在PHP中使用的函數； 參數二: 為目前搜尋欄輸入的值)
-  filter_Map_Data('Get_Transportation', $('.search-value').val());
+  filter_Map_Data('Get_Transportation');
 
 
   /* ==公車== */
   $.ajax({
     url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/Station/City/Kaohsiung?$format=JSON',
     dataType: 'json',
+    headers: GetAuthorizationHeader(), // 憑證 API token
     success: function (result) {
-      // console.log(result[0]);
-
       Object.keys(result).forEach(function (value, key) {
-        // console.log(value);
-        // console.log(result[value]);
         let latitude = result[value]['StationPosition']['PositionLat'];
         let longitude = result[value]['StationPosition']['PositionLon'];
 
@@ -351,7 +338,7 @@ $(function () {
   /*  ====治安地圖====  */
   // Ajax開始
   $.ajax({
-    url: "OSM.php",
+    url: "osm.php",
     data: {
       action: 'getdata', //(action)使用 php的function需post資料過去php作判別要使用哪個function
     },
@@ -523,5 +510,10 @@ $(function () {
       [25.2954588893, 121.951243931]
     ]);
   });
+
+
+
+
+
 
 });

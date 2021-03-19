@@ -1,8 +1,10 @@
 <?php
 $server = 'localhost';
+// $server = '163.18.42.31';
 $dbname = '109p2';
 $user = 'root';
 $passwd = '123456';
+// $passwd = 'haha45La';
 
 
 try {

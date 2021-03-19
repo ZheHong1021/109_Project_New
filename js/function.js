@@ -1,8 +1,4 @@
-/* 函式區 */
-
-
 /*---------------獲取設備當前的所在位置---------------*/
-
 /* showPostion函式: 用來去抓取當前位置 */
 function showPosition(position) {
   enableHighAccuracy: true;
@@ -149,7 +145,7 @@ function fly_To_Marker(lat, lng, feature) {
 }
 
 
-
+// 增加地圖中的 Control
 function L_Control_Add(tag, class_name, i_Content, position) {
   L.Control.MyControl = L.Control.extend({
     onAdd: function (map) {
@@ -168,4 +164,23 @@ function L_Control_Add(tag, class_name, i_Content, position) {
     position: position
   }).addTo(map);
 
+}
+
+// API KEY 驗證
+// 來源：https://ithelp.ithome.com.tw/articles/10213895
+let GetAuthorizationHeader = function () {
+  var AppID = 'e32637236ea242abb50177076c6c00c6';
+  var AppKey = 'qiXPXVC8HDrd4e0OCGH3X8l2tlY';
+
+  var GMTString = new Date().toGMTString();
+  var ShaObj = new jsSHA('SHA-1', 'TEXT');
+  ShaObj.setHMACKey(AppKey, 'TEXT');
+  ShaObj.update('x-date: ' + GMTString);
+  var HMAC = ShaObj.getHMAC('B64');
+  var Authorization = 'hmac username=\"' + AppID + '\", algorithm=\"hmac-sha1\", headers=\"x-date\", signature=\"' + HMAC + '\"';
+
+  return {
+    'Authorization': Authorization,
+    'X-Date': GMTString /*,'Accept-Encoding': 'gzip'*/
+  }; //如果要將js運行在伺服器，可額外加入 'Accept-Encoding': 'gzip'，要求壓縮以減少網路傳輸資料量
 }
