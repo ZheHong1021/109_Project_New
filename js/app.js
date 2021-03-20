@@ -280,59 +280,76 @@ $(function () {
     })
 
   };
-
   // 一開始進來時，就執行 Ajax (參數一: 在PHP中使用的函數； 參數二: 為目前搜尋欄輸入的值)
   filter_Map_Data('Get_Transportation');
 
 
+
   /* ==公車== */
-  $.ajax({
-    url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/Station/City/Kaohsiung?$format=JSON',
-    dataType: 'json',
-    headers: GetAuthorizationHeader(), // 憑證 API token
-    success: function (result) {
-      Object.keys(result).forEach(function (value, key) {
-        let latitude = result[value]['StationPosition']['PositionLat'];
-        let longitude = result[value]['StationPosition']['PositionLon'];
+  let show_Bus_Marker = function (city) {
+    $.ajax({
+      url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/Station/City/' + city + '?$format=JSON',
+      dataType: 'json',
+      headers: GetAuthorizationHeader(), // 憑證 API token
+      success: function (result) {
+        console.log(city);
+        Object.keys(result).forEach(function (value, key) {
+          let latitude = result[value]['StationPosition']['PositionLat'];
+          let longitude = result[value]['StationPosition']['PositionLon'];
 
-        var geojsonFeature = {
-          // 型別Feature運用在一些函式(makePopupContent、onEachFeature)做使用
-          "type": "Feature",
+          var geojsonFeature = {
+            // 型別Feature運用在一些函式(makePopupContent、onEachFeature)做使用
+            "type": "Feature",
 
-          // 將擷取到資料再運用 json方式存放在 geoJSON中，之後可以拿來做使用
-          "properties": {
-            "name": result[value]['StationName']['Zh_tw'],
-            'category': '公車',
-            "latitude": latitude,
-            "longitude": longitude,
+            // 將擷取到資料再運用 json方式存放在 geoJSON中，之後可以拿來做使用
+            "properties": {
+              "name": result[value]['StationName']['Zh_tw'],
+              'category': '公車',
+              "latitude": latitude,
+              "longitude": longitude,
 
-          },
-          "geometry": {
-            "type": "Point",
-            "coordinates": [longitude, latitude]
-          }
-        };
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [longitude, latitude]
+            }
+          };
 
-        // 最後再將上述設定的內容加入到 map當中
-        L.geoJSON(geojsonFeature, {
-          // function.js中的onEachFeature函式，目的讓這些marker有 popup的效果
-          onEachFeature: onEachFeature,
-          // 用來顯示 marker icon
-          pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, {
-              icon: BUS_Marker
-            });
-          },
-        }).addTo(markers.bus);
-      });
-    },
-    // 當Ajax請求失敗
-    error: function (XMLHttpRequest, textStatus, errorThrown) {
-      console.log(XMLHttpRequest);
-      console.log(textStatus);
-      console.log(errorThrown);
-    }
-  });
+          // 最後再將上述設定的內容加入到 map當中
+          L.geoJSON(geojsonFeature, {
+            // function.js中的onEachFeature函式，目的讓這些marker有 popup的效果
+            onEachFeature: onEachFeature,
+            // 用來顯示 marker icon
+            pointToLayer: function (feature, latlng) {
+              return L.marker(latlng, {
+                icon: BUS_Marker
+              });
+            },
+          }).addTo(markers.bus);
+        });
+      },
+      // 當Ajax請求失敗
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        console.log(XMLHttpRequest);
+        console.log(textStatus);
+        console.log(errorThrown);
+      }
+    });
+  };
+
+  // 臺北市: Taipei  // 新北市: NewTaipei  // 高雄市: Kaohsiung  // 新竹市: Hsinchu
+  // 新竹縣: HsinchuCounty  // 苗栗縣: MiaoliCounty  // 彰化縣: ChanghuaCounty
+  // 南投縣: NantouCounty  // 雲林縣: YunlinCounty  // 嘉義縣: ChiayiCounty
+  // 嘉義市: Chiayi  // 屏東縣: PingtungCounty  // 宜蘭縣: YilanCounty  // 花蓮縣: HualienCounty
+  // 臺東縣: TaitungCounty  // 澎湖縣: PenghuCounty  // 臺南市: Tainan  // 金門縣: KinmenCounty
+  let Bus_City_List = ["Taipei", "NewTaipei", "Kaohsiung", "Hsinchu", "HsinchuCounty", "MiaoliCounty", "ChanghuaCounty",
+    "ChanghuaCounty", "NantouCounty", "YunlinCounty", "ChiayiCounty", "Chiayi", "PingtungCounty",
+    "YilanCounty", "HualienCounty", "PenghuCounty", "Tainan", "KinmenCounty"
+  ];
+  for (let i = 0; i < Bus_City_List.length; i++) {
+    show_Bus_Marker(Bus_City_List[i]);
+  }
+
 
 
   /*  ====治安地圖====  */
@@ -457,44 +474,45 @@ $(function () {
   });
 
 
-  // 路徑規劃
-  let routing = L.Routing.control({
-    waypoints: [
-      L.latLng(22.751425, 120.33138),
-      L.latLng(22.74819, 120.331169)
-    ],
-    position: 'topright',
-    geocoder: L.Control.Geocoder.nominatim(),
-    routeWhileDragging: true,
-    showAlternatives: true,
-    reverseWaypoints: true,
-    defaultMarkGeocode: false,
-    show: false,
-  }).addTo(map);
+
+  // // 路徑規劃
+  // let routing = L.Routing.control({
+  //   waypoints: [
+  //     L.latLng(22.751425, 120.33138),
+  //     L.latLng(22.74819, 120.331169)
+  //   ],
+  //   position: 'topright',
+  //   geocoder: L.Control.Geocoder.nominatim(),
+  //   routeWhileDragging: true,
+  //   showAlternatives: true,
+  //   reverseWaypoints: true,
+  //   defaultMarkGeocode: false,
+  //   show: false,
+  // }).addTo(map);
 
 
-  // 開關 routing-machine
-  // 來源：https://gis.stackexchange.com/questions/324016/leaflet-routing-machine-show-option-doesnt-work
-  var itineraryShown = false;
-  var controlContainer = routing.getContainer();
-  var legendClickArea = document.createElement("DIV");
+  // // 開關 routing-machine
+  // // 來源：https://gis.stackexchange.com/questions/324016/leaflet-routing-machine-show-option-doesnt-work
+  // var itineraryShown = false;
+  // var controlContainer = routing.getContainer();
+  // var legendClickArea = document.createElement("DIV");
 
-  legendClickArea.classList.add('legendClickArea');
-  controlContainer.appendChild(legendClickArea);
+  // legendClickArea.classList.add('legendClickArea');
+  // controlContainer.appendChild(legendClickArea);
 
-  var routing_img = document.createElement("img");
-  routing_img.src = 'img/route.png';
-  routing_img.title = '點擊規劃路徑';
-  legendClickArea.appendChild(routing_img);
+  // var routing_img = document.createElement("img");
+  // routing_img.src = 'img/route.png';
+  // routing_img.title = '點擊規劃路徑';
+  // legendClickArea.appendChild(routing_img);
 
-  legendClickArea.onclick = function () {
-    if (itineraryShown)
-      routing.hide();
-    else {
-      routing.show();
-    }
-    itineraryShown = !itineraryShown;
-  };
+  // legendClickArea.onclick = function () {
+  //   if (itineraryShown)
+  //     routing.hide();
+  //   else {
+  //     routing.show();
+  //   }
+  //   itineraryShown = !itineraryShown;
+  // };
 
 
 

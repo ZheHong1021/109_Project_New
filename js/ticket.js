@@ -30,13 +30,14 @@ $(function () {
         $('img.routing-img').attr('srcset', "img/mrt/" + route + ".jpg");
 
         // 設立一個陣列，記錄目前已存放的站點資料，如果已在陣列中則不會進入條件式，避免重複紀錄
-        var station_list = [];
+        let station_list = [];
         for (let index = 0; index < result.length; index++) {
           var station_Name = result[index]["OriginStationName"]['Zh_tw'];
           var station_id = result[index]["OriginStationID"];
-
           // 如果該站名還沒輸入進去，就輸入
           if (!station_list.includes(station_Name) && !station_list.includes(station_id)) {
+            // let route_Select = station_id.match(/([A-Z])/g).join('');
+            // console.log(route_Select);
             // 建立物件
             const option_Origin = document.createElement('option');
             const option_Destination = document.createElement('option');
@@ -260,8 +261,6 @@ $(function () {
       else {
         $('div#tra_result').removeClass('text-center');
         $('div#tra_result').html("");
-        $('div#tra_result').append("<h2>起站: " + $('#TRA_Origination_Station_List').val() + "</h2>");
-        $('div#tra_result').append("<h2>迄站: " + $('#TRA_Destination_Station_List').val() + "</h2>");
         for (let index = 0; index < results_TRA.length; index++) {
           if (results_TRA[index]['StationName']['Zh_tw'] == $('#TRA_Origination_Station_List').val()) {
             var station_ID_O = results_TRA[index]['StationID'];
@@ -290,6 +289,44 @@ $(function () {
           // 當成功從 php回傳 json結果(result)的話
           success: function (result) {
             console.log(result);
+            for (let index = 0; index < result.length; index++) {
+              let train_No = result[index]['DailyTrainInfo']['TrainNo']; // 車次代號
+              let direction = result[index]['DailyTrainInfo']['Direction']; // 順(0)逆(1)行
+              let startingStationName = result[index]['DailyTrainInfo']['StartingStationName']['Zh_tw']; // 列車起點車站名稱
+              let endingStationName = result[index]['DailyTrainInfo']['EndingStationName']['Zh_tw']; // 列車終點車站名稱
+              let trainTypeName = result[index]['DailyTrainInfo']['TrainTypeName']['Zh_tw']; // 列車車種名稱
+              let O_stationName = result[index]['OriginStopTime']['StationName']['Zh_tw']; // 上車的站名
+              let O_ArrivalTime = result[index]['OriginStopTime']['ArrivalTime']; // 上車的時間
+              let D_stationName = result[index]['DestinationStopTime']['StationName']['Zh_tw']; // 下車的站名
+              let D_ArrivalTime = result[index]['DestinationStopTime']['ArrivalTime']; // 下車的時間
+              // 計算時間差
+              // var start_time = "08:10";
+              // var end_time = "09:30";
+              _startTime = O_ArrivalTime.split(":");
+              _endTime = D_ArrivalTime.split(":");
+              var startDate = new Date(0, 0, 0, _startTime[0], _startTime[1], 0);
+              var EndDate = new Date(0, 0, 0, _endTime[0], _endTime[1], 0);
+              EndDate.setHours(EndDate.getHours() - startDate.getHours());
+              EndDate.setMinutes(EndDate.getMinutes() - startDate.getMinutes());
+              resultTime = EndDate.getHours() + "小時" + EndDate.getMinutes() + "分鐘";
+
+              $('div#tra_result').append("<h2>日期: " + train_Date + "</h2>");
+              $('div#tra_result').append("<h2>車次代號: " + train_No + "</h2>");
+              $('div#tra_result').append("<h2>順(0)逆(1)行: " + direction + "</h2>");
+              $('div#tra_result').append("<h2>起發站: " + startingStationName + "</h2>");
+              $('div#tra_result').append("<h2>終點站: " + endingStationName + "</h2>");
+              $('div#tra_result').append("<h2>列車車種名稱: " + trainTypeName + "</h2>");
+              $('div#tra_result').append("<h2>起站: " + O_stationName + "</h2>");
+              $('div#tra_result').append("<h2>上車的時間: " + O_ArrivalTime + "</h2>");
+              $('div#tra_result').append("<h2>迄站: " + D_stationName + "</h2>");
+              $('div#tra_result').append("<h2>下車的時間: " + D_ArrivalTime + "</h2>");
+              $('div#tra_result').append("<h2>需花費: " + resultTime + "</h2>");
+              $('div#tra_result').append("<h2>--------------------------------</h2>");
+            }
+
+
+
+
           },
           // 當Ajax請求失敗
           error: function (XMLHttpRequest, textStatus, errorThrown) {
