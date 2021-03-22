@@ -79,6 +79,8 @@ div.leaflet-routing-container {
 .goBackTaiwan {
 	position: absolute;
 	align-items: center;
+	/* 超連結的底線用掉 */
+	text-decoration: none;
 	z-index: 999;
 	top: 10px;
 	right: 50px;
@@ -87,9 +89,31 @@ div.leaflet-routing-container {
 	font-size: 35px;
 	width: 35px;
 	height: 35px;
-	border: 1px solid #000;
+	border: 3px solid #000;
 	cursor: pointer;
 	background: #d1d8e0;
+	border-radius: 8px;
+	transition: .5s;
+}
+
+.goBackTaiwan:hover {
+	background-color: #82ccdd;
+}
+
+.goFiliter {
+	z-index: 999;
+	text-decoration: none;
+	display: flex;
+	justify-content: center;
+	font-size: 18px;
+	padding: 10px;
+	border: 3px solid #718093;
+	cursor: pointer;
+	/* background: #82ccdd; */
+	background: #f5f6fa;
+	border-radius: 8px;
+	transition: .5s;
+
 }
 
 /*
@@ -312,3 +336,22 @@ footer {
 	font-weight: bold;
 	background: #dfe6e9;
 }
+
+
+.leaflet-popup-tip-container {
+	margin: 0 0;
+}
+
+/* StyleControlGroup */
+.menu-item-checkbox {
+	padding: 5px 10px;
+	font-size: 16px;
+}
+
+.menu-item-checkbox input {
+	margin: 0 5px;
+}
+
+/* div.leaflet-control-layers section {
+	margin-top: 20px;
+} */

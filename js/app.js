@@ -1,13 +1,3 @@
-// 路線規劃
-// https://ithelp.ithome.com.tw/articles/10237145
-
-// Leaflet 路線規劃
-// http://www.liedman.net/leaflet-routing-machine/
-
-// Leaflet moveMarker GeoJSON
-// https://www.youtube.com/watch?v=LWML4HkOAi0&ab_channel=Coder%27sGyan
-
-
 $(function () {
 
   /*  定義變數  */
@@ -68,7 +58,8 @@ $(function () {
   let TRA_Marker = L.AwesomeMarkers.icon({
     markerColor: 'red',
     prefix: 'fa',
-    icon: 'subway'
+    icon: 'subway',
+
   });
 
   let MRT_Marker = L.AwesomeMarkers.icon({
@@ -137,9 +128,35 @@ $(function () {
   };
   let markers = {
     train: new L.MarkerClusterGroup(),
-    mrt: new L.MarkerClusterGroup(),
+    mrt: {
+      TRTC: new L.MarkerClusterGroup(),
+      KRTC: new L.MarkerClusterGroup(),
+      TYMC: new L.MarkerClusterGroup(),
+      KLRT: new L.MarkerClusterGroup(),
+      TMRT: new L.MarkerClusterGroup(),
+
+    },
     lrt: new L.MarkerClusterGroup(),
-    bus: new L.MarkerClusterGroup(),
+    bus: {
+      Tapei: new L.MarkerClusterGroup(),
+      NewTaipei: new L.MarkerClusterGroup(),
+      Kaohsiung: new L.MarkerClusterGroup(),
+      Hsinchu: new L.MarkerClusterGroup(),
+      HsinchuCounty: new L.MarkerClusterGroup(),
+      MiaoliCounty: new L.MarkerClusterGroup(),
+      ChanghuaCounty: new L.MarkerClusterGroup(),
+      NantouCounty: new L.MarkerClusterGroup(),
+      YunlinCounty: new L.MarkerClusterGroup(),
+      ChiayiCounty: new L.MarkerClusterGroup(),
+      Chiayi: new L.MarkerClusterGroup(),
+      PingtungCounty: new L.MarkerClusterGroup(),
+      YilanCounty: new L.MarkerClusterGroup(),
+      HualienCounty: new L.MarkerClusterGroup(),
+      TaitungCounty: new L.MarkerClusterGroup(),
+      PenghuCounty: new L.MarkerClusterGroup(),
+      Tainan: new L.MarkerClusterGroup(),
+      KinmenCounty: new L.MarkerClusterGroup(),
+    },
     police: new L.MarkerClusterGroup(),
     monitor: new L.MarkerClusterGroup()
   }
@@ -150,6 +167,7 @@ $(function () {
   // L_Control_Add('leaflet-bar sideBar-control', '<i class="fas fa-arrows-alt-h"></i>', 'topleft');
   L_Control_Add(tag = 'a', class_name = 'goBackPosition js-goBackPosition', i_Control = '<i class="fas fa-crosshairs" style="color:rgb(82, 81, 81)" title="回到目前位置"></i>', position = 'topright');
   L_Control_Add('a', 'goBackTaiwan', '<i class="twicon-main-island" title="台灣"></i>', 'topright');
+  L_Control_Add('a', 'goFiliter', '<i class="fas fa-filter"></i>', 'topright');
 
 
 
@@ -167,73 +185,179 @@ $(function () {
 
 
 
-  // 把 Ajax用成函式，在其他功能的使用上可以透過呼叫來執行。
-  var filter_Map_Data = function (func) {
-    /* AJax  */
+  // // 把 Ajax用成函式，在其他功能的使用上可以透過呼叫來執行。
+  // var filter_Map_Data = function (func) {
+  //   /* AJax  */
+  //   $.ajax({
+  //     url: "osm.php",
+  //     data: {
+  //       // check_val: checked_arr,
+  //       action: func, // ajax到 OSM.php，並執行 Get_Transportation函式
+  //     },
+  //     dataType: 'json',
+  //     type: 'post',
+  //     headers: GetAuthorizationHeader(), // 憑證 API token
+  //     success: function (result) {
+  //       // console.log(result); // 確認 Ajax回傳的結果
+
+  //       // 參考下方網址(Foreach)
+  //       // https://stackoverflow.com/questions/32168394/how-do-i-loop-through-deeply-nested-json-object
+  //       Object.keys(result).forEach(function (value, key) {
+  //         result[value].forEach(function (v, k) {
+
+  //           /* 將從 OSM.php中所擷取到的資料用變數存放 */
+  //           var name = v.station_info.station_name;
+  //           var station_address = v.station_info.station_address;
+  //           var station_category = v.station_info.category;
+  //           var station_weather = v.weather;
+  //           var latitude = v.coordinates.latitude;
+  //           var longitude = v.coordinates.longitude;
+
+  //           /* 參考資料 */
+  //           // https://leafletjs.com/examples/geojson/
+  //           // 透過 geoJSON來將我們從 OSM.php中所抓取到的 json呈現在地圖座標
+  //           var geojsonFeature = {
+  //             // 型別Feature運用在一些函式(makePopupContent、onEachFeature)做使用
+  //             "type": "Feature",
+
+  //             // 將擷取到資料再運用 json方式存放在 geoJSON中，之後可以拿來做使用
+  //             "properties": {
+  //               "name": name,
+  //               "address": station_address,
+  //               "category": station_category,
+  //               "T": station_weather.T,
+  //               // "AT": station_weather.AT,
+  //               "PoP6h": station_weather.PoP6h,
+  //               // "Wx": station_weather.Wx,
+  //               // "RH": station_weather.RH,
+  //             },
+  //             "geometry": {
+  //               "type": "Point",
+  //               "coordinates": [longitude, latitude]
+  //             }
+  //           };
+
+
+  //           // 最後再將上述設定的內容加入到 map當中
+  //           L.geoJSON(geojsonFeature, {
+  //             // function.js中的onEachFeature函式，目的讓這些marker有 popup的效果
+  //             onEachFeature: onEachFeature,
+  //             // 用來顯示 marker icon
+  //             pointToLayer: function (feature, latlng) {
+  //               return L.marker(latlng, {
+  //                 icon: TRA_Marker
+  //               });
+  //             },
+  //             filter: function (feature, layer) {
+  //               return (feature.properties.category === "台鐵");
+  //             }
+  //           }).addTo(markers.train);
+
+  //           // // 最後再將上述設定的內容加入到 map當中
+  //           // L.geoJSON(geojsonFeature, {
+  //           //   // function.js中的onEachFeature函式，目的讓這些marker有 popup的效果
+  //           //   onEachFeature: onEachFeature,
+  //           //   // 用來顯示 marker icon
+  //           //   pointToLayer: function (feature, latlng) {
+  //           //     return L.marker(latlng, {
+  //           //       icon: redIcon
+  //           //     });
+  //           //   },
+  //           //   filter: function (feature, layer) {
+  //           //     return (feature.properties.category === "捷運");
+  //           //   }
+  //           // }).addTo(markers.mrt);
+
+  //           // 最後再將上述設定的內容加入到 map當中
+  //           // L.geoJSON(geojsonFeature, {
+  //           //   // function.js中的onEachFeature函式，目的讓這些marker有 popup的效果
+  //           //   onEachFeature: onEachFeature,
+  //           //   // 用來顯示 marker icon
+  //           //   pointToLayer: function (feature, latlng) {
+  //           //     return L.marker(latlng, {
+  //           //       icon: LRT_Marker
+  //           //     });
+  //           //   },
+  //           //   filter: function (feature, layer) {
+  //           //     return (feature.properties.category === "輕軌");
+  //           //   }
+  //           // }).addTo(markers.lrt);
+
+
+  //         })
+  //         // foeEach(End)
+
+  //       });
+  //       // foeEach(End)
+  //     },
+  //     error: function (XMLHttpRequest, textStatus, errorThrown) {
+  //       console.log(XMLHttpRequest);
+  //       console.log(textStatus);
+  //       console.log(errorThrown);
+  //     }
+  //   })
+
+  // };
+  // // 一開始進來時，就執行 Ajax (參數一: 在PHP中使用的函數； 參數二: 為目前搜尋欄輸入的值)
+  // filter_Map_Data('Get_Transportation');
+
+
+
+
+  // 臺北捷運:TRTC
+  // 高雄捷運:KRTC
+  // 桃園捷運:TYMC
+  // 高雄輕軌:KLRT
+  // 臺中捷運:TMRT
+  let MRT_City_List = ["TRTC", "KRTC", "TYMC", "KLRT", "TMRT"];
+  /* ==公車== */
+  let show_MRT_Marker = function (city) {
     $.ajax({
-      url: "osm.php",
-      data: {
-        // check_val: checked_arr,
-        action: func, // ajax到 OSM.php，並執行 Get_Transportation函式
-      },
+      url: 'https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/Station/' + city + '?$format=JSON',
       dataType: 'json',
-      type: 'post',
       headers: GetAuthorizationHeader(), // 憑證 API token
       success: function (result) {
-        // console.log(result); // 確認 Ajax回傳的結果
-
-        // 參考下方網址(Foreach)
-        // https://stackoverflow.com/questions/32168394/how-do-i-loop-through-deeply-nested-json-object
-        Object.keys(result).forEach(function (value, key) {
-          result[value].forEach(function (v, k) {
-
-            /* 將從 OSM.php中所擷取到的資料用變數存放 */
-            var name = v.station_info.station_name;
-            var station_address = v.station_info.station_address;
-            var station_category = v.station_info.category;
-            var station_weather = v.weather;
-            var latitude = v.coordinates.latitude;
-            var longitude = v.coordinates.longitude;
-
-            /* 參考資料 */
-            // https://leafletjs.com/examples/geojson/
-            // 透過 geoJSON來將我們從 OSM.php中所抓取到的 json呈現在地圖座標
+        // console.log(city);
+        if (MRT_City_List.includes(city)) {
+          let marker;
+          switch (city) {
+            case "TRTC":
+              marker = markers.mrt.TRTC;
+              break;
+            case "KRTC":
+              marker = markers.mrt.KRTC;
+              break;
+            case "TYMC":
+              marker = markers.mrt.TYMC;
+              break;
+            case "KLRT":
+              marker = markers.mrt.KLRT;
+              break;
+            case "TMRT":
+              marker = markers.mrt.TMRT;
+              break;
+          }
+          Object.keys(result).forEach(function (value, key) {
+            let latitude = result[value]['StationPosition']['PositionLat'];
+            let longitude = result[value]['StationPosition']['PositionLon'];
             var geojsonFeature = {
               // 型別Feature運用在一些函式(makePopupContent、onEachFeature)做使用
               "type": "Feature",
 
               // 將擷取到資料再運用 json方式存放在 geoJSON中，之後可以拿來做使用
               "properties": {
-                "name": name,
-                "address": station_address,
-                "category": station_category,
-                "T": station_weather.T,
-                // "AT": station_weather.AT,
-                "PoP6h": station_weather.PoP6h,
-                // "Wx": station_weather.Wx,
-                // "RH": station_weather.RH,
+                "name": result[value]['StationName']['Zh_tw'],
+                "address": result[value]['StationAddress'],
+                'category': '捷運',
+                "latitude": latitude,
+                "longitude": longitude,
+
               },
               "geometry": {
                 "type": "Point",
                 "coordinates": [longitude, latitude]
               }
             };
-
-
-            // 最後再將上述設定的內容加入到 map當中
-            L.geoJSON(geojsonFeature, {
-              // function.js中的onEachFeature函式，目的讓這些marker有 popup的效果
-              onEachFeature: onEachFeature,
-              // 用來顯示 marker icon
-              pointToLayer: function (feature, latlng) {
-                return L.marker(latlng, {
-                  icon: TRA_Marker
-                });
-              },
-              filter: function (feature, layer) {
-                return (feature.properties.category === "台鐵");
-              }
-            }).addTo(markers.train);
 
             // 最後再將上述設定的內容加入到 map當中
             L.geoJSON(geojsonFeature, {
@@ -245,88 +369,9 @@ $(function () {
                   icon: MRT_Marker
                 });
               },
-              filter: function (feature, layer) {
-                return (feature.properties.category === "捷運");
-              }
-            }).addTo(markers.mrt);
-
-            // 最後再將上述設定的內容加入到 map當中
-            L.geoJSON(geojsonFeature, {
-              // function.js中的onEachFeature函式，目的讓這些marker有 popup的效果
-              onEachFeature: onEachFeature,
-              // 用來顯示 marker icon
-              pointToLayer: function (feature, latlng) {
-                return L.marker(latlng, {
-                  icon: LRT_Marker
-                });
-              },
-              filter: function (feature, layer) {
-                return (feature.properties.category === "輕軌");
-              }
-            }).addTo(markers.lrt);
-
-
-          })
-          // foeEach(End)
-
-        });
-        // foeEach(End)
-      },
-      error: function (XMLHttpRequest, textStatus, errorThrown) {
-        console.log(XMLHttpRequest);
-        console.log(textStatus);
-        console.log(errorThrown);
-      }
-    })
-
-  };
-  // 一開始進來時，就執行 Ajax (參數一: 在PHP中使用的函數； 參數二: 為目前搜尋欄輸入的值)
-  filter_Map_Data('Get_Transportation');
-
-
-
-  /* ==公車== */
-  let show_Bus_Marker = function (city) {
-    $.ajax({
-      url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/Station/City/' + city + '?$format=JSON',
-      dataType: 'json',
-      headers: GetAuthorizationHeader(), // 憑證 API token
-      success: function (result) {
-        console.log(city);
-        Object.keys(result).forEach(function (value, key) {
-          let latitude = result[value]['StationPosition']['PositionLat'];
-          let longitude = result[value]['StationPosition']['PositionLon'];
-
-          var geojsonFeature = {
-            // 型別Feature運用在一些函式(makePopupContent、onEachFeature)做使用
-            "type": "Feature",
-
-            // 將擷取到資料再運用 json方式存放在 geoJSON中，之後可以拿來做使用
-            "properties": {
-              "name": result[value]['StationName']['Zh_tw'],
-              'category': '公車',
-              "latitude": latitude,
-              "longitude": longitude,
-
-            },
-            "geometry": {
-              "type": "Point",
-              "coordinates": [longitude, latitude]
-            }
-          };
-
-          // 最後再將上述設定的內容加入到 map當中
-          L.geoJSON(geojsonFeature, {
-            // function.js中的onEachFeature函式，目的讓這些marker有 popup的效果
-            onEachFeature: onEachFeature,
-            // 用來顯示 marker icon
-            pointToLayer: function (feature, latlng) {
-              return L.marker(latlng, {
-                icon: BUS_Marker
-              });
-            },
-          }).addTo(markers.bus);
-        });
+            }).addTo(marker);
+          });
+        }
       },
       // 當Ajax請求失敗
       error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -337,19 +382,148 @@ $(function () {
     });
   };
 
+
+  for (let i = 0; i < MRT_City_List.length; i++) {
+    show_MRT_Marker(MRT_City_List[i]);
+  }
+
+
+
+
   // 臺北市: Taipei  // 新北市: NewTaipei  // 高雄市: Kaohsiung  // 新竹市: Hsinchu
-  // 新竹縣: HsinchuCounty  // 苗栗縣: MiaoliCounty  // 彰化縣: ChanghuaCounty
-  // 南投縣: NantouCounty  // 雲林縣: YunlinCounty  // 嘉義縣: ChiayiCounty
-  // 嘉義市: Chiayi  // 屏東縣: PingtungCounty  // 宜蘭縣: YilanCounty  // 花蓮縣: HualienCounty
-  // 臺東縣: TaitungCounty  // 澎湖縣: PenghuCounty  // 臺南市: Tainan  // 金門縣: KinmenCounty
-  let Bus_City_List = ["Taipei", "NewTaipei", "Kaohsiung", "Hsinchu", "HsinchuCounty", "MiaoliCounty", "ChanghuaCounty",
-    "ChanghuaCounty", "NantouCounty", "YunlinCounty", "ChiayiCounty", "Chiayi", "PingtungCounty",
-    "YilanCounty", "HualienCounty", "PenghuCounty", "Tainan", "KinmenCounty"
+  // 新竹縣: HsinchuCounty  // 苗栗縣: MiaoliCounty  // 彰化縣: ChanghuaCounty  // 南投縣: NantouCounty
+  // 雲林縣: YunlinCounty  // 嘉義縣: ChiayiCounty  // 嘉義市: Chiayi  // 屏東縣: PingtungCounty
+  // 宜蘭縣: YilanCounty  // 花蓮縣: HualienCounty  // 臺東縣: TaitungCounty  // 澎湖縣: PenghuCounty
+  // 臺南市: Tainan  // 金門縣: KinmenCounty
+  let Bus_City_List = ["Taipei", "NewTaipei", "Kaohsiung", "Hsinchu",
+    "HsinchuCounty", "MiaoliCounty", "ChanghuaCounty", "NantouCounty",
+    "YunlinCounty", "ChiayiCounty", "Chiayi", "PingtungCounty",
+    "YilanCounty", "HualienCounty", "TaitungCounty", "PenghuCounty",
+    "Tainan", "KinmenCounty"
   ];
+  /* ==公車== */
+  let show_Bus_Marker = function (city) {
+    $.ajax({
+      url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/Station/City/' + city + '?$format=JSON',
+      dataType: 'json',
+      headers: GetAuthorizationHeader(), // 憑證 API token
+      success: function (result) {
+        // console.log(city);
+        if (Bus_City_List.includes(city)) {
+          let marker;
+          switch (city) {
+            case "Taipei":
+              marker = markers.bus.Tapei;
+              break;
+            case "NewTaipei":
+              marker = markers.bus.NewTaipei;
+              break;
+            case "Kaohsiung":
+              marker = markers.bus.Kaohsiung;
+              break;
+            case "Hsinchu":
+              marker = markers.bus.Hsinchu;
+              break;
+            case "HsinchuCounty":
+              marker = markers.bus.HsinchuCounty;
+              break;
+            case "MiaoliCounty":
+              marker = markers.bus.MiaoliCounty;
+              break;
+            case "ChanghuaCounty":
+              marker = markers.bus.ChanghuaCounty;
+              break;
+            case "NantouCounty":
+              marker = markers.bus.NantouCounty;
+              break;
+            case "YunlinCounty":
+              marker = markers.bus.YunlinCounty;
+              break;
+            case "ChiayiCounty":
+              marker = markers.bus.ChiayiCounty;
+              break;
+            case "Chiayi":
+              marker = markers.bus.Chiayi;
+              break;
+            case "PingtungCounty":
+              marker = markers.bus.PingtungCounty;
+              break;
+            case "YilanCounty":
+              marker = markers.bus.YilanCounty;
+              break;
+            case "HualienCounty":
+              marker = markers.bus.HualienCounty;
+              break;
+            case "TaitungCounty":
+              marker = markers.bus.TaitungCounty;
+              break;
+            case "PenghuCounty":
+              marker = markers.bus.PenghuCounty;
+              break;
+            case "Tainan":
+              marker = markers.bus.Tainan;
+              break;
+            case "KinmenCounty":
+              marker = markers.bus.KinmenCounty;
+              break;
+          }
+          Object.keys(result).forEach(function (value, key) {
+            let latitude = result[value]['StationPosition']['PositionLat'];
+            let longitude = result[value]['StationPosition']['PositionLon'];
+
+            // PTX API問題，把高雄國際航空站放到台南市的API中了
+            if (city == "Tainan" && result[value]['StationName']['Zh_tw'] == "高雄國際航空站") {
+              marker = markers.bus.Kaohsiung;
+            }
+
+            var geojsonFeature = {
+              // 型別Feature運用在一些函式(makePopupContent、onEachFeature)做使用
+              "type": "Feature",
+
+              // 將擷取到資料再運用 json方式存放在 geoJSON中，之後可以拿來做使用
+              "properties": {
+                "name": result[value]['StationName']['Zh_tw'],
+                'category': '公車',
+                "latitude": latitude,
+                "longitude": longitude,
+
+              },
+              "geometry": {
+                "type": "Point",
+                "coordinates": [longitude, latitude]
+              }
+            };
+
+            // 最後再將上述設定的內容加入到 map當中
+            L.geoJSON(geojsonFeature, {
+              // function.js中的onEachFeature函式，目的讓這些marker有 popup的效果
+              onEachFeature: onEachFeature,
+              // 用來顯示 marker icon
+              pointToLayer: function (feature, latlng) {
+                return L.marker(latlng, {
+                  icon: BUS_Marker
+                });
+              },
+            }).addTo(marker);
+          });
+        }
+      },
+      // 當Ajax請求失敗
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        console.log(XMLHttpRequest);
+        console.log(textStatus);
+        console.log(errorThrown);
+      }
+    });
+  };
+
+
   for (let i = 0; i < Bus_City_List.length; i++) {
     show_Bus_Marker(Bus_City_List[i]);
   }
 
+  // show_Bus_Marker("Kaohsiung");
+  let layerControls;
 
 
   /*  ====治安地圖====  */
@@ -437,31 +611,114 @@ $(function () {
       }
 
       // Leaflet-Group-Layers
-      let overlayMaps = {
-        "交通區域": {
-          "火車站": markers.train,
-          "捷運站": markers.mrt,
-          "輕軌": markers.lrt,
-          "公車": markers.bus
-        },
-        "安全區域": {
-          "警察局": markers.police,
-          "監視器": markers.monitor
-        },
-        "危險區域": {
-          "強盜": circle.robber,
-          "搶奪": circle.snatch
-        }
-      };
+      // let overlayMaps = {
+      //   "交通區域": {
+      //     "火車站": markers.train,
+      //     "捷運站": markers.mrt,
+      //     "輕軌": markers.lrt,
+      //     "公車": markers.bus,
+      //   },
+      //   "安全區域": {
+      //     "警察局": markers.police,
+      //     "監視器": markers.monitor
+      //   },
+      //   "危險區域": {
+      //     "強盜": circle.robber,
+      //     "搶奪": circle.snatch
+      //   }
+      // };
       // {}:為單選
       // overlayMaps為複選
-      L.control.groupedLayers({}, overlayMaps, {
-        // 將圖層拉開
-        collapsed: false,
-        position: 'topleft'
-      }).addTo(map);
-      L.control.scale().addTo(map);
+      // L.control.groupedLayers({}, overlayMaps, {
+      //   // 將圖層拉開
+      //   collapsed: false,
+      //   position: 'topleft'
+      // }).addTo(map);
+      // L.control.scale().addTo(map);
 
+      var overlays = [{
+          groupName: "火車",
+          // expanded: true,
+          layers: {
+            "全部": markers.train
+          }
+        },
+        {
+          groupName: "捷運",
+          // expanded: true,
+          layers: {
+            "臺北捷運": markers.mrt.TRTC,
+            "高雄捷運": markers.mrt.KRTC,
+            "高雄輕軌": markers.mrt.KLRT,
+            "桃園捷運": markers.mrt.TYMC,
+            "臺中捷運": markers.mrt.TMRT,
+          }
+        },
+        {
+          groupName: "公車",
+          // expanded: true,
+          layers: {
+            "臺北市": markers.bus.Tapei,
+            "新北市": markers.bus.NewTaipei,
+            "高雄市": markers.bus.Kaohsiung,
+            "新竹市": markers.bus.Hsinchu,
+            "新竹縣": markers.bus.HsinchuCounty,
+            "苗栗縣": markers.bus.MiaoliCounty,
+            "彰化縣": markers.bus.ChanghuaCounty,
+            "南投縣": markers.bus.NantouCounty,
+            "雲林縣": markers.bus.YunlinCounty,
+            "嘉義縣": markers.bus.ChiayiCounty,
+            "嘉義市": markers.bus.Chiayi,
+            "屏東縣": markers.bus.PingtungCounty,
+            "宜蘭縣": markers.bus.YilanCounty,
+            "花蓮縣": markers.bus.HualienCounty,
+            "臺東縣": markers.bus.TaitungCounty,
+            "澎湖縣": markers.bus.PenghuCounty,
+            "臺南市": markers.bus.Tainan,
+            "金門縣": markers.bus.KinmenCounty,
+          }
+        },
+        {
+          groupName: "安全區域",
+          // expanded: true,
+          layers: {
+            "警察局": markers.police,
+            "監視器": markers.monitor
+          }
+        },
+        {
+          groupName: "危險區域",
+          // expanded: true,
+          layers: {
+            "強盜": circle.robber,
+            "搶奪": circle.snatch
+          }
+        },
+      ];
+      var options = {
+        container_width: "300px",
+        container_maxHeight: "350px",
+        group_maxHeight: "120px",
+        exclusive: false,
+        collapsed: false,
+      };
+
+      layerControls = L.Control.styledLayerControl({}, overlays, options);
+      map.addControl(layerControls);
+      // 預設隱藏
+      $('div.leaflet-control-layers').hide();
+
+      $('a.goFiliter').click(function () {
+        console.log(layerControls);
+
+        if ($('div.leaflet-control-layers').css('display') == 'none') {
+          $('a.goFiliter').css('background-color', '#82ccdd');
+          $('div.leaflet-control-layers').show(1000);
+        } else {
+          $('a.goFiliter').css('background-color', '#f5f6fa');
+          $('div.leaflet-control-layers').hide(1000);
+        }
+      });
 
     },
     // 當Ajax請求失敗

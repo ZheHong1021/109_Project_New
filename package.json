@@ -20,6 +20,7 @@
     "leaflet-sidebar-v2": "^3.2.3",
     "leaflet.awesome-markers": "^2.0.5",
     "leaflet.fullscreen": "^2.0.0",
-    "leaflet.markercluster": "^1.4.1"
+    "leaflet.markercluster": "^1.4.1",
+    "leaflet.styledlayercontrol": "^1.0.0"
   }
 }
