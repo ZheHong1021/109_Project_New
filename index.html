@@ -1,0 +1,198 @@
+<!--程式碼範例-->
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <!-- 網頁編碼為萬國碼 UTF-8  	【也可以簡寫成這樣】<meta charset="UTF-8"> -->
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+  <!-- 網頁相容性 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <!-- RWD響應式 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- 網頁標題 -->
+  <title>臺灣安心旅遊通</title>
+
+  <!-- 網頁的title_icon -->
+  <link rel="shortcut icon" type="text/css" href="img/marker_O.png">
+
+  <!-- Boostrap5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js">
+  </script>
+
+  <!-- Leaflet官網的 CDN -->
+  <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css">
+  <script src="node_modules/leaflet/dist/leaflet.js"></script>
+
+  <!-- MarkerCluster Plugin CSS CDN-->
+  <!-- 使用方法: https://ithelp.ithome.com.tw/articles/10229982 -->
+  <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css">
+  <script src="node_modules/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
+  <!-- L.Control.Layer的Group設定 -->
+  <!-- 來源: https://github.com/ismyrnow/leaflet-groupedlayercontrol -->
+  <link rel="stylesheet" href="node_modules/leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.css">
+  <script src="node_modules/leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.js"></script>
+
+  <!-- leaflet.styledlayercontrol -->
+  <!-- 來源：https://github.com/davicustodio/Leaflet.StyledLayerControl -->
+  <link rel="stylesheet" href="node_modules/leaflet.styledlayercontrol/css/styledLayerControl.css">
+  <script src="node_modules/leaflet.styledlayercontrol/src/styledLayerControl.js"></script>
+
+  <!-- fontawesome的 CDN -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"
+    integrity="sha384-vSIIfh2YWi9wW0r9iZe7RJPrKwp6bG+s9QZMoITbCckVJqGCCRhc+ccxNcdpHuYu" crossorigin="anonymous">
+  <!-- awesome-markers -->
+  <!-- 來源：https://github.com/lvoogdt/Leaflet.awesome-markers -->
+  <link rel="stylesheet" href="node_modules/leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+  <script src="node_modules/leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
+
+  <!-- Leaflet Sidebar -->
+  <link rel="stylesheet" href="node_modules/leaflet-sidebar-v2/css/leaflet-sidebar.css">
+  <script src="node_modules/leaflet-sidebar-v2/js/leaflet-sidebar.js"></script>
+
+  <!-- 用來顯示當前位置的 icon -->
+  <!-- 來源： https://github.com/mapshakers/leaflet-icon-pulse -->
+  <link rel="stylesheet" href="node_modules/@ansur/leaflet-pulse-icon/dist/L.Icon.Pulse.css">
+  <script src="node_modules/@ansur/leaflet-pulse-icon/dist/L.Icon.Pulse.js"></script>
+
+  <!-- Map Loading -->
+  <!-- 來源：https://github.com/jbccollins/leaflet-tile-loading-progress-controla -->
+  <link rel="stylesheet" href="css/Control.TileLoadingProgress.css">
+  <script src="js/Control.TileLoadingProgress.js"></script>
+
+  <!-- FullScreen -->
+  <!-- 來源： https://www.npmjs.com/package/leaflet.fullscreen -->
+  <link rel="stylesheet" href="node_modules/leaflet.fullscreen/Control.FullScreen.css">
+  <script src='node_modules/leaflet.fullscreen/Control.FullScreen.js'></script>
+
+  <!-- Leaflet-Routing-Machine 路徑規劃 CDN -->
+  <!-- 來源：https://www.liedman.net/leaflet-routing-machine/ -->
+  <link rel="stylesheet" href="node_modules/leaflet-routing-machine/dist/leaflet-routing-machine.css">
+  <script src="node_modules/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+  <!-- TW_ICON_FONT -->
+  <!-- 來源： https://www.twicon.page/ -->
+  <link rel="stylesheet" href="img/twicon/twicon.css">
+
+  <!-- Control.Geocorder -->
+  <!-- 來源：https://github.com/perliedman/leaflet-control-geocoder -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+  <!-- 用來驗證 PTX API的 KEY -->
+  <!-- 來源：https://www.npmjs.com/package/jssha -->
+  <script src="node_modules/jssha/dist/sha.js"></script>
+
+  <!-- Boostrap 4，為了使用 Boostrap selectpicker(Boostrap5不支援) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css">
+
+  <!-- Reset CSS -->
+  <link rel="stylesheet" href="css/reset.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Jquery CDN: 沒有這行就不能執行 javascript的指令 -->
+  <script src="node_modules/jquery/dist/jquery.js"></script>
+
+  <link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/easy-autocomplete/1.3.5/easy-autocomplete.min.css"
+  integrity="sha512-TsNN9S3X3jnaUdLd+JpyR5yVSBvW9M6ruKKqJl5XiBpuzzyIMcBavigTAHaH50MJudhv5XIkXMOwBL7TbhXThQ=="
+  crossorigin="anonymous" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/easy-autocomplete/1.3.5/jquery.easy-autocomplete.min.js"
+  integrity="sha512-Z/2pIbAzFuLlc7WIt/xifag7As7GuTqoBbLsVTgut69QynAIOclmweT6o7pkxVoGGfLcmPJKn/lnxyMNKBAKgg=="
+  crossorigin="anonymous"></script>
+
+
+
+
+</head>
+
+<body>
+
+  <!-- ***SideBar*** -->
+  <!-- optionally define the sidebar content via HTML markup -->
+  <div id="sidebar" class="leaflet-sidebar collapsed">
+    <!-- nav tabs -->
+    <div class="leaflet-sidebar-tabs">
+
+      <!-- top aligned tabs： 可以透過 JS再新增 -->
+      <ul role="tablist">
+        <li><a href="#home" role="tab"><i class="fa fa-bars active"></i></a></li>
+        <li><a href="#autopan" role="tab"><i class="fas fa-home"></i></a></li>
+      </ul>
+
+    </div>
+
+    <!-- panel content -->
+    <div class="leaflet-sidebar-content">
+      <!-- tab content  -->
+      <div class="leaflet-sidebar-pane" id="home">
+        <!-- header -->
+        <h1 class="leaflet-sidebar-header">
+          臺灣安心旅遊通
+          <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+        <!-- body -->
+      </div>
+
+
+      <!-- tab content  -->
+      <div class="leaflet-sidebar-pane" id="autopan">
+        <!-- header -->
+        <h1 class="leaflet-sidebar-header">
+          首頁
+          <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+        <!-- body -->
+        <p>
+          <code>Leaflet.control.sidebar({ autopan: true })</code>
+          makes shure that the map center always stays visible.
+        </p>
+        <p>
+          The autopan behviour is responsive as well.
+          Try opening and closing the sidebar from this pane!
+        </p>
+      </div>
+      <!-- tab content  -->
+      <div class="leaflet-sidebar-pane" id="messages">
+        <!-- header -->
+        <h1 class="leaflet-sidebar-header">Messages<span class="leaflet-sidebar-close"><i
+              class="fa fa-caret-left"></i></span></h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- 地圖展示區 -->
+  <div id="map"></div>
+
+  <!-- Footer -->
+  <footer>
+    Copyright © 2020 高科大 資訊管理系 E527實驗室 版權所有 | Design by Alex
+  </footer>
+
+
+
+</body>
+
+<!-- Boostrap4 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
+<!-- Boostrap Select -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/i18n/defaults-am_ET.min.js"></script>
+
+<!-- Custom Javascript -->
+<script type="text/javascript" src="js/function.js"></script>
+<script type="text/javascript" src="js/app.js"></script>
+<script type="text/javascript" src="js/sidebar.js"></script>
+<script type="text/javascript" src="js/ticket.js"></script>
+
+
+</html>
