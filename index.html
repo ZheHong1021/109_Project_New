@@ -125,7 +125,7 @@
       <!-- top aligned tabs： 可以透過 JS再新增 -->
       <ul role="tablist">
         <li><a href="#home" role="tab"><i class="fa fa-bars active"></i></a></li>
-        <li><a href="#autopan" role="tab"><i class="fas fa-home"></i></a></li>
+        <!-- <li><a href="#autopan" role="tab"><i class="fas fa-home"></i></a></li> -->
       </ul>
 
     </div>
@@ -140,17 +140,17 @@
           <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
         </h1>
         <!-- body -->
+        <div class = "alert alert-primary fade show d-flex justify-content-center" role = "alert" >
+            <div id='mrt_result' class = "alert-body text-center">尚無功能，暫請等待</div>
+          </div>
       </div>
 
 
-      <!-- tab content  -->
-      <div class="leaflet-sidebar-pane" id="autopan">
-        <!-- header -->
+      <!-- <div class="leaflet-sidebar-pane" id="autopan">
         <h1 class="leaflet-sidebar-header">
           首頁
           <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
         </h1>
-        <!-- body -->
         <p>
           <code>Leaflet.control.sidebar({ autopan: true })</code>
           makes shure that the map center always stays visible.
@@ -159,7 +159,9 @@
           The autopan behviour is responsive as well.
           Try opening and closing the sidebar from this pane!
         </p>
-      </div>
+      </div> -->
+
+
       <!-- tab content  -->
       <div class="leaflet-sidebar-pane" id="messages">
         <!-- header -->

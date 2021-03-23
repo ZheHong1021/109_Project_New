@@ -303,6 +303,57 @@ $(function () {
 
 
 
+  /* ==捷運== */
+  $.ajax({
+    url: 'https://ptx.transportdata.tw/MOTC/v2/Rail/TRA/Station?$format=JSON',
+    dataType: 'json',
+    headers: GetAuthorizationHeader(), // 憑證 API token
+    success: function (result) {
+      // console.log(city);
+
+      Object.keys(result).forEach(function (value, key) {
+        let latitude = result[value]['StationPosition']['PositionLat'];
+        let longitude = result[value]['StationPosition']['PositionLon'];
+        var geojsonFeature = {
+          // 型別Feature運用在一些函式(makePopupContent、onEachFeature)做使用
+          "type": "Feature",
+
+          // 將擷取到資料再運用 json方式存放在 geoJSON中，之後可以拿來做使用
+          "properties": {
+            "name": result[value]['StationName']['Zh_tw'],
+            "address": result[value]['StationAddress'],
+            'category': '台鐵',
+            "latitude": latitude,
+            "longitude": longitude,
+
+          },
+          "geometry": {
+            "type": "Point",
+            "coordinates": [longitude, latitude]
+          }
+        };
+
+        // 最後再將上述設定的內容加入到 map當中
+        L.geoJSON(geojsonFeature, {
+          // function.js中的onEachFeature函式，目的讓這些marker有 popup的效果
+          onEachFeature: onEachFeature,
+          // 用來顯示 marker icon
+          pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, {
+              icon: TRA_Marker
+            });
+          },
+        }).addTo(markers.train);
+      });
+    },
+    // 當Ajax請求失敗
+    error: function (XMLHttpRequest, textStatus, errorThrown) {
+      console.log(XMLHttpRequest);
+      console.log(textStatus);
+      console.log(errorThrown);
+    }
+  });
+
 
   // 臺北捷運:TRTC
   // 高雄捷運:KRTC
@@ -310,7 +361,7 @@ $(function () {
   // 高雄輕軌:KLRT
   // 臺中捷運:TMRT
   let MRT_City_List = ["TRTC", "KRTC", "TYMC", "KLRT", "TMRT"];
-  /* ==公車== */
+  /* ==捷運== */
   let show_MRT_Marker = function (city) {
     $.ajax({
       url: 'https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/Station/' + city + '?$format=JSON',
@@ -381,7 +432,6 @@ $(function () {
       }
     });
   };
-
 
   for (let i = 0; i < MRT_City_List.length; i++) {
     show_MRT_Marker(MRT_City_List[i]);
@@ -523,7 +573,6 @@ $(function () {
   }
 
   // show_Bus_Marker("Kaohsiung");
-  let layerControls;
 
 
   /*  ====治安地圖====  */
@@ -538,7 +587,6 @@ $(function () {
 
     // 當成功從 php回傳 json結果(result)的話
     success: function (result) {
-      // console.log(result);
 
       // 透過迴圈一一將 result的資料融入到各個變數中
       for (var i = 0; i < result['markerPoint'].length; i++) {
@@ -636,9 +684,11 @@ $(function () {
       // }).addTo(map);
       // L.control.scale().addTo(map);
 
+      // 地圖預設顯示火車座標
+      markers.train.addTo(map);
       var overlays = [{
           groupName: "火車",
-          // expanded: true,
+          expanded: true,
           layers: {
             "全部": markers.train
           }
@@ -703,13 +753,12 @@ $(function () {
         collapsed: false,
       };
 
-      layerControls = L.Control.styledLayerControl({}, overlays, options);
+      let layerControls = L.Control.styledLayerControl({}, overlays, options);
       map.addControl(layerControls);
       // 預設隱藏
       $('div.leaflet-control-layers').hide();
 
       $('a.goFiliter').click(function () {
-        console.log(layerControls);
 
         if ($('div.leaflet-control-layers').css('display') == 'none') {
           $('a.goFiliter').css('background-color', '#82ccdd');

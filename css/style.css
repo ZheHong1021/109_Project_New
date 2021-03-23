@@ -355,3 +355,9 @@ footer {
 /* div.leaflet-control-layers section {
 	margin-top: 20px;
 } */
+
+.leaflet-sidebar-tabs>li,
+.leaflet-sidebar-tabs>ul>li {
+	font-size: 20px;
+	margin-bottom: 5px;
+}

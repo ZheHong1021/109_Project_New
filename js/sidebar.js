@@ -103,6 +103,33 @@ $(function () {
     </div>
     `;
 
+  let travel_html = `
+  <!-- body -->
+    <div class = "alert alert-primary fade show d-flex justify-content-center" role = "alert" >
+        <div id='mrt_result' class = "alert-body text-center">尚無功能，暫請等待</div>
+      </div>
+  `;
+  let bus_html = `
+  <!-- body -->
+    <div class = "alert alert-primary fade show d-flex justify-content-center" role = "alert" >
+        <div id='mrt_result' class = "alert-body text-center">尚無功能，暫請等待</div>
+      </div>
+  `;
+
+  let card_html = `
+  <!-- body -->
+  <div class = "alert alert-primary fade show d-flex justify-content-center" role = "alert" >
+      <div id='mrt_result' class = "alert-body text-center">尚無功能，暫請等待</div>
+      <!--<p><button onclick="addUser()">add user</button></b>--!>
+      </div>`;
+
+  let config_html = `
+  <!-- body -->
+  <div class = "alert alert-primary fade show d-flex justify-content-center" role = "alert" >
+      <div id='mrt_result' class = "alert-body text-center">尚無功能，暫請等待</div>
+      <!--<p><button onclick="addUser()">add user</button></b>--!>
+      </div>`;
+
   // 【addUser函式】
   // 用來計算目前共新增了幾個使用者(暫時用不到)
   var userid = 0
@@ -130,7 +157,7 @@ $(function () {
       id: 'travel',
       tab: '<i class="fas fa-suitcase-rolling"></i>',
       title: '旅遊',
-      pane: '<p>123</p>',
+      pane: travel_html,
     })
 
   // add panels dynamically to the sidebar
@@ -139,7 +166,7 @@ $(function () {
       id: 'bus',
       tab: '<i class="fas fa-bus-alt"></i>',
       title: '公車',
-      pane: '<p>123</p>',
+      pane: bus_html,
     })
 
     // add panels dynamically to the sidebar
@@ -163,7 +190,7 @@ $(function () {
       id: 'user-card',
       tab: '<i class="fas fa-address-card"></i>',
       title: '使用者註冊',
-      pane: '<p><button onclick="addUser()">add user</button></b>',
+      pane: card_html,
       position: 'bottom'
     })
     // add panels dynamically to the sidebar
@@ -171,31 +198,32 @@ $(function () {
       id: 'user-config',
       tab: '<i class="fas fa-cog"></i>',
       title: '設定',
-      pane: '<p><button onclick="addUser()">add user</button></b>',
+      pane: config_html,
       position: 'bottom'
     })
 
-    // add a tab with a click callback, initially disabled
-    .addPanel({
-      id: 'mail',
-      tab: '<i class="fa fa-envelope"></i>',
-      title: 'Messages',
-      button: function () {
-        alert('opened via JS callback')
-      },
-      disabled: true,
-    })
+  // add a tab with a click callback, initially disabled
+  // .addPanel({
+  //   id: 'mail',
+  //   tab: '<i class="fa fa-envelope"></i>',
+  //   title: 'Messages',
+  //   button: function () {
+  //     alert('opened via JS callback')
+  //   },
+  //   disabled: true,
+  // })
 
-  // 打開面板時收到通知
-  sidebar.on('content', function (ev) {
-    switch (ev.id) {
-      case 'autopan':
-        sidebar.options.autopan = true;
-        break;
-      default:
-        sidebar.options.autopan = false;
-    }
-  });
+
+  // // 打開面板時收到通知
+  // sidebar.on('content', function (ev) {
+  //   switch (ev.id) {
+  //     case 'autopan':
+  //       sidebar.options.autopan = true;
+  //       break;
+  //     default:
+  //       sidebar.options.autopan = false;
+  //   }
+  // });
 
 
 
