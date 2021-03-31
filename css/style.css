@@ -251,7 +251,8 @@ div.modal-header {
 
 /* click output */
 div#tra_result,
-div#mrt_result {
+div#mrt_result,
+div#bus_result {
 	font-size: 18px;
 	font-weight: bolder;
 }
@@ -360,4 +361,245 @@ footer {
 .leaflet-sidebar-tabs>ul>li {
 	font-size: 20px;
 	margin-bottom: 5px;
+}
+
+
+/* Travel_City */
+div.city_container {
+	margin: 10px 0;
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	/* 訂在 item身上 */
+	position: relative;
+	cursor: pointer;
+}
+
+div.city_container:nth-child(1) {
+	margin: 0;
+}
+
+div.city_container img {
+	width: 100%;
+	height: auto;
+	cursor: pointer;
+
+	/* div下面會多一個空白，用這個處理掉 */
+	/* vertical-align: middle; */
+}
+
+
+.city_container .txt {
+	/* 用絕對定位在 .item身上 */
+	position: absolute;
+
+	/* 與圖片對齊 */
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+
+	padding: 20px;
+
+	/* 背景色透明 */
+	background-color: rgba(0, 0, 0, .6);
+
+	/* Flex */
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+
+	/* 動畫 */
+	opacity: 0;
+	transition: opacity .5s;
+}
+
+.city_container:hover .txt {
+	opacity: 1;
+}
+
+
+.city_container h2 {
+	font-size: 28px;
+	color: #ff0;
+	font-weight: 500;
+}
+
+/* 跑出一條線 */
+.city_container h2:after {
+	content: "";
+	display: block;
+
+	/* 摸到從0%到100% */
+	width: 0%;
+	/* 線的高度 */
+	height: 2px;
+	margin: 10px 0;
+	background-color: #ff0;
+	transition: width .5s .2s;
+}
+
+/* 被摸到時出現 */
+.city_container:hover h2:after {
+	width: 100%;
+}
+
+
+/* test */
+
+.Bus-City-info {
+	display: flex;
+	width: 100%;
+	max-width: 1200px;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	padding: 0 20px;
+	position: relative;
+	transition: .7s;
+
+}
+
+
+.card {
+	background: #273c75;
+	padding: 0 20px;
+	margin: 10px 10px;
+	width: calc(50% - 20px);
+	height: 150px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	color: #fff;
+	cursor: pointer;
+	border-radius: 15px;
+}
+
+.other_City {
+	width: calc(100% - 20px);
+}
+
+.card:nth-child(1),
+.card:nth-child(2) {
+	margin-top: 20px;
+}
+
+
+.card-icon {
+	font-size: 28px;
+	background: #079992;
+	width: 60px;
+	height: 60px;
+	text-align: center;
+	line-height: 60px !important;
+	border-radius: 50%;
+	transition: 0.3s linear;
+}
+
+
+.card:hover .card-icon {
+	background: none;
+	color: #7bed9f;
+	transform: scale(1.6);
+}
+
+.card p {
+	margin-top: 20px;
+	font-weight: bolder;
+	font-size: 16px;
+	letter-spacing: 2px;
+	max-height: 0;
+	/* opacity: 0; */
+	transition: 0.3s linear;
+}
+
+.card:hover p {
+	max-height: 40px;
+	/* opacity: 1; */
+	font-size: 20px;
+}
+
+.bus-loading {
+	position: absolute;
+	display: none;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 999;
+	font-size: large;
+}
+
+.bus-loading-mask {
+	background-color: rgb(0, 0, 0, .3);
+}
+
+
+div.singleCity {
+	display: none;
+	position: relative;
+}
+
+div.busInfo {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.busInfo h2 {
+	font-size: 24px;
+	font-weight: bolder;
+}
+
+
+
+div.bus_Routes {
+	display: none;
+}
+
+div.bus_Routes_active {
+	display: flex;
+	flex-wrap: wrap;
+	font-weight: bolder;
+	justify-content: center;
+}
+
+.bus_Routes span {
+	margin: 10px;
+	text-align: center;
+	width: 60px;
+	height: 60px;
+	font-size: 18px;
+	line-height: 60px;
+	border: 2px solid #333;
+	border-radius: 50%;
+	cursor: pointer;
+	transition: .4s linear;
+}
+
+.bus_Routes span:hover {
+	background-color: #686de0;
+}
+
+.list-route-group {
+	padding: 5px;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	flex-direction: column;
+}
+
+.list-route-item {
+	padding: 10px;
+	margin-top: 10px;
+	width: 90%;
+	height: 60px;
+	border: 2px solid #333;
+	transition: .5s;
+	cursor: pointer;
+}
+
+.list-route-item:hover {
+	background-color: #686de0;
 }

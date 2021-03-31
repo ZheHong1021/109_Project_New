@@ -159,7 +159,7 @@ $(function () {
     headers: GetAuthorizationHeader(), // 憑證 API token
     // 當成功從 php回傳 json結果(result)的話
     success: function (result) {
-      console.log(result);
+      // console.log(result);
       // 將回傳的JSON轉成陣列座使用
       results_TRA = $.parseJSON(JSON.stringify(result));
       // 紀錄各縣市的車站再來分類
@@ -288,7 +288,7 @@ $(function () {
           headers: GetAuthorizationHeader(), // 憑證 API token
           // 當成功從 php回傳 json結果(result)的話
           success: function (result) {
-            console.log(result);
+            // console.log(result);
             for (let index = 0; index < result.length; index++) {
               let train_No = result[index]['DailyTrainInfo']['TrainNo']; // 車次代號
               let direction = result[index]['DailyTrainInfo']['Direction']; // 順(0)逆(1)行

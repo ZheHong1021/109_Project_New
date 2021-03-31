@@ -85,6 +85,7 @@ $(function () {
   window.map = new L.Map('map');
 
 
+
   // create a fullscreen button and add it to the map
   L.control.fullscreen({
     position: 'topleft', // change the position of the button can be topleft, topright, bottomright or bottomleft, defaut topleft
@@ -95,6 +96,8 @@ $(function () {
     // forcePseudoFullscreen: true, // force use of pseudo full screen even if full screen API is available, default false
     fullscreenElement: false // Dom element to render in full screen, false by default, fallback to map._container
   }).addTo(map);
+
+
 
 
   // 匯入圖資(底圖)； tileLayer: 以圖磚的方式存取圖層，當網路或是電腦跑比較慢的時候就可以看出一塊一塊的圖片在讀取中。
@@ -119,6 +122,19 @@ $(function () {
     position: 'bottomleft'
   });
   tileLoadingProgress.addTo(map);
+
+  // Geolocation.getCurrentPosition(參數1, 參數2, 參數3) 方法用來獲取設備當前的位置。
+  // 參數1 - success: 一個回傳函式(callback function) 會被傳入一個Position 的物件。
+  // 參數2 - error: 一個選擇性的錯誤回傳函式(callback function)，會被傳入一個 PositionError 的物件。
+  // 參數3 - options: 一個選擇性的 PositionOptions 的物件。
+  // 參數1為 function.js中的 showPosition函式；參數1為 function.js中的 showError函式
+
+  navigator.geolocation.getCurrentPosition(showPosition, showError, {
+    enableHighAccuracy: true,
+    maximumAge: 5000,
+    timeout: 3000
+
+  });
 
 
   // 設立變數
@@ -169,18 +185,6 @@ $(function () {
   L_Control_Add('a', 'goBackTaiwan', '<i class="twicon-main-island" title="台灣"></i>', 'topright');
   L_Control_Add('a', 'goFiliter', '<i class="fas fa-filter"></i>', 'topright');
 
-
-
-  // Geolocation.getCurrentPosition(參數1, 參數2, 參數3) 方法用來獲取設備當前的位置。
-  // 參數1 - success: 一個回傳函式(callback function) 會被傳入一個Position 的物件。
-  // 參數2 - error: 一個選擇性的錯誤回傳函式(callback function)，會被傳入一個 PositionError 的物件。
-  // 參數3 - options: 一個選擇性的 PositionOptions 的物件。
-  // 參數1為 function.js中的 showPosition函式；參數1為 function.js中的 showError函式
-  navigator.geolocation.getCurrentPosition(showPosition, showError, {
-    enableHighAccuracy: true,
-    maximumAge: 5000,
-    timeout: 3000
-  });
 
 
 
@@ -303,7 +307,7 @@ $(function () {
 
 
 
-  /* ==捷運== */
+  /* ==台鐵 Marker== */
   $.ajax({
     url: 'https://ptx.transportdata.tw/MOTC/v2/Rail/TRA/Station?$format=JSON',
     dataType: 'json',
@@ -355,13 +359,13 @@ $(function () {
   });
 
 
+  /* ==捷運 Marker== */
   // 臺北捷運:TRTC
   // 高雄捷運:KRTC
   // 桃園捷運:TYMC
   // 高雄輕軌:KLRT
   // 臺中捷運:TMRT
   let MRT_City_List = ["TRTC", "KRTC", "TYMC", "KLRT", "TMRT"];
-  /* ==捷運== */
   let show_MRT_Marker = function (city) {
     $.ajax({
       url: 'https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/Station/' + city + '?$format=JSON',
@@ -439,7 +443,6 @@ $(function () {
 
 
 
-
   // 臺北市: Taipei  // 新北市: NewTaipei  // 高雄市: Kaohsiung  // 新竹市: Hsinchu
   // 新竹縣: HsinchuCounty  // 苗栗縣: MiaoliCounty  // 彰化縣: ChanghuaCounty  // 南投縣: NantouCounty
   // 雲林縣: YunlinCounty  // 嘉義縣: ChiayiCounty  // 嘉義市: Chiayi  // 屏東縣: PingtungCounty
@@ -451,7 +454,7 @@ $(function () {
     "YilanCounty", "HualienCounty", "TaitungCounty", "PenghuCounty",
     "Tainan", "KinmenCounty"
   ];
-  /* ==公車== */
+  /* ==公車 Marker== */
   let show_Bus_Marker = function (city) {
     $.ajax({
       url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/Station/City/' + city + '?$format=JSON',
@@ -567,15 +570,14 @@ $(function () {
     });
   };
 
-
   for (let i = 0; i < Bus_City_List.length; i++) {
     show_Bus_Marker(Bus_City_List[i]);
   }
 
-  // show_Bus_Marker("Kaohsiung");
 
 
-  /*  ====治安地圖====  */
+
+  /*  ====治安地圖 Marker====  */
   // Ajax開始
   $.ajax({
     url: "osm.php",
@@ -658,31 +660,7 @@ $(function () {
         }
       }
 
-      // Leaflet-Group-Layers
-      // let overlayMaps = {
-      //   "交通區域": {
-      //     "火車站": markers.train,
-      //     "捷運站": markers.mrt,
-      //     "輕軌": markers.lrt,
-      //     "公車": markers.bus,
-      //   },
-      //   "安全區域": {
-      //     "警察局": markers.police,
-      //     "監視器": markers.monitor
-      //   },
-      //   "危險區域": {
-      //     "強盜": circle.robber,
-      //     "搶奪": circle.snatch
-      //   }
-      // };
-      // {}:為單選
-      // overlayMaps為複選
-      // L.control.groupedLayers({}, overlayMaps, {
-      //   // 將圖層拉開
-      //   collapsed: false,
-      //   position: 'topleft'
-      // }).addTo(map);
-      // L.control.scale().addTo(map);
+
 
       // 地圖預設顯示火車座標
       markers.train.addTo(map);
@@ -787,7 +765,7 @@ $(function () {
   //     L.latLng(22.751425, 120.33138),
   //     L.latLng(22.74819, 120.331169)
   //   ],
-  //   position: 'topright',
+  //   position: 'topleft',
   //   geocoder: L.Control.Geocoder.nominatim(),
   //   routeWhileDragging: true,
   //   showAlternatives: true,
@@ -821,6 +799,14 @@ $(function () {
   // };
 
 
+  // minutes
+  let refresh_Time = 1;
+  // 刷新地圖
+  var timeoutID = window.setInterval(function () {
+      map.invalidateSize();
+      console.log('refresh');
+    },
+    refresh_Time * 60000);
 
 
   /*  點擊動畫事件  */
