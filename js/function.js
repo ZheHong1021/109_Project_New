@@ -109,26 +109,29 @@ function makePopupContent(station) {
   return return_html;
 }
 
-// <div>
-//         <h2>${station.properties.name} - ${station.properties.category}</h2>
-//         <p>${station.properties.address}</p>
-//         <p>溫度: ${station.properties.T}°C</p>
-//         <p>降雨機率: ${station.properties.PoP6h}%</p>
-//     </div>
-/* <p>溫度: ${station.properties.T}°C</p>
-<p>體感溫度: ${station.properties.AT}°C</p>
-<p>降雨機率: ${station.properties.PoP6h}%</p>
-<p>天氣現象: ${station.properties.Wx}</p>
-<p>相對溼度: ${station.properties.RH}%</p> */
-
 
 
 /*---------------點擊事件---------------*/
 
 
+let fly_Marker;
 
 // 移動到指定座標
-function fly_To_Marker(lat, lng, feature) {
+function fly_To_Marker(lat, lng, content) {
+  let go_Marker = L.AwesomeMarkers.icon({
+    markerColor: 'red',
+    prefix: 'fa',
+    icon: 'crosshairs'
+  });
+
+  // 先前點選得要清掉
+  if (fly_Marker) {
+    map.removeLayer(fly_Marker);
+  }
+
+  fly_Marker = L.marker([lat, lng], {
+    icon: go_Marker
+  }).bindPopup(content).openPopup().addTo(map);
   map.flyTo([lat, lng], 16, {
     duration: 3 // 移動動畫時間
   });
@@ -139,7 +142,8 @@ function fly_To_Marker(lat, lng, feature) {
         closeButton: false, // 把 popup畫面框中右上角的 X 去除
         offset: L.point(0, -35) // 讓 popup 畫面框不要擋住 icon
       }).setLatLng([lat, lng]) // 設定飛往座標
-      .setContent(makePopupContent(feature)) // 設定內容，運用上面有寫到的函式
+      .setContent(content) // 設定內容，運用上面有寫到的函式
+      // .setContent(makePopupContent(feature)) // 設定內容，運用上面有寫到的函式
       .openOn(map) // 自動打開
   }, 3000);
 }

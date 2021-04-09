@@ -73,6 +73,7 @@ $(function () {
     prefix: 'fa',
     icon: 'tram'
   });
+
   let BUS_Marker = L.AwesomeMarkers.icon({
     markerColor: 'black',
     prefix: 'fa',
@@ -114,14 +115,14 @@ $(function () {
   }).addTo(map);
 
 
-  const tileLayers = L.layerGroup([tileLayer1]);
+  // const tileLayers = L.layerGroup([tileLayer1]);
 
-  // 使用 Plugin- Control.TileLoadingProgress，在縮放地圖時會有一個進度表動畫呈現縮放情況
-  const tileLoadingProgress = new L.Control.TileLoadingProgress({
-    leafletElt: tileLayers,
-    position: 'bottomleft'
-  });
-  tileLoadingProgress.addTo(map);
+  // // 使用 Plugin- Control.TileLoadingProgress，在縮放地圖時會有一個進度表動畫呈現縮放情況
+  // const tileLoadingProgress = new L.Control.TileLoadingProgress({
+  //   leafletElt: tileLayers,
+  //   position: 'bottomleft'
+  // });
+  // tileLoadingProgress.addTo(map);
 
   // Geolocation.getCurrentPosition(參數1, 參數2, 參數3) 方法用來獲取設備當前的位置。
   // 參數1 - success: 一個回傳函式(callback function) 會被傳入一個Position 的物件。
@@ -184,7 +185,64 @@ $(function () {
   L_Control_Add(tag = 'a', class_name = 'goBackPosition js-goBackPosition', i_Control = '<i class="fas fa-crosshairs" style="color:rgb(82, 81, 81)" title="回到目前位置"></i>', position = 'topright');
   L_Control_Add('a', 'goBackTaiwan', '<i class="twicon-main-island" title="台灣"></i>', 'topright');
   L_Control_Add('a', 'goFiliter', '<i class="fas fa-filter"></i>', 'topright');
+  // L_Control_Add(tag = 'div', class_name = 'searchbar', i_Control = '<input id="inputbox" size="20">', position = 'topleft');
 
+
+  // let hereApiKey = 'Z5fDXqmwODPgSiAVnsdKhL03-f2VHP4YpfoeyYVNamI';
+  // var tileLayer1 = L.tileLayer('https://{s}.base.maps.ls.hereapi.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?lg=cht&ppi=72&pois&apiKey=' +
+  //   hereApiKey, {
+  //     attribution: '© 2020 HERE',
+  //     subdomains: [1, 2, 3, 4]
+  //   }).addTo(map); // Leaflet JS 預設使用 256px 大小的圖磚
+
+
+  // var options = { // 定義 EasyAutocomplete 的選取項目來源
+  //   url: function (phrase) {
+  //     return 'https://autosuggest.search.hereapi.com/v1/autosuggest?' + // Autosuggest 的 API URL
+  //       'q=' + phrase + // 接收使用者輸入的字串做搜尋
+  //       '&limit=10' + // 最多限定五筆回傳
+  //       '&lang=zh-TW' + // 限定台灣正體中文
+  //       '&at=' + map.getCenter().lat + ',' + map.getCenter().lng + // 使用目前地圖的中心點作為搜尋起始點
+  //       '&apikey=' + hereApiKey; // 您的 HERE API KEY
+  //   },
+  //   listLocation: 'items', // 使用回傳的 items 作為選取清單
+  //   getValue: function (element) {
+  //     if (element.mapView || element.position) {
+  //       return element.title;
+  //     } else {
+  //       return '';
+  //     }
+  //   }, // 在選取清單中顯示 title
+  //   list: {
+  //     onClickEvent: function () { // 按下選取項目之後的動作
+  //       var data = $("#inputbox").getSelectedItemData();
+  //       if (data.mapView) { // 如果回傳的是地址，就進行這個動作
+  //         var northWest = L.latLng(data.mapView.north, data.mapView.west), // 選取項目的西北角
+  //           southEast = L.latLng(data.mapView.south, data.mapView.east); // 選取項目的東南角
+  //         map.flyToBounds([northWest, southEast]); // 把地圖移動到選取項目
+  //         getDataHubResults(data.position.lat, data.position.lng, data.title);
+  //       } else if (data.position) { // 如果回傳的是興趣點，就進行這個動作
+  //         map.flyTo(L.latLng(data.position), 16); // 把地圖移到選取項目的地點
+  //         getDataHubResults(data.position.lat, data.position.lng, data.title);
+  //       }
+  //     }
+  //   },
+  //   requestDelay: 100, // 延遲 100 毫秒再送出請求
+  //   placeholder: '搜尋地點' // 預設顯示的字串
+  // };
+  // $('#inputbox').easyAutocomplete(options); // 啟用 EasyAutocomplete 到 inpupbox 這個元件
+
+
+
+
+  const tileLayers = L.layerGroup([tileLayer1]);
+
+  // 使用 Plugin- Control.TileLoadingProgress，在縮放地圖時會有一個進度表動畫呈現縮放情況
+  const tileLoadingProgress = new L.Control.TileLoadingProgress({
+    leafletElt: tileLayers,
+    position: 'bottomleft'
+  });
+  tileLoadingProgress.addTo(map);
 
 
 
@@ -735,9 +793,7 @@ $(function () {
       map.addControl(layerControls);
       // 預設隱藏
       $('div.leaflet-control-layers').hide();
-
       $('a.goFiliter').click(function () {
-
         if ($('div.leaflet-control-layers').css('display') == 'none') {
           $('a.goFiliter').css('background-color', '#82ccdd');
           $('div.leaflet-control-layers').show(1000);
