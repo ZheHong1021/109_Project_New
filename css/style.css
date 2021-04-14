@@ -646,10 +646,62 @@ div.city_container img {
 
 div.searchBox {
 	margin-top: 10px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+div.searchBox i {
+	font-size: 32px;
+	margin-left: 5px;
+	cursor: pointer;
+	transition: .6s;
+}
+
+div.filter_Container {
+	position: relative;
+	margin-top: 10px;
+	width: 100%;
+	padding: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+	border: 3px solid #bdc3c7;
+	border-radius: 10px;
+}
+
+h2.filter_header {
+	font-size: 24px;
+	width: 100%;
+	color: darkgray;
+	font-weight: bolder;
+	border-bottom: 2px solid #bdc3c7;
+	margin-bottom: 5px;
+}
+
+.filter_Container span {
+	padding: 10px;
+	font-size: 18px;
+	margin: 5px;
+	cursor: pointer;
+}
+
+.item_Control {
+	margin: 10px;
+	display: flex;
+	justify-content: center;
+}
+
+.item_Control button {
+	padding: 5px 15px;
+	margin: 0 10px;
 }
 
 div.searchBox input {
-	margin-left: 30px;
 	width: 15rem;
 	padding: 0.3rem;
 	font-weight: bolder;
@@ -664,33 +716,19 @@ div.searchBox input:focus {
 	border: 3px solid #1289A7;
 }
 
-.category div.category-List {
-	margin: 20px;
-	width: 100%;
-	display: flex;
-	overflow-x: auto;
-
-}
-
-.category div.category-List span {
-	margin: 0 5px;
-	font-size: 20px;
-	padding: 10px 20px;
-	cursor: pointer;
-	transition: .3s;
-	border-radius: 10px;
-}
 
 div.travel-item {
 	display: flex;
 	flex-direction: column;
+	justify-content: center;
 	padding: 10px;
 	font-weight: bolder;
-	height: 100px;
-	width: 100%;
-	background-color: #dfe6e9;
-	border: 2px solid #b2bec3;
-	margin: 5px;
+	height: 80px;
+	width: 380px;
+	background-color: #dcdde1;
+	border-radius: 10px;
+	margin: 10px;
+
 }
 
 h2.view_Name {

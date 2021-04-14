@@ -202,9 +202,43 @@ crossorigin="anonymous" /> -->
 
               <div class="searchBox">
                 <input class="search-value" type="text" placeholder="請搜尋你想找尋的地方">
+                <i class="fas fa-list-alt" id='go_filter' data-view="show"></i>
               </div>
-              <div class="category-List">
+              <div class="filter_Container">
+                <div class="filter_City_List mb-3">
+                  <h2 class="filter_header">縣市分類</h2>
+                  <div class="city-List text-center">
+                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'Keelung'>基隆市</span>
+                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'Hsinchu'>新竹市</span>
+                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'HsinchuCounty'>新竹縣</span>
+                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'MiaoliCounty'>苗栗縣</span>
+                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'ChanghuaCounty'>彰化縣</span>
+                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'NantouCounty'>南投縣</span>
+                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'YunlinCounty'>雲林縣</span>
+                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'ChiayiCounty'>嘉義縣</span>
+                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'Chiayi'>嘉義市</span>
+                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'PingtungCounty'>屏東縣</span>
+                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'YilanCounty'>宜蘭縣</span>
+                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'HualienCounty'>花蓮縣</span>
+                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'TaitungCounty'>金門縣</span>
+                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'KinmenCounty'>臺東縣</span>
+                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'PenghuCounty'>澎湖縣</span>
+                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'LienchiangCounty'>連江縣</span>
+                  </div>
+
+                </div>
+                <h2 class='filter_header'>景點分類</h2>
+                <div class="category-List">
+                </div>
+                <div class='line' style='width:100%; border-bottom: 2px solid #999; margin: 10px 0;'></div>
+                <div class="item_Control">
+                  <button type="button" class="btn btn-primary confirm_items">確定</button>
+                  <button type="button" class="btn btn-secondary clear_items"'>清除</button>
+                </div>
+
               </div>
+
+              <!-- <div class="category-List"></div> -->
               <div class="category-Items">
               </div>
 
@@ -254,6 +288,7 @@ crossorigin="anonymous" /> -->
 <script type="text/javascript" src="js/function.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
 <script type="text/javascript" src="js/sidebar.js"></script>
+<script type="text/javascript" src="js/bus.js"></script>
 <script type="text/javascript" src="js/ticket.js"></script>
 
 

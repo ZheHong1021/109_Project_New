@@ -1,0 +1,212 @@
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <!-- Load Leaflet from CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <!--EasyAutocomplete-->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/easy-autocomplete/1.3.5/easy-autocomplete.min.css"
+        integrity="sha512-TsNN9S3X3jnaUdLd+JpyR5yVSBvW9M6ruKKqJl5XiBpuzzyIMcBavigTAHaH50MJudhv5XIkXMOwBL7TbhXThQ=="
+        crossorigin="anonymous" />
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/easy-autocomplete/1.3.5/jquery.easy-autocomplete.min.js"
+        integrity="sha512-Z/2pIbAzFuLlc7WIt/xifag7As7GuTqoBbLsVTgut69QynAIOclmweT6o7pkxVoGGfLcmPJKn/lnxyMNKBAKgg=="
+        crossorigin="anonymous"></script>
+
+    <style>
+        #map {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <div id="searchbar" style=" position: absolute; top: 20px; z-index: 1000; left: 20px; ">
+        <input id="inputbox" size="20">
+    </div>
+</body>
+<script>
+    var hereApiKey = 'Z5fDXqmwODPgSiAVnsdKhL03-f2VHP4YpfoeyYVNamI';
+    var dataHubReadToken = 'AIOZFPE8SOmJsuCJ2O9yagA'; // 您的 Data Hub Token
+    var faultSpaceId = '14POrTpQ'; // 活動斷層 Space ID
+    var landLiquefactionSpaceId = 'G2ORXx6v'; // 土壤液化 Space ID
+    var dipSlopeSpaceId = 'slAUFbWx'; // 順向坡 Space ID
+
+    var faultFeatureGroup = L.featureGroup(); //活動斷層圖層
+    var landLiquefactionFeatureGroup = L.featureGroup(); //土壤液化圖層
+    var dipSlopeFeatureGroup = L.featureGroup(); //順向坡圖層
+
+    var map = L.map('map', { zoomControl: false }); // 建立 L.map 物件。
+
+    map.on('load', function () {
+        getGeoJSONTiles(map.getBounds(), map.getZoom(), landLiquefactionSpaceId,
+            dataHubReadToken, landLiquefactionFeatureGroup);
+        getGeoJSONTiles(map.getBounds(), map.getZoom(), dipSlopeSpaceId,
+            dataHubReadToken, dipSlopeFeatureGroup);
+        faultFeatureGroup.addTo(map);
+        landLiquefactionFeatureGroup.addTo(map);
+        dipSlopeFeatureGroup.addTo(map);
+    }); // 註冊 load 事件來監聽地圖第一次讀取完成
+
+    map.on('moveend', function () {
+        getGeoJSONTiles(map.getBounds(), map.getZoom(), landLiquefactionSpaceId,
+            dataHubReadToken, landLiquefactionFeatureGroup);
+        getGeoJSONTiles(map.getBounds(), map.getZoom(), dipSlopeSpaceId,
+            dataHubReadToken, dipSlopeFeatureGroup);
+    }); // 註冊 moveend 事件來監聽地圖每次移動結束
+
+    map.setView([23.773, 120.959], 8); // 設定地圖位置與 Z 階層，並讀取地圖
+
+
+
+    var hereNormal = L.tileLayer('https://{s}.base.maps.ls.hereapi.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/256/png8?lg=cht&ppi=72&pois&apiKey=' +
+        hereApiKey, {
+        attribution: '© 2020 HERE',
+        subdomains: [1, 2, 3, 4]
+    }).addTo(map); // Leaflet JS 預設使用 256px 大小的圖磚
+    var hereHybrid = L.tileLayer(
+        'https://{s}.aerial.maps.ls.hereapi.com/maptile/2.1/maptile/newest/hybrid.day/{z}/{x}/{y}/256/png8?lg=cht&ppi=72&pois&apiKey=' +
+        hereApiKey, {
+        attribution: '© 2020 HERE',
+        subdomains: [1, 2, 3, 4]
+    }); // 衛星影像混合地圖
+
+    var hereTerrain = L.tileLayer(
+        'https://{s}.aerial.maps.ls.hereapi.com/maptile/2.1/maptile/newest/terrain.day/{z}/{x}/{y}/256/png8?lg=cht&ppi=72&pois&apiKey=' +
+        hereApiKey, {
+        attribution: '© 2020 HERE',
+        subdomains: [1, 2, 3, 4]
+    }); // 地形圖
+
+    var faultLayer = $.getJSON(
+        'https://xyz.api.here.com/hub/spaces/' + faultSpaceId + '/iterate?access_token=' + dataHubReadToken,
+        value => {
+            value.features.forEach(element => {
+                L.geoJSON(element, {
+                    style: {
+                        color: '#0032ff',
+                        opacity: 0.8,
+                        weight: 8,
+                        fill: false
+                    }
+                }).bindPopup(element.properties.Name).addTo(faultFeatureGroup);
+            });
+        });
+
+    function getGeoJSONTiles(bounds, zoom, spaceId, accessToken, featureGroup) {
+        var loadedTileIds = [];
+        featureGroup.clearLayers();
+        var min = map.project(bounds.getNorthWest(), zoom).divideBy(256).floor(),
+            max = map.project(bounds.getSouthEast(), zoom).divideBy(256).floor();
+        for (var i = min.x; i <= max.x; i++) {
+            for (var j = min.y; j <= max.y; j++) {
+                const coords = new L.Point(i, j);
+                var x = coords.x,
+                    y = coords.y,
+                    z = zoom;
+                $.getJSON('https://xyz.api.here.com/hub/spaces/' + spaceId + '/tile/web/' + z + '_' + x + '_' + y +
+                    '?clip=true&access_token=' + accessToken, value => {
+                        value.features.forEach(element => {
+                            if (!loadedTileIds.includes(element.id)) {
+                                // 如果 id 並沒有在地圖上，就進行以下動作。
+                                var geoJSONObject = L.geoJSON(element);
+                                if (element.properties['@ns:com:here:xyz'].space ==
+                                    landLiquefactionSpaceId) {
+                                    // 使用 properties 裡面的 '@ns:com:here:xyz' 裡面的 space 屬性來比對是否是我們要的土壤液化圖層
+                                    // 如果是的話就進行以下的動作，使用「分級」這個屬性來填入不同顏色
+                                    switch (element.properties.分級) {
+                                        case '低潛勢':
+                                            geoJSONObject.setStyle({
+                                                color: '#26ff00', // 綠色
+                                                weight: 0
+                                            });
+                                            break;
+                                        case '中潛勢':
+                                            geoJSONObject.setStyle({
+                                                color: '#ff9a03', // 橙色
+                                                weight: 0
+                                            });
+                                            break;
+                                        case '高潛勢':
+                                            geoJSONObject.setStyle({
+                                                color: '#dd00ff', // 紫色
+                                                weight: 0
+                                            });
+                                            break;
+                                    }
+                                    geoJSONObject.bindPopup('土壤液化等級：' + element.properties.分級);
+                                    geoJSONObject.addTo(featureGroup);
+                                } else if (element.properties['@ns:com:here:xyz'].space ==
+                                    dipSlopeSpaceId) {
+                                    // 使用 properties 裡面的 '@ns:com:here:xyz' 裡面的 space 屬性來比對是否是我們要的順向坡圖層
+                                    // 如果是的話就進行以下的動作，使用「分級」這個屬性來填入不同顏色
+                                    geoJSONObject.setStyle({
+                                        color: '#ff0051', // 紅色
+                                        opacity: 0.3,
+                                        weight: 1
+                                    });
+                                    geoJSONObject.bindPopup('順向坡坡度：' + element.properties.SLOPE_ANG);
+                                    geoJSONObject.addTo(featureGroup);
+                                }
+                                loadedTileIds.push(element.id);
+                            }
+                        });
+                    })
+            }
+        }
+    }
+
+    var baseLayers = {
+        'HERE 標準地圖': hereNormal,
+        'HERE 衛星影像': hereHybrid,
+        'HERE 地形圖': hereTerrain
+    };
+
+    var overlays = {
+        '活動斷層': faultFeatureGroup,
+        '土壤液化': landLiquefactionFeatureGroup,
+        '順向坡': dipSlopeFeatureGroup
+    };
+    L.control.layers(baseLayers, overlays, { collapsed: false }).addTo(map);
+
+    L.control.scale({
+        position: 'bottomright'
+    }).addTo(map);
+
+    L.control.zoom({
+        position: 'bottomleft'
+    }).addTo(map);
+
+    var options = { // 定義 EasyAutocomplete 的選取項目來源
+        url: function (phrase) {
+            return 'https://autosuggest.search.hereapi.com/v1/autosuggest?' + // Autosuggest 的 API URL
+                'q=' + phrase + // 接收使用者輸入的字串做搜尋
+                '&limit=5' + // 最多限定五筆回傳
+                '&lang=zh-TW' + // 限定台灣正體中文
+                '&at=' + map.getCenter().lat + ',' + map.getCenter().lng + // 使用目前地圖的中心點作為搜尋起始點
+                '&apikey=' + hereApiKey; // 您的 HERE API KEY
+        },
+        listLocation: 'items', // 使用回傳的 item 作為選取清單
+        getValue: 'title', // 在選取清單中顯示 title
+        list: {
+            onClickEvent: function () { // 按下選取項目之後的動作
+                var data = $("#inputbox").getSelectedItemData();
+                var northWest = L.latLng(data.mapView.north, data.mapView.west), // 選取項目的西北角
+                    southEast = L.latLng(data.mapView.south, data.mapView.east); // 選取項目的東南角
+                map.fitBounds([northWest, southEast]); // 把地圖移動到選取項目
+            }
+        },
+        requestDelay: 100, // 延遲 100 毫秒再送出請求
+        placeholder: '搜尋地點' // 預設顯示的字串
+    };
+    $('#inputbox').easyAutocomplete(options); // 啟用 EasyAutocomplete 到 inpupbox 這個元件
+
+
+</script>
