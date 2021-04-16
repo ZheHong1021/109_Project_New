@@ -252,7 +252,8 @@ div.modal-header {
 /* click output */
 div#tra_result,
 div#mrt_result,
-div#bus_result {
+div#bus_result,
+div#home_result {
 	font-size: 18px;
 	font-weight: bolder;
 }
@@ -661,7 +662,7 @@ div.searchBox i {
 }
 
 div.filter_Container {
-	position: relative;
+	/* position: relative; */
 	margin-top: 10px;
 	width: 100%;
 	padding: 10px;
@@ -718,16 +719,19 @@ div.searchBox input:focus {
 
 
 div.travel-item {
+	position: relative;
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: start;
 	padding: 10px;
 	font-weight: bolder;
-	height: 80px;
-	width: 380px;
+	width: 380px; 
+	height: auto;
+	padding-bottom: 10px;
 	background-color: #dcdde1;
 	border-radius: 10px;
 	margin: 10px;
+	transition: .7s;
 
 }
 
@@ -737,18 +741,37 @@ h2.view_Name {
 	align-items: center;
 	font-weight: bolder;
 	position: relative;
+	width: 70%;
 }
 
-h2.view_Name span {
+div.view_Span {
 	position: absolute;
-	right: 5px;
+	font-size: 20px;
+	right: 10px;
+	top: 10px;
+	display: flex;
+	flex-direction: column;
+}
+.view_Span span{
+	margin-bottom: 5px;
+	width: 100%;
 }
 
 h3.view_address {
 	font-size: 14px;
+	width: 70%;
 }
 
 h3.view_address i {
+	color: blue;
+	font-size: 18px;
+	cursor: pointer;
+}
+h3.view_opentime {
+	font-size: 14px;
+}
+
+h3.view_opentime i {
 	color: blue;
 	font-size: 18px;
 	cursor: pointer;
@@ -758,4 +781,29 @@ div.fly_Marker_Container {
 	padding: 20px;
 	font-weight: bolder;
 
+}
+
+div#travel_info_body{
+	font-family: "微軟正黑體";
+	font-size: 16px;;
+	width: 100%;
+}
+
+
+div.travel_Describe_Container{
+	width: 60%;
+	padding: 10px;
+	border: 2px solid #333;;
+	letter-spacing: 3px;
+	line-height: 2rem;
+	text-indent: 2rem;
+}
+div.travel_Image_Container{
+	width: 40%;
+	padding: 10px;
+}
+.travel_Image_Container img{
+	width: 100%;
+	height: auto;
+	
 }

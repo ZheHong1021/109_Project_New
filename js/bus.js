@@ -4,6 +4,7 @@ $(function () {
     $.ajax({
       url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeNearStop/City/' + city + '/' + route + '?$format=JSON',
       dataType: 'json',
+      contentType: 'json',
       headers: GetAuthorizationHeader(), // 憑證 API token
       success: function (result) {
         Object.keys(result).forEach(function (value, key) {
@@ -75,6 +76,7 @@ $(function () {
       // url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeByFrequency/City/' + city + '/' + route + '?$format=JSON',
       url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/StopOfRoute/City/' + city + '/' + route + '?$format=JSON',
       dataType: 'json',
+      contentType: 'json',
       headers: GetAuthorizationHeader(), // 憑證 API token
       success: function (result) {
         Object.keys(result).forEach(function (value, key) {
@@ -141,6 +143,7 @@ $(function () {
       url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeByFrequency/City/' + city + '?$format=JSON',
       // url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeByFrequency/City/Tainan?$format=JSON',
       dataType: 'json',
+      contentType: 'json',
       headers: GetAuthorizationHeader(), // 憑證 API token
       success: function (result) {
         // console.log(result);

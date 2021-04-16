@@ -14,6 +14,7 @@ $(function () {
       // url: "https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/ODFare/TMRT?$format=JSON",
       url: "https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/ODFare/" + route + "?$format=JSON",
       dataType: "json",
+      contentType: 'json',
       headers: GetAuthorizationHeader(), // 憑證 API token
       success: function (result) {
         // JSON轉換成 Array
@@ -156,6 +157,7 @@ $(function () {
   $.ajax({
     url: "https://ptx.transportdata.tw/MOTC/v2/Rail/TRA/Station?$format=JSON",
     dataType: "json",
+    contentType: 'json',
     headers: GetAuthorizationHeader(), // 憑證 API token
     // 當成功從 php回傳 json結果(result)的話
     success: function (result) {
@@ -219,6 +221,7 @@ $(function () {
         $.ajax({
           url: "https://ptx.transportdata.tw/MOTC/v2/Rail/TRA/ODFare/" + station_ID_O + "/to/" + station_ID_D + "?$format=JSON",
           dataType: "json",
+          contentType: 'json',
           headers: GetAuthorizationHeader(), // 憑證 API token
           // 當成功從 php回傳 json結果(result)的話
           success: function (result) {

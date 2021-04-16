@@ -4,15 +4,14 @@ $(function () {
   let tra_html = `
    <div class='container-List'>
           <div class="TRA_Origination">
-            <select id="TRA_Origination_Station_List" class="selectpicker" data-live-search="true">
+            <select id="TRA_Origination_Station_List" class="selectpicker" data-live-search="true" data-none-results-text = "沒有搜尋到關鍵字：{0}">
               <option selected disabled value="null">請選擇起站</option>
-
             </select>
 
           </div>
 
           <div class="TRA_Destination">
-            <select id="TRA_Destination_Station_List" class="selectpicker" data-live-search="true">
+            <select id="TRA_Destination_Station_List" class="selectpicker" data-live-search="true" data-none-results-text = "沒有搜尋到關鍵字：{0}">
               <option selected disabled value="null">請選擇迄站</option>
             </select>
           </div>
@@ -101,55 +100,124 @@ $(function () {
   <div class = "alert alert-warning  fade show d-flex justify-content-center" role = "alert" >
       <div id='mrt_result' class = "alert-body text-center">尚無查詢紀錄</div>
     </div>
+    
     `;
 
-  let travel_html = '123';
-  // let travel_html = `
-  // <div class='container-travel'>
-  //               <div class="city_container" id='Taipei'>
-  //                 <img src="img/city/Taipei.jpg" alt="台北">
-  //                 <div class="txt">
-  //                   <h2>台北市</h2>
-  //                 </div>
-  //               </div>
+  let travel_html = `
+  <div class='container-travel'>
+  <div class="city_container" id='Taipei' city_name_Tw='臺北市'>
+    <img src="img/city/Taipei.jpg" alt="臺北">
+    <div class="txt">
+      <h2>臺北市</h2>
+    </div>
+  </div>
 
-  //               <div class="city_container" id='NewTaipei'>
-  //                 <img src="img/city/NewTaipei.jpg" alt="新北">
-  //                 <div class="txt">
-  //                   <h2>新北市</h2>
-  //                 </div>
-  //               </div>
-  //               <div class="city_container" id='Taoyuan'>
-  //                 <img src="img/city/Taoyuan.jpg" alt="桃園">
-  //                 <div class="txt">
-  //                   <h2>桃園市</h2>
-  //                 </div>
-  //               </div>
-  //               <div class="city_container" id='Taichung'>
-  //                 <img src="img/city/Taichung.jpg" alt="台中">
-  //                 <div class="txt">
-  //                   <h2>台中市</h2>
-  //                 </div>
-  //               </div>
-  //               <div class="city_container" id='Tainan'>
-  //                 <img src="img/city/Tainan.jpg" alt="台南">
-  //                 <div class="txt">
-  //                   <h2>台南市</h2>
-  //                 </div>
-  //               </div>
-  //               <div class="city_container" id='Kaohsiung'>
-  //                 <img src="img/city/Kaohsiung.jpg" alt="高雄">
-  //                 <div class="txt">
-  //                   <h2>高雄市</h2>
-  //                 </div>
-  //               </div>
-  //               <div class="city_container" id='Other'>
-  //                 <img src="img/city/Other.jpg" alt="其他縣市">
-  //                 <div class="txt">
-  //                   <h2>其他縣市</h2>
-  //                 </div>
-  //               </div>
-  // `;
+  <div class="city_container" id='NewTaipei' city_name_Tw='新北市'>
+    <img src="img/city/NewTaipei.jpg" alt="新北">
+    <div class="txt">
+      <h2>新北市</h2>
+    </div>
+  </div>
+  <div class="city_container" id='Taoyuan' city_name_Tw='桃園市'>
+    <img src="img/city/Taoyuan.jpg" alt="桃園">
+    <div class="txt">
+      <h2>桃園市</h2>
+    </div>
+  </div>
+  <div class="city_container" id='Taichung' city_name_Tw='臺中市'>
+    <img src="img/city/Taichung.jpg" alt="臺中">
+    <div class="txt">
+      <h2>臺中市</h2>
+    </div>
+  </div>
+  <div class="city_container" id='Tainan' city_name_Tw='臺南市'> 
+    <img src="img/city/Tainan.jpg" alt="臺南">
+    <div class="txt">
+      <h2>臺南市</h2>
+    </div>
+  </div>
+  <div class="city_container" id='Kaohsiung' city_name_Tw='高雄市'>
+    <img src="img/city/Kaohsiung.jpg" alt="高雄">
+    <div class="txt">
+      <h2>高雄市</h2>
+    </div>
+  </div>
+  <div class="city_container" id='Other' city_name_Tw='其他縣市'>
+    <img src="img/city/Other.jpg" alt="其他縣市">
+    <div class="txt">
+      <h2>其他縣市</h2>
+    </div>
+  </div>
+
+  <div class="bus-loading">
+    <div class="spinner-border text-danger" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  </div>
+
+  <div class="travel_Category">
+    <div class="category">
+
+    <h2 class = "Travel_city_Name fw-bolder my-2" style='font-size: 28px'></h2>
+      <button type="button" class="btn btn-secondary go_city_Container">上一頁</button>
+      <div class="searchBox">
+        <input class="search-value" type="text" placeholder="請搜尋你想找尋的地方">
+        <i class="fas fa-list-alt" id='go_filter' data-view="show"></i>
+      </div>
+      <div class="filter_Container">
+        <div class="filter_City_List mb-3">
+          <h2 class="filter_header">縣市分類</h2>
+          <div class="city-List text-center">
+          
+            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'Keelung'>基隆市</span>
+            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'Hsinchu'>新竹市</span>
+            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'HsinchuCounty'>新竹縣</span>
+            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'MiaoliCounty'>苗栗縣</span>
+            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'ChanghuaCounty'>彰化縣</span>
+            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'NantouCounty'>南投縣</span>
+            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'YunlinCounty'>雲林縣</span>
+            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'ChiayiCounty'>嘉義縣</span>
+            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'Chiayi'>嘉義市</span>
+            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'PingtungCounty'>屏東縣</span>
+            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'YilanCounty'>宜蘭縣</span>
+            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'HualienCounty'>花蓮縣</span>
+            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'TaitungCounty'>金門縣</span>
+            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'KinmenCounty'>臺東縣</span>
+            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'PenghuCounty'>澎湖縣</span>
+            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'LienchiangCounty'>連江縣</span>
+          </div>
+
+        </div>
+        <h2 class='filter_header'>景點分類</h2>
+        <div class="category-List">
+        </div>
+        <div class='line' style='width:100%; border-bottom: 2px solid #999; margin: 10px 0;'></div>
+        <div class="item_Control">
+          <button type="button" class="btn btn-primary confirm_items">確定</button>
+          <button type="button" class="btn btn-danger all_choose_items">全選</button>
+          <button type="button" class="btn btn-secondary clear_items">清除</button>
+        </div>
+
+      </div>
+
+      <!-- <div class="category-List"></div> -->
+      <div class="category-Items">
+      </div>
+
+    </div>
+
+    <div class="bus-loading">
+      <div class="spinner-border text-danger" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+ 
+  `;
+ 
 
   let bus_html = `
   <div class="Bus-City-info">
@@ -391,6 +459,7 @@ $(function () {
     $('.category-Items').html('');
 
     let city_name = $(this).attr('id');
+    let city_name_TW = $(this).attr('city_name_Tw');
     $('div.bus-loading').show();
 
     // 設立一個 Loading動畫的時間 : 1.5s
@@ -400,6 +469,7 @@ $(function () {
       $('div.bus-loading').hide();
       $('.container-travel').hide();
       $('div.travel_Category').show();
+      $('h2.Travel_city_Name').html(city_name_TW);
     }, 1500);
 
     // 如果點選的是 Other
@@ -408,10 +478,17 @@ $(function () {
     } else {
       $('.filter_City_List').hide();
     }
+
+    // 預設篩選單先呈現出來，還有顏色
+    $('div.filter_Container').show();
+    $('i#go_filter').css('color', '#8c7ae6');
+
+
     if ($(this).attr('id') != 'Other') {
       $.ajax({
         url: 'https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/' + city_name + '?$format=JSON',
         dataType: 'json',
+        contentType: 'json',
         headers: GetAuthorizationHeader(), // 憑證 API token
         success: function (result) {
           // console.log(result);
@@ -429,29 +506,18 @@ $(function () {
                 travel_Category.push(result[value]['Class3']);
               }
             }
-
-            // $('.category-Items').append(`
-            // <div class="travel-item" travel-id="${result[value]['ID']}">
-            //   <h2 class="view_Name">${result[value]['Name']}
-            //       <span class = "badge bg-success">${result[value]['Class1']}</span>
-            //   </h2>
-            //   <h3 class="view_address">${result[value]['Address']}
-            //     <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置" pos-Lat="${result[value]["Position"]["PositionLat"]}" pos-Lng="${result[value]["Position"]["PositionLon"]}" view="${result[value]['Name']}"></i>
-            //   </h3>
-            //   </div>`);
-
           });
           // console.log(travel_Category);
           for (let i = 0; i < travel_Category.length; i++) {
             $('.category-List').append(`<span class="badge bg-secondary category_item" data-category="${travel_Category[i]}" >${travel_Category[i]}</span>`);
           }
           $('.category-Items').append(`
-        <div class="travel-item text-center">
-        <h2 class="view_Name ">
-            無查詢到資料
-        </h2>
-        </div>`);
-        },
+              <div class="travel-item text-center">
+              <h2 class="view_Name ">
+                  無查詢到資料
+              </h2>
+              </div>`);
+              },
         // 當Ajax請求失敗
         error: function (XMLHttpRequest, textStatus, errorThrown) {
           console.log(XMLHttpRequest);
@@ -477,11 +543,13 @@ $(function () {
       $(this).addClass('bg-danger');
     }
 
+    // 其他縣市的寫法
     let city_name = $(this).attr('city_filter');
     // console.log(city_name);
     $.ajax({
       url: 'https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/' + city_name + '?$format=JSON',
       dataType: 'json',
+      contentType: 'json',
       headers: GetAuthorizationHeader(), // 憑證 API token
       success: function (result) {
         // console.log(result);
@@ -504,12 +572,14 @@ $(function () {
         for (let i = 0; i < travel_Category.length; i++) {
           $('.category-List').append(`<span class="badge bg-secondary category_item" data-category="${travel_Category[i]}" >${travel_Category[i]}</span>`);
         }
+
         $('.category-Items').append(`
         <div class="travel-item text-center">
         <h2 class="view_Name ">
             無查詢到資料
         </h2>
         </div>`);
+        
       },
       // 當Ajax請求失敗
       error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -521,43 +591,68 @@ $(function () {
   });
 
 
-  $('div.filter_Container').hide();
+  
   let filter_isClicked;
   $('i#go_filter').on('click', function () {
-    // console.log(filter_isClicked);
     if (filter_isClicked) {
-      $(this).css('color', '#000');
-      filter_isClicked = false;
-      $('div.filter_Container').hide(1000);
-    } else {
       $(this).css('color', '#8c7ae6');
-      filter_isClicked = true;
+      filter_isClicked = false;
       $('div.filter_Container').show(1000);
+    } else {
+      $(this).css('color', '#000');
+      filter_isClicked = true;
+      $('div.filter_Container').hide(1000);
     }
+    console.log(filter_isClicked);
   });
 
   $('button.confirm_items').on('click', function () {
-    console.log(filter_isClicked);
     if (filter_isClicked) {
-      $('i#go_filter').css('color', '#000');
-      filter_isClicked = false;
-      $('div.filter_Container').hide(1000);
-    } else {
       $('i#go_filter').css('color', '#8c7ae6');
-      filter_isClicked = true;
+      filter_isClicked = false;
       $('div.filter_Container').show(1000);
+    } else {
+      $('i#go_filter').css('color', '#000');
+      filter_isClicked = true;
+      $('div.filter_Container').hide(1000);
     }
+    console.log(filter_isClicked);
   });
 
-
+  // 打開旅遊的介紹
+  open_Info = function(info_number){
+    let travel_info_Image = results_Travel[info_number]['Picture']['PictureUrl1'] ? ` <img src = "${results_Travel[info_number]['Picture']['PictureUrl1']}" alt ="${results_Travel[info_number]['Name']}照片"></img>
+    <p class="fw-bolder mt-3">圖片提供：${results_Travel[info_number]['Picture']['PictureDescription1']}</p>` : '<p class="fw-bolder mt-3">尚未提供圖片</p>';
+    
+    // 先清空再加入
+    // $('#travel_InfoLabel').html('hello');
+    $('#travel_InfoLabel').html(results_Travel[info_number]["Name"]);
+    $('div#travel_info_body').html('');
+    $('div#travel_info_body').append(`
+        <div class = "travel_Describe_Container">
+        <p class = "mx-3">${results_Travel[info_number]['DescriptionDetail']}</p>
+        </div>
+        <div class = "travel_Image_Container d-flex align-items-center m-3" style="flex-direction: column">
+          ${travel_info_Image}
+       
+        </div>
+        `);
+  }
   $('.category').on('click', 'i#go_View_Pos', function () {
+    $('.category-Items .travel-item').css('background', '#dcdde1');
+    $(this).parent().parent().css('background', '#ffeaa7');
     let Lat = $(this).attr('pos-Lat');
     let Lng = $(this).attr('pos-Lng');
     let position = [Lat, Lng];
     let fly_Marker_Content = `
       <h2>${$(this).attr("view")}</h2>
-      <p>${$(this).parent().text()}</p>
-    `;
+      <p>地址：<a href = "https://www.google.com.tw/maps/place/${$(this).parent().text()}/@${Lat},${Lng},17z" target="_blank" style="color: #0984e3">${$(this).parent().text()}</a></p>
+      <p>聯絡電話：${results_Travel[$(this).attr("data-number")]['Phone']}</p>
+      ${results_Travel[$(this).attr("data-number")]['WebsiteUrl'] ? `<p><a href = "${results_Travel[$(this).attr("data-number")]["WebsiteUrl"]}" target="_blank" style="color: #0984e3">網站連結：${results_Travel[$(this).attr("data-number")]["WebsiteUrl"]}</a></p>` : '<p>網站連結：尚未公開</p>'}
+      <div class="d-flex justify-content-center">
+      <button type="button" class = "btn btn-info mb-2 fw-bolder" onclick="open_Info('${$(this).attr("data-number")}')" data-bs-toggle="modal"  data-bs-target="#travel_Info">查看介紹</button>
+      </div>
+      `;
     console.log(position);
     fly_To_Marker(Lat, Lng, fly_Marker_Content);
   });
@@ -579,8 +674,10 @@ $(function () {
   });
 
 
-
+  // 定義用來選取的分類內容
   let choose_Items = [];
+  
+
   $('.category-List').on('click', 'span.category_item', function () {
     choose_Items = [];
     $('.category-Items').html('');
@@ -593,42 +690,73 @@ $(function () {
       $(this).addClass('bg-success');
     }
     for (let i = 0; i < $('.category-List').children().length; i++) {
+      // 如果選取到的話，就將該文字內容 push到陣列中
       if ($('.category-List').children().eq(i).hasClass('bg-success')) {
         choose_Items.push($('.category-List').children().eq(i).text());
       }
     }
     if (choose_Items.length > 0) {
+
+      // 如果搜尋欄有輸入的話就進行，反之沒有就進行下面的 【2】
       if ($('input.search-value').val()) {
-        Object.keys(results_Travel).forEach(function (value, key) {
-          if (choose_Items.includes(results_Travel[value]['Class1']) && (results_Travel[value]['Name'].includes($('input.search-value').val()) || results_Travel[value]['Address'].includes($('input.search-value').val()))) {
+        Object.keys(results_Travel).forEach(function (value, key) {  
+          let is_Span_1 = results_Travel[value]['Class1'] ? `<span class = "badge bg-success">${results_Travel[value]['Class1']}</span>` : "";
+          let is_Span_2 = results_Travel[value]['Class2'] && results_Travel[value]['Class2'] !== results_Travel[value]['Class1']? `<span class = "badge bg-success">${results_Travel[value]['Class2']}</span>` : "";
+          let is_Span_3 = results_Travel[value]['Class3'] && results_Travel[value]['Class3'] !== results_Travel[value]['Class2']? `<span class = "badge bg-success">${results_Travel[value]['Class3']}</span>` : "";
+      
+          if ( choose_Items.includes(results_Travel[value]['Class1']) 
+              || choose_Items.includes(results_Travel[value]['Class2']) 
+              || choose_Items.includes(results_Travel[value]['Class3']) 
+              && (results_Travel[value]['Name'].includes($('input.search-value').val()) 
+              || results_Travel[value]['Address'].includes($('input.search-value').val()))) {
             $('.category-Items').append(`
             <div class="travel-item" travel-id="${results_Travel[value]['ID']}">
               <h2 class="view_Name">${results_Travel[value]['Name']}
-                  <span class = "badge bg-success">${results_Travel[value]['Class1']}</span>
               </h2>
+                  <div class ="view_Span">
+                      ${is_Span_1}
+                      ${is_Span_2}
+                      ${is_Span_3}
+                  </div>
               <h3 class="view_address">${results_Travel[value]['Address']}
-                <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置" pos-Lat="${results_Travel[value]["Position"]["PositionLat"]}" pos-Lng="${results_Travel[value]["Position"]["PositionLon"]}" view="${results_Travel[value]['Name']}"></i>
+                <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置"  data-number = "${value}" pos-Lat="${results_Travel[value]["Position"]["PositionLat"]}" pos-Lng="${results_Travel[value]["Position"]["PositionLon"]}" view="${results_Travel[value]['Name']}"></i>
+              </h3>
+              <h3 class="view_opentime">
+                  <i class="far fa-clock" title="開放時間"></i>
+                  ${results_Travel[value]['OpenTime'] != 'N/A' || results_Travel[value]['OpenTime']? results_Travel[value]['OpenTime'] : "未公開"}
               </h3>
 
               </div>`);
           }
         })
-      } else {
-        Object.keys(results_Travel).forEach(function (value, key) {
-          if (choose_Items.includes(results_Travel[value]['Class1'])) {
-            $('.category-Items').append(`
-            <div class="travel-item" travel-id="${results_Travel[value]['ID']}">
-              <h2 class="view_Name">${results_Travel[value]['Name']}
-                  <span class = "badge bg-success">${results_Travel[value]['Class1']}</span>
-
-              </h2>
-              <h3 class="view_address">${results_Travel[value]['Address']}
-                <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置" pos-Lat="${results_Travel[value]["Position"]["PositionLat"]}" pos-Lng="${results_Travel[value]["Position"]["PositionLon"]}" view="${results_Travel[value]['Name']}"></i>
-              </h3>
-              </div>`);
+        // 【2】
+          } else {
+            Object.keys(results_Travel).forEach(function (value, key) {
+              let is_Span_1 = results_Travel[value]['Class1'] ? `<span class = "badge bg-success">${results_Travel[value]['Class1']}</span>` : "";
+              let is_Span_2 = results_Travel[value]['Class2'] && results_Travel[value]['Class2'] !== results_Travel[value]['Class1']? `<span class = "badge bg-success">${results_Travel[value]['Class2']}</span>` : "";
+              let is_Span_3 = results_Travel[value]['Class3'] && results_Travel[value]['Class3'] !== results_Travel[value]['Class2']? `<span class = "badge bg-success">${results_Travel[value]['Class3']}</span>` : "";
+              if (choose_Items.includes(results_Travel[value]['Class1']) 
+              || choose_Items.includes(results_Travel[value]['Class2']) 
+              || choose_Items.includes(results_Travel[value]['Class3']) ) {
+                $('.category-Items').append(`
+                <div class="travel-item" travel-id="${results_Travel[value]['ID']}">
+                  <h2 class="view_Name">${results_Travel[value]['Name']}</h2>
+                  <div class ="view_Span">
+                      ${is_Span_1}
+                      ${is_Span_2}
+                      ${is_Span_3}
+                  </div>
+                  <h3 class="view_address">${results_Travel[value]['Address']}
+                    <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置" data-number = "${value}" pos-Lat="${results_Travel[value]["Position"]["PositionLat"]}" pos-Lng="${results_Travel[value]["Position"]["PositionLon"]}" view="${results_Travel[value]['Name']}"></i>
+                  </h3>
+                  <h3 class="view_opentime">
+                      <i class="far fa-clock" title="開放時間"></i>
+                      ${results_Travel[value]['OpenTime'] != 'N/A' || results_Travel[value]['OpenTime']  ? results_Travel[value]['OpenTime'] : "未公開"}
+                  </h3>
+                  </div>`);
+              }
+            })
           }
-        })
-      }
 
     } else {
       $('.category-Items').append(`
@@ -639,6 +767,37 @@ $(function () {
             </div>`);
     }
   });
+
+    // 全選按鈕
+    $('button.all_choose_items').on('click', function () {
+  
+      $('.category-Items').html('');
+      $('.category-List *').removeClass('bg-secondary');
+      $('.category-List *').addClass('bg-success');
+      
+      Object.keys(results_Travel).forEach(function (value, key) {
+        let is_Span_1 = results_Travel[value]['Class1'] ? `<span class = "badge bg-success">${results_Travel[value]['Class1']}</span>` : "";
+        let is_Span_2 = results_Travel[value]['Class2'] && results_Travel[value]['Class2'] !== results_Travel[value]['Class1']? `<span class = "badge bg-success">${results_Travel[value]['Class2']}</span>` : "";
+        let is_Span_3 = results_Travel[value]['Class3'] && results_Travel[value]['Class3'] !== results_Travel[value]['Class2']? `<span class = "badge bg-success">${results_Travel[value]['Class3']}</span>` : "";
+          $('.category-Items').append(`
+          <div class="travel-item" travel-id="${results_Travel[value]['ID']}">
+            <h2 class="view_Name">${results_Travel[value]['Name']}</h2>
+            <div class ="view_Span">
+                ${is_Span_1}
+                ${is_Span_2}
+                ${is_Span_3}
+            </div>
+            <h3 class="view_address">${results_Travel[value]['Address']}
+              <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置"  data-number = "${value}" pos-Lat="${results_Travel[value]["Position"]["PositionLat"]}" pos-Lng="${results_Travel[value]["Position"]["PositionLon"]}" view="${results_Travel[value]['Name']}"></i>
+            </h3>
+            <h3 class="view_opentime">
+                <i class="far fa-clock" title="開放時間"></i>
+                ${results_Travel[value]['OpenTime'] != 'N/A' ? results_Travel[value]['OpenTime'] : "未公開"}
+            </h3>
+            </div>`);
+      })
+
+    });
 
   // 清除按鈕
   $('button.clear_items').on('click', function () {
@@ -655,35 +814,44 @@ $(function () {
 
   });
 
-
-
   $('input.search-value').on('input', function () {
     let input_Val = $(this).val();
     if (input_Val) {
       $('.category-Items').html('');
       Object.keys(results_Travel).forEach(function (value, key) {
-        if (choose_Items.includes(results_Travel[value]['Class1']) && (results_Travel[value]['Name'].includes($('input.search-value').val()) || results_Travel[value]['Address'].includes($('input.search-value').val()))) {
+        let is_Span_1 = results_Travel[value]['Class1'] ? `<span class = "badge bg-success">${results_Travel[value]['Class1']}</span>` : "";
+        let is_Span_2 = results_Travel[value]['Class2'] && results_Travel[value]['Class2'] !== results_Travel[value]['Class1']? `<span class = "badge bg-success">${results_Travel[value]['Class2']}</span>` : "";
+        let is_Span_3 = results_Travel[value]['Class3'] && results_Travel[value]['Class3'] !== results_Travel[value]['Class2']? `<span class = "badge bg-success">${results_Travel[value]['Class3']}</span>` : "";
+        if (results_Travel[value]['Name'].includes($('input.search-value').val()) || results_Travel[value]['Address'].includes($('input.search-value').val())) {
           $('.category-Items').append(`
           <div class="travel-item" travel-id="${results_Travel[value]['ID']}">
-            <h2 class="view_Name">${results_Travel[value]['Name']}
-                <span class = "badge bg-primary">${results_Travel[value]['Class1']}</span>
-            </h2>
+              <h2 class="view_Name">${results_Travel[value]['Name']}</h2>
+              <div class ="view_Span">
+                  ${is_Span_1}
+                  ${is_Span_2}
+                  ${is_Span_3}
+              </div>
             <h3 class="view_address">${results_Travel[value]['Address']}
-              <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置" pos-Lat="${results_Travel[value]["Position"]["PositionLat"]}" pos-Lng="${results_Travel[value]["Position"]["PositionLon"]}" view="${results_Travel[value]['Name']}"></i>
+              <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置"  data-number = "${value}" pos-Lat="${results_Travel[value]["Position"]["PositionLat"]}" pos-Lng="${results_Travel[value]["Position"]["PositionLon"]}" view="${results_Travel[value]['Name']}"></i>
             </h3>
             </div>`);
         }
       })
     } else {
       Object.keys(results_Travel).forEach(function (value, key) {
+        let is_Span_1 = results_Travel[value]['Class1'] ? `<span class = "badge bg-success">${results_Travel[value]['Class1']}</span>` : "";
+        let is_Span_2 = results_Travel[value]['Class2'] && results_Travel[value]['Class2'] !== results_Travel[value]['Class1']? `<span class = "badge bg-success">${results_Travel[value]['Class2']}</span>` : "";
+        let is_Span_3 = results_Travel[value]['Class3'] && results_Travel[value]['Class3'] !== results_Travel[value]['Class2']? `<span class = "badge bg-success">${results_Travel[value]['Class3']}</span>` : "";
         $('.category-Items').append(`
             <div class="travel-item" travel-id="${results_Travel[value]['ID']}">
-              <h2 class="view_Name">${results_Travel[value]['Name']}
-                  <span class = "badge bg-primary">${results_Travel[value]['Class1']}</span>
-
-              </h2>
+              <h2 class="view_Name">${results_Travel[value]['Name']}</h2>
+              <div class ="view_Span">
+                  ${is_Span_1}
+                  ${is_Span_2}
+                  ${is_Span_3}
+              </div>
               <h3 class="view_address">${results_Travel[value]['Address']}
-                <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置" pos-Lat="${results_Travel[value]["Position"]["PositionLat"]}" pos-Lng="${results_Travel[value]["Position"]["PositionLon"]}" view="${results_Travel[value]['Name']}"></i>
+                <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置"  data-number = "${value}" pos-Lat="${results_Travel[value]["Position"]["PositionLat"]}" pos-Lng="${results_Travel[value]["Position"]["PositionLon"]}" view="${results_Travel[value]['Name']}"></i>
               </h3>
               </div>`);
       })

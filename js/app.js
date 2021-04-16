@@ -369,6 +369,7 @@ $(function () {
   $.ajax({
     url: 'https://ptx.transportdata.tw/MOTC/v2/Rail/TRA/Station?$format=JSON',
     dataType: 'json',
+    contentType: 'json',
     headers: GetAuthorizationHeader(), // 憑證 API token
     success: function (result) {
       // console.log(city);
@@ -428,6 +429,7 @@ $(function () {
     $.ajax({
       url: 'https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/Station/' + city + '?$format=JSON',
       dataType: 'json',
+      contentType: 'json',
       headers: GetAuthorizationHeader(), // 憑證 API token
       success: function (result) {
         // console.log(city);
@@ -517,6 +519,7 @@ $(function () {
     $.ajax({
       url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/Station/City/' + city + '?$format=JSON',
       dataType: 'json',
+      contentType: 'json',
       headers: GetAuthorizationHeader(), // 憑證 API token
       success: function (result) {
         // console.log(city);

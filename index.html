@@ -119,7 +119,7 @@ crossorigin="anonymous" /> -->
 
 <body>
 
-  <!-- ***SideBar*** -->
+    <!-- ***SideBar*** -->
   <!-- optionally define the sidebar content via HTML markup -->
   <div id="sidebar" class="leaflet-sidebar collapsed">
     <!-- nav tabs -->
@@ -142,116 +142,17 @@ crossorigin="anonymous" /> -->
           <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
         </h1>
 
-        <div class='container-travel'>
-          <div class="city_container" id='Taipei'>
-            <img src="img/city/Taipei.jpg" alt="台北">
-            <div class="txt">
-              <h2>台北市</h2>
+        <div class="container-fluid d-flex p-3" style="flex-direction: column; align-items: center;">
+          
+
+          <div class = "alert alert-primary fade show d-flex justify-content-center" role = "alert" >
+            <div id="home_result" class = "alert-body text-center">
+            <h2>使用公共運輸整合資訊流通服務平臺(Public Transport Data eXchange，PTX)</h2>
             </div>
           </div>
-
-          <div class="city_container" id='NewTaipei'>
-            <img src="img/city/NewTaipei.jpg" alt="新北">
-            <div class="txt">
-              <h2>新北市</h2>
-            </div>
-          </div>
-          <div class="city_container" id='Taoyuan'>
-            <img src="img/city/Taoyuan.jpg" alt="桃園">
-            <div class="txt">
-              <h2>桃園市</h2>
-            </div>
-          </div>
-          <div class="city_container" id='Taichung'>
-            <img src="img/city/Taichung.jpg" alt="台中">
-            <div class="txt">
-              <h2>台中市</h2>
-            </div>
-          </div>
-          <div class="city_container" id='Tainan'>
-            <img src="img/city/Tainan.jpg" alt="台南">
-            <div class="txt">
-              <h2>台南市</h2>
-            </div>
-          </div>
-          <div class="city_container" id='Kaohsiung'>
-            <img src="img/city/Kaohsiung.jpg" alt="高雄">
-            <div class="txt">
-              <h2>高雄市</h2>
-            </div>
-          </div>
-          <div class="city_container" id='Other'>
-            <img src="img/city/Other.jpg" alt="其他縣市">
-            <div class="txt">
-              <h2>其他縣市</h2>
-            </div>
-          </div>
-
-          <div class="bus-loading">
-            <div class="spinner-border text-danger" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-          </div>
-
-          </div>
-
-          <div class="travel_Category">
-            <div class="category">
-
-              <button type="button" class="btn btn-secondary go_city_Container">上一頁</button>
-
-              <div class="searchBox">
-                <input class="search-value" type="text" placeholder="請搜尋你想找尋的地方">
-                <i class="fas fa-list-alt" id='go_filter' data-view="show"></i>
-              </div>
-              <div class="filter_Container">
-                <div class="filter_City_List mb-3">
-                  <h2 class="filter_header">縣市分類</h2>
-                  <div class="city-List text-center">
-                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'Keelung'>基隆市</span>
-                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'Hsinchu'>新竹市</span>
-                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'HsinchuCounty'>新竹縣</span>
-                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'MiaoliCounty'>苗栗縣</span>
-                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'ChanghuaCounty'>彰化縣</span>
-                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'NantouCounty'>南投縣</span>
-                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'YunlinCounty'>雲林縣</span>
-                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'ChiayiCounty'>嘉義縣</span>
-                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'Chiayi'>嘉義市</span>
-                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'PingtungCounty'>屏東縣</span>
-                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'YilanCounty'>宜蘭縣</span>
-                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'HualienCounty'>花蓮縣</span>
-                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'TaitungCounty'>金門縣</span>
-                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'KinmenCounty'>臺東縣</span>
-                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'PenghuCounty'>澎湖縣</span>
-                    <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'LienchiangCounty'>連江縣</span>
-                  </div>
-
-                </div>
-                <h2 class='filter_header'>景點分類</h2>
-                <div class="category-List">
-                </div>
-                <div class='line' style='width:100%; border-bottom: 2px solid #999; margin: 10px 0;'></div>
-                <div class="item_Control">
-                  <button type="button" class="btn btn-primary confirm_items">確定</button>
-                  <button type="button" class="btn btn-secondary clear_items"'>清除</button>
-                </div>
-
-              </div>
-
-              <!-- <div class="category-List"></div> -->
-              <div class="category-Items">
-              </div>
-
-            </div>
-
-            <div class="bus-loading">
-              <div class="spinner-border text-danger" role="status">
-                <span class="visually-hidden">Loading...</span>
-              </div>
-            </div>
-          </div>
-
-
+          <img src="img/logoPTX.png" alt="logoPTX" style="width: 80%;" >  
+         
+        </div>
       </div>
 
 
@@ -267,6 +168,24 @@ crossorigin="anonymous" /> -->
 
   <!-- 地圖展示區 -->
   <div id="map"></div>
+
+  
+    <!-- Travel_Info_Modal(這邊不用管他打了什麼) -->
+    <div class="modal fade" id="travel_Info" tabindex="-1" aria-labelledby="travel_InfoLabel" aria-hidden="true" style="z-index: 9999">
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+          <div class="modal-header bg-white">
+            <h5 class="modal-title" id="travel_InfoLabel" style='color: #000'></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="travel_info_body">
+          </div>
+          <div class="modal-footer d-flex justify-content-center">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   <!-- Footer -->
   <footer>
