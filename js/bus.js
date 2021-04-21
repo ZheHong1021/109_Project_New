@@ -1,5 +1,6 @@
 $(function () {
 
+  // 得到目前公車的位置
   let get_CurrentBus_Pos = function (city, route) {
     $.ajax({
       url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeNearStop/City/' + city + '/' + route + '?$format=JSON',
@@ -73,7 +74,6 @@ $(function () {
 
     /* ==公車路線== */
     $.ajax({
-      // url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeByFrequency/City/' + city + '/' + route + '?$format=JSON',
       url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/StopOfRoute/City/' + city + '/' + route + '?$format=JSON',
       dataType: 'json',
       contentType: 'json',
@@ -105,21 +105,6 @@ $(function () {
           $(`div#${uid}`).append(`<h2>Count = ${count}</h2>`);
           $(`div#${uid}`).append('<hr>');
         });
-        //   $(`div#r_${route_id}`).append(`<div id='${bus_SubRoute_UID}'></div>`);
-
-        //   $(`div#${bus_SubRoute_UID}`).append('<h2>' + result[value]['Stops'][0]['StopName']['Zh_tw'] + ' → ' + result[value]['Stops'][bus_Route_len - 1]['StopName']['Zh_tw'] + '</h2>');
-        //   $(`div#${bus_SubRoute_UID}`).append('<h2>往' + result[value]['Stops'][bus_Route_len - 1]['StopName']['Zh_tw'] + '</h2><hr>');
-
-        //   for (let i = 0; i < bus_Route_len; i++) {
-        //     let Stop_Name = result[value]['Stops'][i]['StopName']['Zh_tw'];
-        //     $(`div#${bus_SubRoute_UID}`).append('<h3 class="stop_Name">' + Stop_Name + '</h3>');
-        //     count++;
-        //   }
-        //   $(`div#${bus_SubRoute_UID}`).append(`<h2>Count = ${count}</h2>`);
-        //   $(`div#${bus_SubRoute_UID}`).append('<hr>');
-        // });
-
-
       },
       // 當Ajax請求失敗
       error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -141,7 +126,6 @@ $(function () {
     // UI擷取所有縣市公車的路線總資訊
     $.ajax({
       url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeByFrequency/City/' + city + '?$format=JSON',
-      // url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeByFrequency/City/Tainan?$format=JSON',
       dataType: 'json',
       contentType: 'json',
       headers: GetAuthorizationHeader(), // 憑證 API token

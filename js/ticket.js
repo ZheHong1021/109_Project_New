@@ -24,8 +24,8 @@ $(function () {
         const select_box_Origin = document.querySelector('#Origin_StationName_List');
         const select_box_Destination = document.querySelector('#Destination_StationName_List');
         // 點選下拉選單後必須先把原把 options的資料給清空，不然會重疊
-        select_box_Origin.length = 0;
-        select_box_Destination.length = 0;
+        // select_box_Origin.length = 0;
+        // select_box_Destination.length = 0;
 
         // 插入圖片，透過點選連結可以 show出來
         $('img.routing-img').attr('srcset', "img/mrt/" + route + ".jpg");
@@ -66,7 +66,17 @@ $(function () {
   select_Route("KRTC");
   // 當下拉選單有變動時，就呼叫函式
   $('select#City_List').on('change', function () {
-    select_Route($(this).val());
+    let select_val = $(this).val();
+    const select_box_Origin = document.querySelector('#Origin_StationName_List');
+    const select_box_Destination = document.querySelector('#Destination_StationName_List');
+    // 點選下拉選單後必須先把原把 options的資料給清空，不然會重疊
+    select_box_Origin.length = 0;
+    select_box_Destination.length = 0;
+    $('div.bus-loading').show();
+    setTimeout(function(){
+      select_Route(select_val);
+      $('div.bus-loading').hide();
+    }, 1500);
   });
   /* 下拉式選單設定 (End) */
 

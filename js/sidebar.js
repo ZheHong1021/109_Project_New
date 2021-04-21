@@ -2,6 +2,14 @@ $(function () {
 
   // tra-sidebar-body
   let tra_html = `
+  <!-- body -->
+  <div class = "alert alert-primary fade show d-flex justify-content-center" role = "alert" >
+      <div id='home_result' class = "alert-body text-center">
+          <p>這部分可能會有Bug，如有問題請見諒😓</p>
+          <p>本團隊會盡快修復正常😤</p>
+      </div>
+      </div>
+
    <div class='container-List'>
           <div class="TRA_Origination">
             <select id="TRA_Origination_Station_List" class="selectpicker" data-live-search="true" data-none-results-text = "沒有搜尋到關鍵字：{0}">
@@ -30,11 +38,19 @@ $(function () {
         <div class="alert alert-warning  fade show d-flex justify-content-center" role="alert">
           <div id='tra_result' lass="alert-body text-center">尚無查詢紀錄</div>
         </div>
+      
   `;
 
   // mrt-sidebar-body
   let mrt_html =
     `<div class="container-List">
+      <div class="bus-loading" style = "padding: 10px 20px; background-color: #eee; border-radius: 20px;">
+        <div class = "d-flex justify-content-center align-items-center">
+      <div class="spinner-border text-danger" role="status" ></div>
+        <span class = 'mx-2'>Loading...</span>
+        </div>
+      </div>
+
     <div class="City d-flex my-3">
       <label for="City_List" class="select_Label">縣市</label>
       <select class="form-select form-select-sm" id="City_List" aria-label="Default select example">
@@ -49,7 +65,6 @@ $(function () {
     <div class="Origin_Station d-flex my-3">
       <label for="Origin_StationName_List " class='select_Label'>起站</label>
       <select class="form-select form-select-sm" id="Origin_StationName_List" aria-label="Default select example">
-
       </select>
     </div>
 
@@ -364,14 +379,14 @@ $(function () {
   let card_html = `
   <!-- body -->
   <div class = "alert alert-primary fade show d-flex justify-content-center" role = "alert" >
-      <div id='mrt_result' class = "alert-body text-center">尚無功能，暫請等待</div>
+      <div id='home_result' class = "alert-body text-center">尚無功能，暫請等待</div>
       <!--<p><button onclick="addUser()">add user</button></b>--!>
       </div>`;
 
   let config_html = `
   <!-- body -->
   <div class = "alert alert-primary fade show d-flex justify-content-center" role = "alert" >
-      <div id='mrt_result' class = "alert-body text-center">尚無功能，暫請等待</div>
+      <div id='home_result' class = "alert-body text-center">尚無功能，暫請等待</div>
       <!--<p><button onclick="addUser()">add user</button></b>--!>
       </div>`;
 

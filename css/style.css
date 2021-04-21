@@ -456,6 +456,7 @@ footer {
 }
 
 
+
 div.singleCity {
 	display: none;
 }
@@ -805,5 +806,4 @@ div.travel_Image_Container{
 .travel_Image_Container img{
 	width: 100%;
 	height: auto;
-	
 }
