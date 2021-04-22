@@ -60,42 +60,52 @@ $(function(){
           contentType: 'json',
           headers: GetAuthorizationHeader(), // 憑證 API token
           success: function (result) {
-            console.log(result);
-              let estimateTime;
+            // console.log(result);
+              let estimateTime_Status;
               if(result[0]['EstimateTime'] != null){
-                  if(parseInt(result[0]['EstimateTime'] / 60) == 0){
-                    estimateTime = "進站中";
+                let estimateTime = result[0]['EstimateTime'];
+
+                // 如果當前有一筆以上的估計時間，我們要優先取距離現在最少時間的估計時間，如只有一筆就不影響
+                if(Object.keys(result).length > 1){
+                  for(let i = 1 ; i < Object.keys(result).length; i++){
+                    if(result[i]['EstimateTime'] < estimateTime ){
+                      estimateTime = result[i]['EstimateTime'];
+                    }
+                  }
+                }
+                  if(parseInt(estimateTime / 60) == 0){
+                    estimateTime_Status = "進站中";
                     $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
                     $(`span[data-stopName = "${stopName}"]`).addClass("bg-danger");
-                  }else if(parseInt(result[0]['EstimateTime'] / 60) <= 3){
-                    estimateTime = "即將進站";
+                  }else if(parseInt(estimateTime / 60) <= 3){
+                    estimateTime_Status = "即將進站";
                     $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
                     $(`span[data-stopName = "${stopName}"]`).addClass("bg-warning");
                   }else{
-                    estimateTime = parseInt(result[0]['EstimateTime'] / 60) + "分";
+                    estimateTime_Status = parseInt(estimateTime / 60) + "分";
                   }
                 }else if(result[0]['StopStatus'] == 1){
-                    estimateTime = "尚未發車";
+                  estimateTime_Status = "尚未發車";
                     $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
                     $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
                 }
                 else if(result[0]['StopStatus'] == 2){
-                  estimateTime = "此站不停靠";
+                  estimateTime_Status = "此站不停靠";
                   $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
                   $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
               }
                 else if(result[0]['StopStatus'] == 4){
-                  estimateTime = "今日停駛";
+                  estimateTime_Status = "今日停駛";
                   $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
                   $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
               }
               else{
-                  estimateTime = result[0]['NextBusTime'] ? result[0]['NextBusTime'].substr(result[0]['NextBusTime'].indexOf("T") + 1, 5 ) : "末班已駛";
+                estimateTime_Status = result[0]['NextBusTime'] ? result[0]['NextBusTime'].substr(result[0]['NextBusTime'].indexOf("T") + 1, 5 ) : "末班已駛";
                   $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
                   $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
               }
 
-              $(`span[data-stopName = "${stopName}"]`).html(`${estimateTime}`);
+              $(`span[data-stopName = "${stopName}"]`).html(`${estimateTime_Status}`);
               
           },
           // 當Ajax請求失敗
@@ -115,7 +125,6 @@ $(function(){
       $('div.haha').html('');
       $('h2.count').html('');
      
-      
       // 得到 HeadSign XX - XX
       // 往XXX
       let to_Station = direct == 0 ? result_BusInfo[0]['DestinationStopNameZh'] : result_BusInfo[0]['DepartureStopNameZh'];
