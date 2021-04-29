@@ -634,6 +634,7 @@ div.city_container img {
 }
 
 
+
 .travel_Category {
 	display: none;
 }
@@ -662,7 +663,8 @@ div.searchBox i {
 	transition: .6s;
 }
 
-div.filter_Container {
+div.filter_Container_Travel,
+div.filter_Container_Food{
 	/* position: relative; */
 	margin-top: 10px;
 	width: 100%;
@@ -685,7 +687,8 @@ h2.filter_header {
 	margin-bottom: 5px;
 }
 
-.filter_Container span {
+.filter_Container_Food span,
+.filter_Container_Travel span{
 	padding: 10px;
 	font-size: 18px;
 	margin: 5px;

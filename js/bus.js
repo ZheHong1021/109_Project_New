@@ -26,60 +26,160 @@ $(function () {
     });
   }
 
-  bus_update_Time =  function(city_name, route_name, route_UID, direct, stopName){
+  // bus_update_Time =  function(city_name, route_name, route_UID, direct, stopName){
+  //   let filter = city_name == 'Tainan'? `(Direction eq ${direct} OR Direction eq 255)` : `Direction eq ${direct}`;
+  //   $.ajax({
+  //     url: `https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/${city_name}/${route_name}?$select=Direction,PlateNumb,NextBusTime,EstimateTime,StopName&$filter=RouteUID%20eq%20'${route_UID}'%20AND%20StopName%2FZh_tw%20eq%20'${stopName}'%20AND%20${filter}&$format=JSON`,
+  //     // url: `https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/${city_name}/${route_name}?$filter=RouteUID%20eq%20'${route_UID}'%20AND%20StopName%2FZh_tw%20eq%20'${stopName}'%20AND%20(Direction%20eq%20${direct}%20OR%20Direction%20eq%20255)&$format=JSON`,
+  //       dataType: 'json',
+  //       contentType: 'json',
+  //       headers: GetAuthorizationHeader(), // 憑證 API token
+  //       success: function (result) {
+  //         console.log(result);
+  //         let estimateTime_Status;
+  //         if(result[0]['EstimateTime'] != null){
+  //           let estimateTime = result[0]['EstimateTime'];
+
+  //           // 如果當前有一筆以上的估計時間，我們要優先取距離現在最少時間的估計時間，如只有一筆就不影響
+  //           if(Object.keys(result).length > 1){
+  //             for(let i = 1 ; i < Object.keys(result).length; i++){
+  //               if(result[i]['EstimateTime'] < estimateTime ){
+  //                 estimateTime = result[i]['EstimateTime'];
+  //               }
+  //             }
+  //           }
+  //             if(parseInt(estimateTime / 60) == 0){
+  //               estimateTime_Status = "進站中";
+  //               $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+  //               $(`span[data-stopName = "${stopName}"]`).addClass("bg-danger");
+  //             }else if(parseInt(estimateTime / 60) <= 3){
+  //               estimateTime_Status = "即將進站";
+  //               $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+  //               $(`span[data-stopName = "${stopName}"]`).addClass("bg-warning");
+  //             }else{
+  //               estimateTime_Status = parseInt(estimateTime / 60) + "分";
+  //             }
+  //           }
+  //           else if(result[0]['StopStatus'] == 1){
+  //             estimateTime_Status = result[0]['NextBusTime'] ? result[0]['NextBusTime'].substr(result[0]['NextBusTime'].indexOf("T") + 1, 5 ) : "尚未發車";
+  //               $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+  //               $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
+  //           }
+  //           else if(result[0]['StopStatus'] == 2){
+  //             estimateTime_Status = "此站不停靠";
+  //             $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+  //             $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
+  //         }
+  //           else if(result[0]['StopStatus'] == 4){
+  //             estimateTime_Status = "今日停駛";
+  //             $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+  //             $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
+  //         }
+  //         else{
+  //           estimateTime_Status = result[0]['NextBusTime'] ? result[0]['NextBusTime'].substr(result[0]['NextBusTime'].indexOf("T") + 1, 5 ) : "末班已駛";
+  //             $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+  //             $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
+  //         }
+
+  //         $(`span[data-stopName = "${stopName}"]`).html(`${estimateTime_Status}`);
+          
+  //     },
+  //       // 當Ajax請求失敗
+  //       error: function (XMLHttpRequest, textStatus, errorThrown) {
+  //         console.log(XMLHttpRequest);
+  //         console.log(textStatus);
+  //         console.log(errorThrown);
+  //       }
+  //     });
+  // };
+
+
+  bus_update_Time =  function(city_name, route_name, route_UID, direct){
+    let filter = city_name == 'Tainan'? `(Direction eq ${direct} OR Direction eq 255)` : `Direction eq ${direct}`;
     $.ajax({
-      url: `https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/${city_name}/${route_name}?$filter=RouteUID%20eq%20'${route_UID}'%20AND%20StopName%2FZh_tw%20eq%20'${stopName}'%20AND%20(Direction%20eq%20${direct}%20OR%20Direction%20eq%20255)&$format=JSON`,
+      url: `https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/${city_name}/${route_name}?$select=Direction,PlateNumb,NextBusTime,EstimateTime,StopName&$filter=RouteUID%20eq%20'${route_UID}'%20AND%20${filter}&$format=JSON`,
+      // url: `https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/${city_name}/${route_name}?$filter=RouteUID%20eq%20'${route_UID}'%20AND%20StopName%2FZh_tw%20eq%20'${stopName}'%20AND%20(Direction%20eq%20${direct}%20OR%20Direction%20eq%20255)&$format=JSON`,
         dataType: 'json',
         contentType: 'json',
         headers: GetAuthorizationHeader(), // 憑證 API token
         success: function (result) {
+          console.log(result);
           let estimateTime_Status;
-          if(result[0]['EstimateTime'] != null){
-            let estimateTime = result[0]['EstimateTime'];
 
-            // 如果當前有一筆以上的估計時間，我們要優先取距離現在最少時間的估計時間，如只有一筆就不影響
-            if(Object.keys(result).length > 1){
-              for(let i = 1 ; i < Object.keys(result).length; i++){
-                if(result[i]['EstimateTime'] < estimateTime ){
-                  estimateTime = result[i]['EstimateTime'];
+          Object.keys(result).forEach(function (value, key) {
+            let stopName = result[value]['StopName']['Zh_tw'];
+            if( total_Stops.includes(stopName) ){
+
+            if(result[value]['EstimateTime'] != null){
+                let estimateTime = result[value]['EstimateTime'];
+  
+                // 放置有符合 StopName的 index值
+                var indices = [];
+                var array = ['a', 'b', 'a', 'c', 'a', 'd'];
+                var idx = total_Stops.indexOf(stopName);
+                // 當有找到則進入迴圈，沒找到則無
+                while (idx != -1) {
+                  // 如果有找到，就將其 index加入到其中
+                  indices.push(idx);
+                  idx = total_Stops.indexOf(stopName, idx + 1);
                 }
-              }
-            }
-              if(parseInt(estimateTime / 60) == 0){
-                estimateTime_Status = "進站中";
-                $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
-                $(`span[data-stopName = "${stopName}"]`).addClass("bg-danger");
-              }else if(parseInt(estimateTime / 60) <= 3){
-                estimateTime_Status = "即將進站";
-                $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
-                $(`span[data-stopName = "${stopName}"]`).addClass("bg-warning");
-              }else{
-                estimateTime_Status = parseInt(estimateTime / 60) + "分";
-              }
-            }
-            else if(result[0]['StopStatus'] == 1){
-              estimateTime_Status = "尚未發車";
-                $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
-                $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
-            }
-            else if(result[0]['StopStatus'] == 2){
-              estimateTime_Status = "此站不停靠";
-              $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
-              $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
-          }
-            else if(result[0]['StopStatus'] == 4){
-              estimateTime_Status = "今日停駛";
-              $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
-              $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
-          }
-          else{
-            estimateTime_Status = result[0]['NextBusTime'] ? result[0]['NextBusTime'].substr(result[0]['NextBusTime'].indexOf("T") + 1, 5 ) : "末班已駛";
-              $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
-              $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
-          }
 
-          $(`span[data-stopName = "${stopName}"]`).html(`${estimateTime_Status}`);
-          
+                // 如果當前有一筆以上的估計時間，我們要優先取距離現在最少時間的估計時間，如只有一筆就不影響
+                // if(Object.keys(result).length > 1){
+                //   for(let i = 1 ; i < Object.keys(result).length; i++){
+                //     if(result[i]['EstimateTime'] < estimateTime ){
+                //       estimateTime = result[i]['EstimateTime'];
+                //     }
+                //   }
+                // }
+
+
+                if(indices.length > 1){
+                  for(let i = 1 ; i < indices.length; i++){
+                        if(result[i]['EstimateTime'] < estimateTime ){
+                          estimateTime = result[i]['EstimateTime'];
+                        }
+                      }
+                }
+
+                  if(parseInt(estimateTime / 60) == 0){
+                    estimateTime_Status = "進站中";
+                    $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+                    $(`span[data-stopName = "${stopName}"]`).addClass("bg-danger");
+                  }else if(parseInt(estimateTime / 60) <= 3){
+                    estimateTime_Status = "即將進站";
+                    $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+                    $(`span[data-stopName = "${stopName}"]`).addClass("bg-warning");
+                  }else{
+                    estimateTime_Status = parseInt(estimateTime / 60) + "分";
+                  }
+                }
+                else if(result[value]['StopStatus'] == 1){
+                  estimateTime_Status = result[value]['NextBusTime'] ? result[value]['NextBusTime'].substr(result[value]['NextBusTime'].indexOf("T") + 1, 5 ) : "尚未發車";
+                    $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+                    $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
+                }
+                else if(result[value]['StopStatus'] == 2){
+                  estimateTime_Status = "此站不停靠";
+                  $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+                  $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
+              }
+                else if(result[value]['StopStatus'] == 4){
+                  estimateTime_Status = "今日停駛";
+                  $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+                  $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
+              }
+              else{
+                estimateTime_Status = result[value]['NextBusTime'] ? result[value]['NextBusTime'].substr(result[value]['NextBusTime'].indexOf("T") + 1, 5 ) : "末班已駛";
+                  $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+                  $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
+              }
+    
+              $(`span[data-stopName = "${stopName}"]`).html(`${estimateTime_Status}`);
+            }
+
+
+          });          
       },
         // 當Ajax請求失敗
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -89,6 +189,10 @@ $(function () {
         }
       });
   };
+
+
+
+
 
 
   let result_BusInfo;
@@ -112,6 +216,8 @@ $(function () {
   }
 
 
+  let total_Stops = [];
+  let total_Stops_id = [];
   
   // 找尋單一路線的資訊 (不設 let，因為這樣 HTML才讀得到這個函式(onclick))
     click_bus_info = function (city, route, route_id, direct) {
@@ -165,7 +271,9 @@ $(function () {
         contentType: 'json',
         headers: GetAuthorizationHeader(), // 憑證 API token
         success: function (result) {
-          let total_Stops = [];
+          // let total_Stops = [];
+          total_Stops = [];
+          total_Stops_id = [];
           let bus_Route_UID ;
   
           Object.keys(result).forEach(function (value, key) {
@@ -174,9 +282,11 @@ $(function () {
   
             for (let i = 0; i < bus_Route_len; i++) {
               let stopName =  result[value]['Stops'][i]['StopName']['Zh_tw'];
+              let stopName_id =  result[value]['Stops'][i]['StopID'];
               if(!total_Stops.includes(stopName)){
                 // 從第 i中插入一個新的站名
                 total_Stops.splice(i, 0, stopName);
+                total_Stops_id.splice(i, 0, stopName_id);
               }
             }
           });
@@ -186,10 +296,6 @@ $(function () {
           <div id='${bus_Route_UID}'>
           <button id="bus_update" data-direct = '0' class="btn ${direct == 0 ? "btn-primary": "btn-secondary"} m-1 fw-bolder"></button>
           <button id="bus_update" data-direct = '1' class="btn ${direct == 1 ? "btn-primary": "btn-secondary"} m-1 fw-bolder"></button>
-         
-              <h2 class = "fw-bolder text-info">
-                ${result_BusInfo[0]['DepartureStopNameZh']} - ${result_BusInfo[0]['DestinationStopNameZh']} (往${to_Station})
-              </h2>
           </div>
           `);
   
@@ -198,14 +304,17 @@ $(function () {
           
           for (let i = 0; i < total_Stops.length; i++) {
             $(`div#${bus_Route_UID}`).append(`
-              <h2 id = "stop_Name" data-stopName = "${total_Stops[i]}">
+              <h2 id = "stop_Name" data-stopName = "${total_Stops[i]}" data-stopID="${total_Stops_id[i]}">
                   <span class = "badge bg-success" data-stopName = "${total_Stops[i]}">
                   </span>
                   ${total_Stops[i]}
               </h2> 
             `);
-            bus_update_Time(city, route, route_id, direct, total_Stops[i]);
+            // too many requests
+            // bus_update_Time(city, route, route_id, direct, total_Stops[i]);
           }
+          bus_update_Time(city, route, route_id, direct);
+
 
           setTimeout(function(){
             get_CurrentBus_Pos(city, route, direct);
@@ -238,20 +347,21 @@ $(function () {
   };
 
   
- 
-
 
   // 紀錄該城市的路線
   let route = [];
   let route_id = [];
+  let route_start = [];
+  let route_last = [];
   let master_City = ['Taipei', 'NewTaipei', 'Taoyuan', 'Taichung', 'Tainan', 'Kaohsiung'];
   let get_bus_info = function (city) {
     route = [];
     route_id = [];
+    route_start = [];
+    route_last = [];
     // UI擷取所有縣市公車的路線總資訊
     $.ajax({
-      // url: 'https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeByFrequency/City/' + city + '?$format=JSON',
-      url: `https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/${city}?$select=RouteName%2C%20RouteUID&$format=JSON`,
+      url: `https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/${city}?$$select=RouteUID%2CRouteName%2CDepartureStopNameZh%20%2CDestinationStopNameZh%20&$orderby=RouteName%2FZh_tw%20asc&$format=JSON`,
       dataType: 'json',
       contentType: 'json',
       headers: GetAuthorizationHeader(), // 憑證 API token
@@ -259,9 +369,13 @@ $(function () {
         Object.keys(result).forEach(function (value, key) {
           let bus_Route = result[value]['RouteName']['Zh_tw'];
           let bus_Route_id = result[value]['RouteUID'];
+          let bus_Route_start = result[value]['DepartureStopNameZh'];
+          let bus_Route_last = result[value]['DestinationStopNameZh'];
           if (route.includes(bus_Route) === false) {
             route.push(bus_Route);
             route_id.push(bus_Route_id);
+            route_start.push(bus_Route_start);
+            route_last.push(bus_Route_last);
           }
         });
 
@@ -276,7 +390,7 @@ $(function () {
               <div class="accordion-item" >
                 <h2 class="accordion-header" id="headingOne">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c_${i}" aria-expanded="true" aria-controls="c_${i}" data-route="${route_id[i]}" onclick=click_bus_info('${city}','${route[i]}','${route_id[i]}',0)>
-                  ${route[i]}
+                  ${route[i]} (${route_start[i]} - ${route_last[i]})
                   </button>
                 </h2>
 
@@ -351,6 +465,7 @@ $(function () {
     $('div.singleCity').hide(0);
     $('div.Bus-City-info').show(0);
     Route_Select = [];
+    $('.list-route-group').html('');
     $('.bus_Routes_active *').css('background-color', '#fff');
   });
 
@@ -367,14 +482,15 @@ $(function () {
     // 透過點選路線後，提供該路線的所有公車動線(運用到 Boostrap的 accordion)
     for (let i = 0; i < route.length; i++) {
       // 捕捉到跟 span中的 route_info相同則匯入進去
-      if (route[i].includes($(this).attr('route_info'))) {
+      let route_filter = $(this).attr('getroute-first') ? route[i].includes($(this).attr('route_info')): route[i].substr(0, 1) == $(this).attr('route_info');
+        if(route_filter){
         count += 1;
-
+        
         $('.list-route-group').append(`
         <div class="accordion-item" >
           <h2 class="accordion-header" id="headingOne">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c_${i}" aria-expanded="true" aria-controls="c_${i}" data-route="${route_id[i]}" onclick=click_bus_info('${$(this).parent().attr('city_name_EN')}','${route[i]}','${route_id[i]}',0)>
-            ${route[i]}
+            ${route[i]} (${route_start[i]} - ${route_last[i]})
             </button>
           </h2>
 
@@ -396,12 +512,14 @@ $(function () {
             }
           }
           if (is_Other) {
+        //     console.log(route[i]);
+        // console.log(route_id[i]);
             count += 1;
             $('.list-route-group').append(`
               <div class="accordion-item" >
                 <h2 class="accordion-header" id="headingOne">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c_${i}" aria-expanded="true" aria-controls="c_${i}" data-route="${route_id[i]}" onclick=click_bus_info('${$(this).parent().attr('city_name_EN')}','${route[i]}','${route_id[i]}',0)>
-                  ${route[i]}
+                  ${route[i]} (${route_start[i]} - ${route_last[i]})
                   </button>
                 </h2>
 

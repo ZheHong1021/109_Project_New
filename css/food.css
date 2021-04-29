@@ -1,0 +1,54 @@
+.city_container .txt {
+	/* 用絕對定位在 .item身上 */
+	position: absolute;
+
+	/* 與圖片對齊 */
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+
+	padding: 20px;
+
+	/* 背景色透明 */
+	background-color: rgba(0, 0, 0, .6);
+
+	/* Flex */
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+
+	/* 動畫 */
+	opacity: 0;
+	transition: opacity .5s;
+}
+
+.city_container:hover .txt {
+	opacity: 1;
+}
+
+
+.city_container h2 {
+	font-size: 28px;
+	color: #ff0;
+	font-weight: 500;
+}
+
+/* 跑出一條線 */
+.city_container h2:after {
+	content: "";
+	display: block;
+
+	/* 摸到從0%到100% */
+	width: 0%;
+	/* 線的高度 */
+	height: 2px;
+	margin: 10px 0;
+	background-color: #ff0;
+	transition: width .5s .2s;
+}
+
+/* 被摸到時出現 */
+.city_container:hover h2:after {
+	width: 100%;
+}
