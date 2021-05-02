@@ -395,6 +395,7 @@ $(function () {
 <div class="singleCity" >
   <div class="busInfo">
     <h2 id="city_Name"></h2>
+
     <div class="bus_info_List">
       <div class="bus_Routes" city_name_EN = 'Taipei'>
         <span route_info = '紅'>紅線</span>
@@ -455,7 +456,6 @@ $(function () {
       </div>
     </div>
     <button type="button" class="btn btn-secondary go_Bus_Total">上一頁</button>
-
 
       <div class="accordion list-route-group" id="accordionExample">
 
