@@ -29,16 +29,16 @@ $(function () {
 
   bus_update_Time =  function(city_name, route_name, route_UID, direct){
     let select = `Direction,PlateNumb,NextBusTime,EstimateTime,StopName`;
-    // Tainan的 SubRouteUID的最後一個字為 1 代表Direct 0；2則代表 Direct 1
+    // Tainan的 SubRouteUID的最後一個字為 1 代表Direct 0；2則代表 Direct 1； OR StopStatus 大於等於 2(因為當該站點不停靠、末班已駛的話就不會有 SubRouteUID)
     let Tainan_Swith = direct == 0 ? '1': '2';
-    let filter =  city_name == 'Tainan'? `RouteUID eq '${route_UID}' AND endswith(SubRouteUID,'${Tainan_Swith}')` : `RouteUID eq '${route_UID}' AND Direction eq ${direct}`;
+    let filter =  city_name == 'Tainan'? `RouteName/Zh_tw eq '${route_name}' AND (endswith(SubRouteUID,'${Tainan_Swith}') OR StopStatus ge 2)` : `RouteUID eq '${route_UID}' AND Direction eq ${direct}`;
     $.ajax({
       url: `https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/${city_name}/${route_name}?$select=${select}&$filter=${filter}&$format=JSON`,
         dataType: 'json',
         contentType: 'json',
         headers: GetAuthorizationHeader(), // 憑證 API token
         success: function (result) {
-          console.log(result);
+          // console.log(result);
           let estimateTime_Status;
 
           Object.keys(result).forEach(function (value, key) {
@@ -48,7 +48,6 @@ $(function () {
               // 當StopStatus値為0時，EstimateTime有値。
             if(result[value]['EstimateTime'] != null){
                 let estimateTime = result[value]['EstimateTime'];
-
                 // 放置有符合 StopName的 index值
                 var indices = [];
                 var idx = total_Stops.indexOf(stopName);
@@ -237,12 +236,10 @@ $(function () {
             $(`button[data-direct = '0']`).html('往' + result_BusInfo[0]['DestinationStopNameZh']);
             $(`button[data-direct = '1']`).html('往' + result_BusInfo[0]['DepartureStopNameZh']);
             
-            // <!-- 預設為末班已駛，因為台南黃3公車有一些站她沒有 SubRouteUID，在bus_update_Time函式無法去判斷 --!>
             for (let i = 0; i < total_Stops.length; i++) {
               $(`div#${bus_Route_UID}`).append(`
                 <h2 id = "stop_Name" data-stopName = "${total_Stops[i]}" data-stopID="${total_Stops_id[i]}">
-                    <span class = "badge bg-secondary" data-stopName = "${total_Stops[i]}">
-                    末班已駛
+                    <span class = "badge bg-success" data-stopName = "${total_Stops[i]}">
                     </span>
                     ${total_Stops[i]}
                 </h2> 
