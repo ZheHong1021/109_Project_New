@@ -245,126 +245,6 @@ $(function () {
   tileLoadingProgress.addTo(map);
 
 
-
-
-  // // 把 Ajax用成函式，在其他功能的使用上可以透過呼叫來執行。
-  // var filter_Map_Data = function (func) {
-  //   /* AJax  */
-  //   $.ajax({
-  //     url: "osm.php",
-  //     data: {
-  //       // check_val: checked_arr,
-  //       action: func, // ajax到 OSM.php，並執行 Get_Transportation函式
-  //     },
-  //     dataType: 'json',
-  //     type: 'post',
-  //     headers: GetAuthorizationHeader(), // 憑證 API token
-  //     success: function (result) {
-  //       // console.log(result); // 確認 Ajax回傳的結果
-
-  //       // 參考下方網址(Foreach)
-  //       // https://stackoverflow.com/questions/32168394/how-do-i-loop-through-deeply-nested-json-object
-  //       Object.keys(result).forEach(function (value, key) {
-  //         result[value].forEach(function (v, k) {
-
-  //           /* 將從 OSM.php中所擷取到的資料用變數存放 */
-  //           var name = v.station_info.station_name;
-  //           var station_address = v.station_info.station_address;
-  //           var station_category = v.station_info.category;
-  //           var station_weather = v.weather;
-  //           var latitude = v.coordinates.latitude;
-  //           var longitude = v.coordinates.longitude;
-
-  //           /* 參考資料 */
-  //           // https://leafletjs.com/examples/geojson/
-  //           // 透過 geoJSON來將我們從 OSM.php中所抓取到的 json呈現在地圖座標
-  //           var geojsonFeature = {
-  //             // 型別Feature運用在一些函式(makePopupContent、onEachFeature)做使用
-  //             "type": "Feature",
-
-  //             // 將擷取到資料再運用 json方式存放在 geoJSON中，之後可以拿來做使用
-  //             "properties": {
-  //               "name": name,
-  //               "address": station_address,
-  //               "category": station_category,
-  //               "T": station_weather.T,
-  //               // "AT": station_weather.AT,
-  //               "PoP6h": station_weather.PoP6h,
-  //               // "Wx": station_weather.Wx,
-  //               // "RH": station_weather.RH,
-  //             },
-  //             "geometry": {
-  //               "type": "Point",
-  //               "coordinates": [longitude, latitude]
-  //             }
-  //           };
-
-
-  //           // 最後再將上述設定的內容加入到 map當中
-  //           L.geoJSON(geojsonFeature, {
-  //             // function.js中的onEachFeature函式，目的讓這些marker有 popup的效果
-  //             onEachFeature: onEachFeature,
-  //             // 用來顯示 marker icon
-  //             pointToLayer: function (feature, latlng) {
-  //               return L.marker(latlng, {
-  //                 icon: TRA_Marker
-  //               });
-  //             },
-  //             filter: function (feature, layer) {
-  //               return (feature.properties.category === "台鐵");
-  //             }
-  //           }).addTo(markers.train);
-
-  //           // // 最後再將上述設定的內容加入到 map當中
-  //           // L.geoJSON(geojsonFeature, {
-  //           //   // function.js中的onEachFeature函式，目的讓這些marker有 popup的效果
-  //           //   onEachFeature: onEachFeature,
-  //           //   // 用來顯示 marker icon
-  //           //   pointToLayer: function (feature, latlng) {
-  //           //     return L.marker(latlng, {
-  //           //       icon: redIcon
-  //           //     });
-  //           //   },
-  //           //   filter: function (feature, layer) {
-  //           //     return (feature.properties.category === "捷運");
-  //           //   }
-  //           // }).addTo(markers.mrt);
-
-  //           // 最後再將上述設定的內容加入到 map當中
-  //           // L.geoJSON(geojsonFeature, {
-  //           //   // function.js中的onEachFeature函式，目的讓這些marker有 popup的效果
-  //           //   onEachFeature: onEachFeature,
-  //           //   // 用來顯示 marker icon
-  //           //   pointToLayer: function (feature, latlng) {
-  //           //     return L.marker(latlng, {
-  //           //       icon: LRT_Marker
-  //           //     });
-  //           //   },
-  //           //   filter: function (feature, layer) {
-  //           //     return (feature.properties.category === "輕軌");
-  //           //   }
-  //           // }).addTo(markers.lrt);
-
-
-  //         })
-  //         // foeEach(End)
-
-  //       });
-  //       // foeEach(End)
-  //     },
-  //     error: function (XMLHttpRequest, textStatus, errorThrown) {
-  //       console.log(XMLHttpRequest);
-  //       console.log(textStatus);
-  //       console.log(errorThrown);
-  //     }
-  //   })
-
-  // };
-  // // 一開始進來時，就執行 Ajax (參數一: 在PHP中使用的函數； 參數二: 為目前搜尋欄輸入的值)
-  // filter_Map_Data('Get_Transportation');
-
-
-
   /* ==台鐵 Marker== */
   $.ajax({
     url: 'https://ptx.transportdata.tw/MOTC/v2/Rail/TRA/Station?$format=JSON',
@@ -619,6 +499,8 @@ $(function () {
                 });
               },
             }).addTo(marker);
+
+
           });
         }
       },

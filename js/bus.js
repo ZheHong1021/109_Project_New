@@ -1,16 +1,17 @@
 $(function () {
 
-  // 得到目前公車的位置
-  let get_CurrentBus_Pos = function (city, route, direct) {
+  // 得到目前公車的站點
+  let get_CurrentBus_Stop = function (city, route_id, direct) {
     $('h2#stop_Name span#current_bus').html('');
-
     $.ajax({
-      url: `https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeNearStop/City/${city}/${route}?$select=PlateNumb,StopName&$filter=RouteName%2FZh_tw%20eq%20'${route}'%20AND%20Direction%20eq%20${direct}&$format=JSON`,
+      url: `https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeNearStop/City/${city}?$select=PlateNumb,StopName&$filter=RouteUID eq '${route_id}' AND Direction eq ${direct}&$format=JSON`,
       dataType: 'json',
       contentType: 'json',
       headers: GetAuthorizationHeader(), // 憑證 API token
       success: function (result) {
+        // console.log(result);
         Object.keys(result).forEach(function (value, key) {
+
           let stopName = result[value]['StopName']['Zh_tw'];
           $(`h2[data-stopname = "${stopName}"]`).append(
             `<span class = 'badge bg-danger' id ='current_bus'>${result[value]['PlateNumb']}</span>`
@@ -26,19 +27,71 @@ $(function () {
     });
   }
 
+  // 得到目前公車的座標
+  let marker_Current_Pos;
+  let get_CurrentBus_Pos = function (city, route_id, direct) {
+    // if(markers_Bus_Current){
+    //   map.removeLayer(marker_Current_Pos);
+    // }
+
+
+    $.ajax({
+      url: `https://ptx.transportdata.tw/MOTC/v2/Bus/RealTimeByFrequency/City/${city}?$select=BusPosition,PlateNumb&$filter=RouteUID eq '${route_id}' AND Direction eq ${direct}&$format=JSON`,
+      dataType: 'json',
+      contentType: 'json',
+      headers: GetAuthorizationHeader(), // 憑證 API token
+      success: function (result) {
+        // console.log(result);
+        Object.keys(result).forEach(function (value, key) {
+
+          let lon = result[value]['BusPosition']['PositionLon'];
+          let lat = result[value]['BusPosition']['PositionLat'];
+
+
+          marker_Current_Pos = new L.marker(
+            [lat, lon],{
+              icon: L.AwesomeMarkers.icon({
+              markerColor: 'blue',
+              prefix: 'fa',
+              icon: 'bus'
+            })
+          }
+          ).addTo(map).bindPopup(`
+            <div>
+              <h2>目前公車位置
+                <span class = "badge bg-success">${result[value]['PlateNumb']}</span>
+              </h2>
+              <p>經度：${lat}</p>
+              <p>緯度：${lon}</p>
+            </div>
+            `);
+        });
+      },
+      // 當Ajax請求失敗
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        console.log(XMLHttpRequest);
+        console.log(textStatus);
+        console.log(errorThrown);
+      }
+    });
+  }
+
+
+
+
 
   bus_update_Time =  function(city_name, route_name, route_UID, direct){
     let select = `Direction,PlateNumb,NextBusTime,EstimateTime,StopName`;
     // Tainan的 SubRouteUID的最後一個字為 1 代表Direct 0；2則代表 Direct 1； OR StopStatus 大於等於 2(因為當該站點不停靠、末班已駛的話就不會有 SubRouteUID)
     let Tainan_Swith = direct == 0 ? '1': '2';
-    let filter =  city_name == 'Tainan'? `RouteName/Zh_tw eq '${route_name}' AND (endswith(SubRouteUID,'${Tainan_Swith}') OR StopStatus ge 2)` : `RouteUID eq '${route_UID}' AND Direction eq ${direct}`;
+    let filter =  city_name == 'Tainan'? `RouteUID eq '${route_UID}' AND (endswith(SubRouteUID,'${Tainan_Swith}') OR StopStatus ge 2)` : `RouteUID eq '${route_UID}' AND Direction eq ${direct}`;
     $.ajax({
-      url: `https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/${city_name}/${route_name}?$select=${select}&$filter=${filter}&$format=JSON`,
+      url: `https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/${city_name}/?$select=${select}&$filter=${filter}&$format=JSON`,
         dataType: 'json',
         contentType: 'json',
         headers: GetAuthorizationHeader(), // 憑證 API token
         success: function (result) {
-          // console.log(result);
+          console.log(result);
           let estimateTime_Status;
 
           Object.keys(result).forEach(function (value, key) {
@@ -109,7 +162,6 @@ $(function () {
               $(`span[data-stopName = "${stopName}"]`).html(`${estimateTime_Status}`);
             }
           });      
-
       },
         // 當Ajax請求失敗
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -125,7 +177,7 @@ $(function () {
   bus_Route_info = function(city_name, route_name, route_UID){
     result_BusInfo = [];
     $.ajax({
-      url: `https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/${city_name}/${route_name}?$select=RouteUID,DepartureStopNameZh%2C%20DestinationStopNameZh&$filter=RouteUID%20eq%20'${route_UID}'&$format=JSON`,
+      url: `https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/${city_name}/?$select=RouteUID,DepartureStopNameZh,DestinationStopNameZh&$filter=RouteUID%20eq%20'${route_UID}'&$format=JSON`,
         dataType: 'json',
         contentType: 'json',
         headers: GetAuthorizationHeader(), // 憑證 API token
@@ -140,17 +192,21 @@ $(function () {
         }
       });
   }
+  
 
 
   let total_Stops = [];
   let total_Stops_id = [];
-  
+
+  // 當點選該路線後，地圖會自己跑出該路線的所有站點座標
+  let markers_Bus_Current = new L.layerGroup();
+
   // 找尋單一路線的資訊 (不設 let，因為這樣 HTML才讀得到這個函式(onclick))
     click_bus_info = function (city, route, route_id, direct) {
     bus_Route_info(city, route, route_id);
 
     window.estimate_Bus = setTimeout(function(){
-    console.log('down-------');
+    // console.log('down-------');
 
 
     // 要用 window不然不會終止
@@ -174,29 +230,33 @@ $(function () {
     // 透過按鈕的 class 是否有 collapsed(true: 隱藏； false: 顯示)
     let is_show = $(`button[data-route="${route_id}"]`).hasClass('collapsed');
 
+    markers_Bus_Current.clearLayers();
+
     // 如果為 false，則進行。
     // ========IF Start========
     if (!is_show) {
 
       // 自動讀秒，延遲 1s
       window.countDown = setInterval(updateCountdown, 1000);
+     
 
       // 自動刷新車次時間，延遲 25s
       window.update_stopInfo = setInterval(function () {
         click_bus_info(city, route, route_id, direct);
-        get_CurrentBus_Pos(city, route, direct);
+        get_CurrentBus_Stop(city, route_id, direct);
+        get_CurrentBus_Pos(city, route_id, direct);
       }, 25000);
 
       // direct預設為 0 
-      let to_Station = direct == 0 ? result_BusInfo[0]['DestinationStopNameZh'] : result_BusInfo[0]['DepartureStopNameZh'];
+      // let to_Station = direct == 0 ? result_BusInfo[0]['DestinationStopNameZh'] : result_BusInfo[0]['DepartureStopNameZh'];
        /* ==公車路線== */
        $.ajax({
-        url: "https://ptx.transportdata.tw/MOTC/v2/Bus/StopOfRoute/City/" + city + "/" + route + "?$select=RouteUID%2C%20RouteName%2C%20Direction%2C%20Stops%2C%20SubRouteUID&$filter=RouteName%2FZh_tw%20eq%20'" + route + "'%20and%20Direction%20eq%20" + direct + "&$format=JSON",
+        url: `https://ptx.transportdata.tw/MOTC/v2/Bus/StopOfRoute/City/${city}?$select=RouteUID,RouteName,Direction,Stops,SubRouteUID&$filter=RouteUID eq '${route_id}' AND Direction eq ${direct}&$format=JSON`,
         dataType: 'json',
         contentType: 'json',
         headers: GetAuthorizationHeader(), // 憑證 API token
         success: function (result) {
-          console.log(result);  
+          // console.log(result);  
           // 如果有捕捉到站點，則進行；反之則無
           if(Object.keys(result).length > 0 ){
             total_Stops = [];
@@ -218,18 +278,60 @@ $(function () {
             for (let i = 0; i < maxLength; i++) {
                 let stopName =  result[max_index]['Stops'][i]['StopName']['Zh_tw'];
                 let stopName_id =  result[max_index]['Stops'][i]['StopID'];
+                let latitude = result[max_index]['Stops'][i]['StopPosition']['PositionLat'];
+                let longitude = result[max_index]['Stops'][i]['StopPosition']['PositionLon'];
+                
+                var geojsonFeature = {
+                  // 型別Feature運用在一些函式(makePopupContent、onEachFeature)做使用
+                  "type": "Feature",
+    
+                  // 將擷取到資料再運用 json方式存放在 geoJSON中，之後可以拿來做使用
+                  "properties": {
+                    "name": stopName,
+                    'category': '公車',
+                    "latitude": latitude,
+                    "longitude": longitude,
+                  },
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": [longitude, latitude]
+                  }
+                };
+    
+                // 最後再將上述設定的內容加入到 map當中
+                L.geoJSON(geojsonFeature, {
+                  // function.js中的onEachFeature函式，目的讓這些marker有 popup的效果
+                  onEachFeature: onEachFeature,
+                  // 用來顯示 marker icon
+                  pointToLayer: function (feature, latlng) {
+                    return L.marker(latlng, {
+                      icon: L.AwesomeMarkers.icon({
+                        markerColor: 'black',
+                        prefix: 'fa',
+                        icon: 'bus'
+                      })
+                    });
+                  },
+                }).addTo(markers_Bus_Current);
+
                 if(!total_Stops.includes(stopName)){
                   // 從第 i中插入一個新的站名
                   total_Stops.splice(i, 0, stopName);
                   total_Stops_id.splice(i, 0, stopName_id);
                 }
               }
-  
-  
+
+              // 將座標匯入到地圖中
+              markers_Bus_Current.addTo(map);
+
             $(`div#r_${route_id}`).append(`
             <div id='${bus_Route_UID}'>
             <button id="bus_update" data-direct = '0' class="btn ${direct == 0 ? "btn-primary": "btn-secondary"} m-1 fw-bolder"></button>
             <button id="bus_update" data-direct = '1' class="btn ${direct == 1 ? "btn-primary": "btn-secondary"} m-1 fw-bolder"></button>
+            <button id="goToMap" class="btn btn-warning m-1 fw-bolder">
+              <i class="fas fa-map-marker-alt" style='font-size: 24px; color: red;'></i>
+            </button> 
+
             </div>
             `);
     
@@ -248,22 +350,40 @@ $(function () {
               // bus_update_Time(city, route, route_id, direct, total_Stops[i]);
             }
             bus_update_Time(city, route, route_id, direct);
+
+            $('button#goToMap').on('click', function(){
+              let start_Lat = result[max_index]['Stops'][0]['StopPosition']['PositionLat'];
+              let start_Lng = result[max_index]['Stops'][0]['StopPosition']['PositionLon'];
+              let end_Lat = result[max_index]['Stops'][maxLength - 1]['StopPosition']['PositionLat'];
+              let end_Lng = result[max_index]['Stops'][maxLength - 1]['StopPosition']['PositionLon'];
+              map.fitBounds([
+                [start_Lat, start_Lng],
+                [end_Lat, end_Lng]  
+              ]);
+            });
   
   
             setTimeout(function(){
-              get_CurrentBus_Pos(city, route, direct);
+              get_CurrentBus_Stop(city, route_id, direct);
+              get_CurrentBus_Pos(city, route_id, direct);
             }, 1500);
   
 
             // 當 PTX中並未提供任何資料時才執行。
           }else{
             $(`div#r_${route_id}`).append(`
+            <div>
+            <button id="bus_update" data-direct = '0' class="btn ${direct == 0 ? "btn-primary": "btn-secondary"} m-1 fw-bolder"></button>
+            <button id="bus_update" data-direct = '1' class="btn ${direct == 1 ? "btn-primary": "btn-secondary"} m-1 fw-bolder"></button>
+            </div>    
             <!-- body -->
             <div class = "alert alert-warning fade show d-flex justify-content-center" role = "alert" >
                 <div id='home_result' class = "alert-body text-center">目前並未提供該路線的查詢</div>
                 <!--<p><button onclick="addUser()">add user</button></b>--!>
             </div>
             `);
+            $(`button[data-direct = '0']`).html('往' + result_BusInfo[0]['DestinationStopNameZh']);
+            $(`button[data-direct = '1']`).html('往' + result_BusInfo[0]['DepartureStopNameZh']);
           }
 
          
@@ -275,13 +395,12 @@ $(function () {
           console.log(textStatus);
           console.log(errorThrown);
         }
-
-
       });
     }
     // ========IF End========
 
   }, 1000);
+
 
   $(`div#r_${route_id}`).on('click', 'button#bus_update',function(){
       let this_direct = $(this).attr('data-direct');
@@ -308,7 +427,7 @@ $(function () {
     route_last = [];
     // UI擷取所有縣市公車的路線總資訊
     $.ajax({
-      url: `https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/${city}?$$select=RouteUID%2CRouteName%2CDepartureStopNameZh%20%2CDestinationStopNameZh%20&$orderby=RouteName%2FZh_tw%20asc&$format=JSON`,
+      url: `https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/${city}?$select=RouteUID%2CRouteName%2CDepartureStopNameZh%20%2CDestinationStopNameZh%20&$orderby=RouteName%2FZh_tw%20asc&$format=JSON`,
       dataType: 'json',
       contentType: 'json',
       headers: GetAuthorizationHeader(), // 憑證 API token
@@ -336,7 +455,7 @@ $(function () {
             $('.list-route-group').append(`
               <div class="accordion-item" >
                 <h2 class="accordion-header" id="headingOne">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c_${i}" aria-expanded="true" aria-controls="c_${i}" data-route="${route_id[i]}" onclick=click_bus_info('${city}','${route[i]}','${route_id[i]}',0)>
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c_${i}" aria-expanded="true" aria-controls="c_${i}" data-route="${route_id[i]}" onclick=click_bus_info('${city}','${route[i].replace(" ","")}','${route_id[i]}',0)>
                   ${route[i]} (${route_start[i]} - ${route_last[i]})
                   </button>
                 </h2>
@@ -434,7 +553,7 @@ $(function () {
         $('.list-route-group').append(`
         <div class="accordion-item" >
           <h2 class="accordion-header" id="headingOne">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c_${i}" aria-expanded="true" aria-controls="c_${i}" data-route="${route_id[i]}" onclick=click_bus_info('${$(this).parent().attr('city_name_EN')}','${route[i]}','${route_id[i]}',0)>
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c_${i}" aria-expanded="true" aria-controls="c_${i}" data-route="${route_id[i]}" onclick=click_bus_info('${$(this).parent().attr('city_name_EN')}','${route[i].replace(" ","")}','${route_id[i]}',0)>
             ${route[i]} (${route_start[i]} - ${route_last[i]})
             </button>
           </h2>
@@ -460,7 +579,8 @@ $(function () {
             $('.list-route-group').append(`
               <div class="accordion-item" >
                 <h2 class="accordion-header" id="headingOne">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c_${i}" aria-expanded="true" aria-controls="c_${i}" data-route="${route_id[i]}" onclick=click_bus_info('${$(this).parent().attr('city_name_EN')}','${route[i]}','${route_id[i]}',0)>
+                  <!-- replace(" ","")是因為一些路線名稱的問題，像是黃11 小黃公車 --!>
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c_${i}" aria-expanded="true" aria-controls="c_${i}" data-route="${route_id[i]}" onclick=click_bus_info('${$(this).parent().attr('city_name_EN')}','${route[i].replace(" ","")}','${route_id[i]}',0)>
                   ${route[i]} (${route_start[i]} - ${route_last[i]})
                   </button>
                 </h2>
