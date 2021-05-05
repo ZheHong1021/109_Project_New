@@ -160,11 +160,11 @@ $(function(){
     if (filter_isClicked) {
       $('i#go_filter').css('color', '#8c7ae6');
       filter_isClicked = false;
-      $('div.filter_Container').show(1000);
+      $('div.filter_Container_Travel').show(1000);
     } else {
       $('i#go_filter').css('color', '#000');
       filter_isClicked = true;
-      $('div.filter_Container').hide(1000);
+      $('div.filter_Container_Travel').hide(1000);
     }
     console.log(filter_isClicked);
   });

@@ -540,15 +540,19 @@ input#inputbox:focus {
 }
 
 /* 計時器 */
+.timer-container{
+	position: sticky;
+	/* top: 0 為了讓 sticky可以有效果 */
+	top: 0;
+}
+
 span.timer {
 	font-weight: bolder;
 	font-size: 20px;
 	margin: 10px 0;
 	padding: 5px 10px;
 
-	/* top: 0 為了讓 sticky可以有效果 */
-	top: 0;
-	position: sticky;
+
 }
 
 

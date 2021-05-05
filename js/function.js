@@ -98,14 +98,20 @@ function makePopupContent(station) {
       break;
     case "公車":
       var category = "公車站";
-      return_html = 
-    
+
+      return_html =     
       `<div>
       <h2>${station.properties.name} - ${station.properties.category}</h2>
-      <p>經度：${station.properties.latitude}</p>
-      <p>緯度：${station.properties.longitude}</p>
+    
     </div>
     `
+    //   return_html =     
+    //   `<div>
+    //   <h2>${station.properties.name} - ${station.properties.category}</h2>
+    //   <p>經度：${station.properties.latitude}</p>
+    //   <p>緯度：${station.properties.longitude}</p>
+    // </div>
+    // `
       break;
   }
   return return_html;
