@@ -539,11 +539,15 @@ input#inputbox:focus {
 	background-color: #81ecec;
 }
 
+.leaflet-sidebar-header{
+	position: sticky;
+	top: 0;
+}
 /* 計時器 */
 .timer-container{
 	position: sticky;
 	/* top: 0 為了讓 sticky可以有效果 */
-	top: 0;
+	top: 40px;
 }
 
 span.timer {

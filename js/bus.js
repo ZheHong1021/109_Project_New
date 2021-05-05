@@ -91,13 +91,15 @@ $(function () {
         contentType: 'json',
         headers: GetAuthorizationHeader(), // 憑證 API token
         success: function (result) {
-          // console.log(result);
           let estimateTime_Status;
           // 因為有同時跑兩個路線，但Status = 1(通車)被 Status = 3(末班已駛)給擋住的問題
           // 如果為 Status = 1的就記錄到下方陣列中，之後如果遇到 Status = 3要先判斷他是否有 Status的紀錄，避免被覆蓋
           let is_Record = [];
-
+          
           Object.keys(result).forEach(function (value, key) {
+            console.log(result[value]['StopName']['Zh_tw'] + ": " + parseInt(result[value]['EstimateTime'] / 60) + "分" );
+
+
             let stopName = result[value]['StopName']['Zh_tw'];
             if( total_Stops.includes(stopName) ){
 
@@ -281,7 +283,7 @@ $(function () {
         contentType: 'json',
         headers: GetAuthorizationHeader(), // 憑證 API token
         success: function (result) {
-          console.log(result);  
+          // console.log(result);
 
           // 如果有捕捉到站點，則進行；反之則無
           if(Object.keys(result).length > 0 ){
@@ -306,14 +308,14 @@ $(function () {
                 let stopName_id =  result[max_index]['Stops'][i]['StopID'];
                 let latitude = result[max_index]['Stops'][i]['StopPosition']['PositionLat'];
                 let longitude = result[max_index]['Stops'][i]['StopPosition']['PositionLon'];
-                
+                let polyLine_bus 
                 var geojsonFeature = {
                   // 型別Feature運用在一些函式(makePopupContent、onEachFeature)做使用
                   "type": "Feature",
     
                   // 將擷取到資料再運用 json方式存放在 geoJSON中，之後可以拿來做使用
                   "properties": {
-                    "name": stopName,
+                    "name": i+1 + '. ' + stopName,
                     'category': '公車',
                     "latitude": latitude,
                     "longitude": longitude,
@@ -336,7 +338,7 @@ $(function () {
                       icon: L.AwesomeMarkers.icon({
                         markerColor: color_Marker,
                         prefix: 'fa',
-                        icon: 'bus'
+                        icon: 'sign'
                       })
                     });
                   },
@@ -348,6 +350,8 @@ $(function () {
                   total_Stops_id.splice(i, 0, stopName_id);
                 }
               }
+
+              
 
               // 將座標匯入到地圖中
               marker_BusStop_Arr.addTo(map);

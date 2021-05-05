@@ -740,14 +740,14 @@ $(function () {
   // };
 
 
-  // minutes
-  let refresh_Time = 1;
-  // 刷新地圖
-  var timeoutID = window.setInterval(function () {
-      map.invalidateSize();
-      console.log('refresh');
-    },
-    refresh_Time * 60000);
+  // // minutes
+  // let refresh_Time = 1;
+  // // 刷新地圖
+  // var timeoutID = window.setInterval(function () {
+  //     map.invalidateSize();
+  //     console.log('refresh');
+  //   },
+  //   refresh_Time * 60000);
 
 
   /*  點擊動畫事件  */
