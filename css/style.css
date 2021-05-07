@@ -443,7 +443,7 @@ footer {
 
 .bus-loading {
 	position: absolute;
-	/* display: none; */
+	display: none;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
@@ -645,7 +645,8 @@ div.city_container img {
 	display: none;
 }
 
-.travel_Category div.category {
+.travel_Category div.category, 
+.food_Category div.category {
 	display: flex;
 	padding: 10px;
 	flex-direction: column;
@@ -880,4 +881,30 @@ div.travel_Image_Container{
 /* 被摸到時出現 */
 .city_container:hover h2:after {
 	width: 100%;
+}
+
+div.food-item{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    padding: 10px;
+    font-weight: bolder;
+    width: 380px;
+    height: auto;
+	padding: 5px;
+	border: 2px solid #000;
+    background-color: #dcdde1;
+    border-radius: 5px;
+    margin: 10px;
+    transition: .7s;
+}
+
+h2.restaurant_Name{
+	font-size: 20px;
+    display: flex;
+    align-items: center;
+    font-weight: bolder;
+}
+h3.food_address{
+	font-size: 14px;	
 }

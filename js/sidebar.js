@@ -236,6 +236,13 @@ $(function () {
  
   
   let food_html = `
+  <!-- body -->
+  <div class = "alert alert-primary fade show d-flex justify-content-center" role = "alert" >
+      <div id='home_result' class = "alert-body text-center">
+          <p>努力開發中，功能尚未完整😤</p>
+      </div>
+      </div>
+      
   <div class='container-food'>
   <div class="city_container" id='Taipei' city_name_Tw='臺北市'>
     <img src="img/food/Taipei.jpg" alt="臺北">
@@ -293,50 +300,48 @@ $(function () {
 
   <div class="food_Category">
     <div class="category">
-
     <h2 class = "Food_city_Name fw-bolder my-2" style='font-size: 28px'></h2>
       <button type="button" class="btn btn-secondary go_city_Container">上一頁</button>
       <div class="searchBox">
         <input class="search-value" type="text" placeholder="請搜尋你想找尋的地方">
-        <i class="fas fa-list-alt" id='go_filter' data-view="show"></i>
+        <i class="fas fa-list-alt" id='go_filter_food' data-view="show"></i>
       </div>
       <div class="filter_Container_Food">
         <div class="filter_City_List mb-3">
           <h2 class="filter_header">縣市分類</h2>
           <div class="city-List text-center">
-            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'Keelung'>基隆市</span>
-            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'Hsinchu'>新竹市</span>
-            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'HsinchuCounty'>新竹縣</span>
-            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'MiaoliCounty'>苗栗縣</span>
-            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'ChanghuaCounty'>彰化縣</span>
-            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'NantouCounty'>南投縣</span>
-            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'YunlinCounty'>雲林縣</span>
-            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'ChiayiCounty'>嘉義縣</span>
-            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'Chiayi'>嘉義市</span>
-            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'PingtungCounty'>屏東縣</span>
-            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'YilanCounty'>宜蘭縣</span>
-            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'HualienCounty'>花蓮縣</span>
-            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'TaitungCounty'>金門縣</span>
-            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'KinmenCounty'>臺東縣</span>
-            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'PenghuCounty'>澎湖縣</span>
-            <span class = "badge bg-secondary" id="city_filter" is_filter="false" city_filter = 'LienchiangCounty'>連江縣</span>
+            <span class = "badge bg-secondary" id="city_filter_food" is_filter="false" city_filter = 'Keelung'>基隆市</span>
+            <span class = "badge bg-secondary" id="city_filter_food" is_filter="false" city_filter = 'HsinchuCounty'>新竹縣</span>
+            <span class = "badge bg-secondary" id="city_filter_food" is_filter="false" city_filter = 'Hsinchu'>新竹市</span>
+            <span class = "badge bg-secondary" id="city_filter_food" is_filter="false" city_filter = 'MiaoliCounty'>苗栗縣</span>
+            <span class = "badge bg-secondary" id="city_filter_food" is_filter="false" city_filter = 'ChanghuaCounty'>彰化縣</span>
+            <span class = "badge bg-secondary" id="city_filter_food" is_filter="false" city_filter = 'NantouCounty'>南投縣</span>
+            <span class = "badge bg-secondary" id="city_filter_food" is_filter="false" city_filter = 'YunlinCounty'>雲林縣</span>
+            <span class = "badge bg-secondary" id="city_filter_food" is_filter="false" city_filter = 'ChiayiCounty'>嘉義縣</span>
+            <span class = "badge bg-secondary" id="city_filter_food" is_filter="false" city_filter = 'Chiayi'>嘉義市</span>
+            <span class = "badge bg-secondary" id="city_filter_food" is_filter="false" city_filter = 'PingtungCounty'>屏東縣</span>
+            <span class = "badge bg-secondary" id="city_filter_food" is_filter="false" city_filter = 'YilanCounty'>宜蘭縣</span>
+            <span class = "badge bg-secondary" id="city_filter_food" is_filter="false" city_filter = 'HualienCounty'>花蓮縣</span>
+            <span class = "badge bg-secondary" id="city_filter_food" is_filter="false" city_filter = 'TaitungCounty'>金門縣</span>
+            <span class = "badge bg-secondary" id="city_filter_food" is_filter="false" city_filter = 'KinmenCounty'>臺東縣</span>
+            <span class = "badge bg-secondary" id="city_filter_food" is_filter="false" city_filter = 'PenghuCounty'>澎湖縣</span>
+            <span class = "badge bg-secondary" id="city_filter_food" is_filter="false" city_filter = 'LienchiangCounty'>連江縣</span>
+          </div>
+          <div class="item_Control">
+              <button type="button" class="btn btn-primary confirm_food">確定</button>
           </div>
         </div>
-
-        <div class="Food-category-List">
         </div>
-
-      <div class="Food-category-Items">
+        
+        <div class="Food-category-Items my-3">
+        </div>
+    <div id = 'food_Load' class="bus-loading" style = "padding: 10px 20px; background-color: #eee; border-radius: 20px;">
+    <div class = "d-flex justify-content-center align-items-center">
+    <div class="spinner-border text-danger" role="status" ></div>
+      <span class = 'mx-2'>Loading...</span>
       </div>
-
-       <div class="bus-loading" style = "padding: 10px 20px; background-color: #eee; border-radius: 20px;">
-  <div class = "d-flex justify-content-center align-items-center">
-  <div class="spinner-border text-danger" role="status" ></div>
-    <span class = 'mx-2'>Loading...</span>
     </div>
-  </div>
 
-    </div>
   </div>
 
   `;
@@ -816,7 +821,7 @@ $(function () {
 
   /* ========== 旅遊=========== */
 
-  let tra_Station_Infovel;
+  let travel_Info;
   // 旅遊
   $('.container-travel .city_container').on('click', function () {
     // 換個縣市，就清空
@@ -858,7 +863,7 @@ $(function () {
         headers: GetAuthorizationHeader(), // 憑證 API token
         success: function (result) {
           // console.log(result);
-          tra_Station_Infovel = $.parseJSON(JSON.stringify(result));
+          travel_Info = $.parseJSON(JSON.stringify(result));
           Object.keys(result).forEach(function (value, key) {
             // 分類中除了 Class1之外，還有 Class2、Class3。
             if (result[value]['Class1'] || result[value]['Class2'] || result[value]['Class3']) {
@@ -918,7 +923,7 @@ $(function () {
       contentType: 'json',
       headers: GetAuthorizationHeader(),
       success: function (result) {
-        tra_Station_Infovel = $.parseJSON(JSON.stringify(result));
+        travel_Info = $.parseJSON(JSON.stringify(result));
         Object.keys(result).forEach(function (value, key) {
           // 分類中除了 Class1之外，還有 Class2、Class3。
           if (result[value]['Class1'] || result[value]['Class2'] || result[value]['Class3']) {
@@ -983,21 +988,24 @@ $(function () {
     }
   });
 
+ 
+
   open_Info = function(info_number){
-    let travel_info_Image = tra_Station_Infovel[info_number]['Picture']['PictureUrl1'] ? ` <img src = "${tra_Station_Infovel[info_number]['Picture']['PictureUrl1']}" alt ="${tra_Station_Infovel[info_number]['Name']}照片"></img>
-    <p class="fw-bolder mt-3">圖片提供：${tra_Station_Infovel[info_number]['Picture']['PictureDescription1']}</p>` : '<p class="fw-bolder mt-3">尚未提供圖片</p>';
+    let travel_info_Image = travel_Info[info_number]['Picture']['PictureUrl1'] ? ` <img src = "${travel_Info[info_number]['Picture']['PictureUrl1']}" alt ="${travel_Info[info_number]['Name']}照片"></img>
+    <p class="fw-bolder mt-3">圖片提供：${travel_Info[info_number]['Picture']['PictureDescription1']}</p>` : '<p class="fw-bolder mt-3">尚未提供圖片</p>';
     
-    $('#travel_InfoLabel').html(tra_Station_Infovel[info_number]["Name"]);
-    $('div#travel_info_body').html('');
-    $('div#travel_info_body').append(`
+    $('#open_InfoLabel').html(travel_Info[info_number]["Name"]);
+    $('div#open_info_body').html('');
+    $('div#open_info_body').append(`
         <div class = "travel_Describe_Container">
-        <p class = "mx-3">${tra_Station_Infovel[info_number]['DescriptionDetail']}</p>
+        <p class = "mx-3">${travel_Info[info_number]['DescriptionDetail']}</p>
         </div>
         <div class = "travel_Image_Container d-flex align-items-center m-3" style="flex-direction: column">
           ${travel_info_Image}
         </div>
         `);
   }
+
   $('.category').on('click', 'i#go_View_Pos', function () {
     $('.category-Items .travel-item').css('background', '#dcdde1');
     $(this).parent().parent().css('background', '#ffeaa7');
@@ -1007,10 +1015,10 @@ $(function () {
     let fly_Marker_Content = `
       <h2>${$(this).attr("view")}</h2>
       <p>地址：<a href = "https://www.google.com.tw/maps/place/${$(this).parent().text()}/@${Lat},${Lng},17z" target="_blank" style="color: #0984e3">${$(this).parent().text()}</a></p>
-      <p>聯絡電話：${tra_Station_Infovel[$(this).attr("data-number")]['Phone']}</p>
-      ${tra_Station_Infovel[$(this).attr("data-number")]['WebsiteUrl'] ? `<p><a href = "${tra_Station_Infovel[$(this).attr("data-number")]["WebsiteUrl"]}" target="_blank" style="color: #0984e3">網站連結：${tra_Station_Infovel[$(this).attr("data-number")]["WebsiteUrl"]}</a></p>` : '<p>網站連結：尚未公開</p>'}
+      <p>聯絡電話：${travel_Info[$(this).attr("data-number")]['Phone']}</p>
+      ${travel_Info[$(this).attr("data-number")]['WebsiteUrl'] ? `<p><a href = "${travel_Info[$(this).attr("data-number")]["WebsiteUrl"]}" target="_blank" style="color: #0984e3">網站連結：${travel_Info[$(this).attr("data-number")]["WebsiteUrl"]}</a></p>` : '<p>網站連結：尚未公開</p>'}
       <div class="d-flex justify-content-center">
-      <button type="button" class = "btn btn-info mb-2 fw-bolder" onclick="open_Info('${$(this).attr("data-number")}')" data-bs-toggle="modal"  data-bs-target="#travel_Info">查看介紹</button>
+      <button type="button" class = "btn btn-info mb-2 fw-bolder" onclick="open_Info('${$(this).attr("data-number")}')" data-bs-toggle="modal"  data-bs-target="#open_Info">查看介紹</button>
       </div>
       `;
     fly_To_Marker(Lat, Lng, fly_Marker_Content);
@@ -1049,57 +1057,57 @@ $(function () {
     }
     if (choose_Items.length > 0) {
       if ($('input.search-value').val()) {
-        Object.keys(tra_Station_Infovel).forEach(function (value, key) {  
-          let is_Span_1 = tra_Station_Infovel[value]['Class1'] ? `<span class = "badge bg-success">${tra_Station_Infovel[value]['Class1']}</span>` : "";
-          let is_Span_2 = tra_Station_Infovel[value]['Class2'] && tra_Station_Infovel[value]['Class2'] !== tra_Station_Infovel[value]['Class1']? `<span class = "badge bg-success">${tra_Station_Infovel[value]['Class2']}</span>` : "";
-          let is_Span_3 = tra_Station_Infovel[value]['Class3'] && tra_Station_Infovel[value]['Class3'] !== tra_Station_Infovel[value]['Class2']? `<span class = "badge bg-success">${tra_Station_Infovel[value]['Class3']}</span>` : "";
-          if ( choose_Items.includes(tra_Station_Infovel[value]['Class1']) 
-              || choose_Items.includes(tra_Station_Infovel[value]['Class2']) 
-              || choose_Items.includes(tra_Station_Infovel[value]['Class3']) 
-              && (tra_Station_Infovel[value]['Name'].includes($('input.search-value').val()) 
-              || tra_Station_Infovel[value]['Address'].includes($('input.search-value').val()))) {
+        Object.keys(travel_Info).forEach(function (value, key) {  
+          let is_Span_1 = travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class1']}</span>` : "";
+          let is_Span_2 = travel_Info[value]['Class2'] && travel_Info[value]['Class2'] !== travel_Info[value]['Class1']? `<span class = "badge bg-success">${travel_Info[value]['Class2']}</span>` : "";
+          let is_Span_3 = travel_Info[value]['Class3'] && travel_Info[value]['Class3'] !== travel_Info[value]['Class2']? `<span class = "badge bg-success">${travel_Info[value]['Class3']}</span>` : "";
+          if ( choose_Items.includes(travel_Info[value]['Class1']) 
+              || choose_Items.includes(travel_Info[value]['Class2']) 
+              || choose_Items.includes(travel_Info[value]['Class3']) 
+              && (travel_Info[value]['Name'].includes($('input.search-value').val()) 
+              || travel_Info[value]['Address'].includes($('input.search-value').val()))) {
             $('.category-Items').append(`
-            <div class="travel-item" travel-id="${tra_Station_Infovel[value]['ID']}">
-              <h2 class="view_Name">${tra_Station_Infovel[value]['Name']}
+            <div class="travel-item" travel-id="${travel_Info[value]['ID']}">
+              <h2 class="view_Name">${travel_Info[value]['Name']}
               </h2>
                   <div class ="view_Span">
                       ${is_Span_1}
                       ${is_Span_2}
                       ${is_Span_3}
                   </div>
-              <h3 class="view_address">${tra_Station_Infovel[value]['Address']}
-                <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置"  data-number = "${value}" pos-Lat="${tra_Station_Infovel[value]["Position"]["PositionLat"]}" pos-Lng="${tra_Station_Infovel[value]["Position"]["PositionLon"]}" view="${tra_Station_Infovel[value]['Name']}"></i>
+              <h3 class="view_address">${travel_Info[value]['Address']}
+                <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置"  data-number = "${value}" pos-Lat="${travel_Info[value]["Position"]["PositionLat"]}" pos-Lng="${travel_Info[value]["Position"]["PositionLon"]}" view="${travel_Info[value]['Name']}"></i>
               </h3>
               <h3 class="view_opentime">
                   <i class="far fa-clock" title="開放時間"></i>
-                  ${tra_Station_Infovel[value]['OpenTime'] != 'N/A' || tra_Station_Infovel[value]['OpenTime']? tra_Station_Infovel[value]['OpenTime'] : "未公開"}
+                  ${travel_Info[value]['OpenTime'] != 'N/A' || travel_Info[value]['OpenTime']? travel_Info[value]['OpenTime'] : "未公開"}
               </h3>
               </div>`);
           }
         })
           } 
           else {
-            Object.keys(tra_Station_Infovel).forEach(function (value, key) {
-              let is_Span_1 = tra_Station_Infovel[value]['Class1'] ? `<span class = "badge bg-success">${tra_Station_Infovel[value]['Class1']}</span>` : "";
-              let is_Span_2 = tra_Station_Infovel[value]['Class2'] && tra_Station_Infovel[value]['Class2'] !== tra_Station_Infovel[value]['Class1']? `<span class = "badge bg-success">${tra_Station_Infovel[value]['Class2']}</span>` : "";
-              let is_Span_3 = tra_Station_Infovel[value]['Class3'] && tra_Station_Infovel[value]['Class3'] !== tra_Station_Infovel[value]['Class2']? `<span class = "badge bg-success">${tra_Station_Infovel[value]['Class3']}</span>` : "";
-              if (choose_Items.includes(tra_Station_Infovel[value]['Class1']) 
-              || choose_Items.includes(tra_Station_Infovel[value]['Class2']) 
-              || choose_Items.includes(tra_Station_Infovel[value]['Class3']) ) {
+            Object.keys(travel_Info).forEach(function (value, key) {
+              let is_Span_1 = travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class1']}</span>` : "";
+              let is_Span_2 = travel_Info[value]['Class2'] && travel_Info[value]['Class2'] !== travel_Info[value]['Class1']? `<span class = "badge bg-success">${travel_Info[value]['Class2']}</span>` : "";
+              let is_Span_3 = travel_Info[value]['Class3'] && travel_Info[value]['Class3'] !== travel_Info[value]['Class2']? `<span class = "badge bg-success">${travel_Info[value]['Class3']}</span>` : "";
+              if (choose_Items.includes(travel_Info[value]['Class1']) 
+              || choose_Items.includes(travel_Info[value]['Class2']) 
+              || choose_Items.includes(travel_Info[value]['Class3']) ) {
                 $('.category-Items').append(`
-                <div class="travel-item" travel-id="${tra_Station_Infovel[value]['ID']}">
-                  <h2 class="view_Name">${tra_Station_Infovel[value]['Name']}</h2>
+                <div class="travel-item" travel-id="${travel_Info[value]['ID']}">
+                  <h2 class="view_Name">${travel_Info[value]['Name']}</h2>
                   <div class ="view_Span">
                       ${is_Span_1}
                       ${is_Span_2}
                       ${is_Span_3}
                   </div>
-                  <h3 class="view_address">${tra_Station_Infovel[value]['Address']}
-                    <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置" data-number = "${value}" pos-Lat="${tra_Station_Infovel[value]["Position"]["PositionLat"]}" pos-Lng="${tra_Station_Infovel[value]["Position"]["PositionLon"]}" view="${tra_Station_Infovel[value]['Name']}"></i>
+                  <h3 class="view_address">${travel_Info[value]['Address']}
+                    <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置" data-number = "${value}" pos-Lat="${travel_Info[value]["Position"]["PositionLat"]}" pos-Lng="${travel_Info[value]["Position"]["PositionLon"]}" view="${travel_Info[value]['Name']}"></i>
                   </h3>
                   <h3 class="view_opentime">
                       <i class="far fa-clock" title="開放時間"></i>
-                      ${tra_Station_Infovel[value]['OpenTime'] != 'N/A' || tra_Station_Infovel[value]['OpenTime']  ? tra_Station_Infovel[value]['OpenTime'] : "未公開"}
+                      ${travel_Info[value]['OpenTime'] != 'N/A' || travel_Info[value]['OpenTime']  ? travel_Info[value]['OpenTime'] : "未公開"}
                   </h3>
                   </div>`);
               }
@@ -1120,24 +1128,24 @@ $(function () {
       $('.category-Items').html('');
       $('.category-List *').removeClass('bg-secondary');
       $('.category-List *').addClass('bg-success');
-      Object.keys(tra_Station_Infovel).forEach(function (value, key) {
-        let is_Span_1 = tra_Station_Infovel[value]['Class1'] ? `<span class = "badge bg-success">${tra_Station_Infovel[value]['Class1']}</span>` : "";
-        let is_Span_2 = tra_Station_Infovel[value]['Class2'] && tra_Station_Infovel[value]['Class2'] !== tra_Station_Infovel[value]['Class1']? `<span class = "badge bg-success">${tra_Station_Infovel[value]['Class2']}</span>` : "";
-        let is_Span_3 = tra_Station_Infovel[value]['Class3'] && tra_Station_Infovel[value]['Class3'] !== tra_Station_Infovel[value]['Class2']? `<span class = "badge bg-success">${tra_Station_Infovel[value]['Class3']}</span>` : "";
+      Object.keys(travel_Info).forEach(function (value, key) {
+        let is_Span_1 = travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class1']}</span>` : "";
+        let is_Span_2 = travel_Info[value]['Class2'] && travel_Info[value]['Class2'] !== travel_Info[value]['Class1']? `<span class = "badge bg-success">${travel_Info[value]['Class2']}</span>` : "";
+        let is_Span_3 = travel_Info[value]['Class3'] && travel_Info[value]['Class3'] !== travel_Info[value]['Class2']? `<span class = "badge bg-success">${travel_Info[value]['Class3']}</span>` : "";
           $('.category-Items').append(`
-          <div class="travel-item" travel-id="${tra_Station_Infovel[value]['ID']}">
-            <h2 class="view_Name">${tra_Station_Infovel[value]['Name']}</h2>
+          <div class="travel-item" travel-id="${travel_Info[value]['ID']}">
+            <h2 class="view_Name">${travel_Info[value]['Name']}</h2>
             <div class ="view_Span">
                 ${is_Span_1}
                 ${is_Span_2}
                 ${is_Span_3}
             </div>
-            <h3 class="view_address">${tra_Station_Infovel[value]['Address']}
-              <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置"  data-number = "${value}" pos-Lat="${tra_Station_Infovel[value]["Position"]["PositionLat"]}" pos-Lng="${tra_Station_Infovel[value]["Position"]["PositionLon"]}" view="${tra_Station_Infovel[value]['Name']}"></i>
+            <h3 class="view_address">${travel_Info[value]['Address']}
+              <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置"  data-number = "${value}" pos-Lat="${travel_Info[value]["Position"]["PositionLat"]}" pos-Lng="${travel_Info[value]["Position"]["PositionLon"]}" view="${travel_Info[value]['Name']}"></i>
             </h3>
             <h3 class="view_opentime">
                 <i class="far fa-clock" title="開放時間"></i>
-                ${tra_Station_Infovel[value]['OpenTime'] != 'N/A' ? tra_Station_Infovel[value]['OpenTime'] : "未公開"}
+                ${travel_Info[value]['OpenTime'] != 'N/A' ? travel_Info[value]['OpenTime'] : "未公開"}
             </h3>
             </div>`);
       })
@@ -1162,40 +1170,40 @@ $(function () {
     let input_Val = $(this).val();
     if (input_Val) {
       $('.category-Items').html('');
-      Object.keys(tra_Station_Infovel).forEach(function (value, key) {
-        let is_Span_1 = tra_Station_Infovel[value]['Class1'] ? `<span class = "badge bg-success">${tra_Station_Infovel[value]['Class1']}</span>` : "";
-        let is_Span_2 = tra_Station_Infovel[value]['Class2'] && tra_Station_Infovel[value]['Class2'] !== tra_Station_Infovel[value]['Class1']? `<span class = "badge bg-success">${tra_Station_Infovel[value]['Class2']}</span>` : "";
-        let is_Span_3 = tra_Station_Infovel[value]['Class3'] && tra_Station_Infovel[value]['Class3'] !== tra_Station_Infovel[value]['Class2']? `<span class = "badge bg-success">${tra_Station_Infovel[value]['Class3']}</span>` : "";
-        if (tra_Station_Infovel[value]['Name'].includes($('input.search-value').val()) || tra_Station_Infovel[value]['Address'].includes($('input.search-value').val())) {
+      Object.keys(travel_Info).forEach(function (value, key) {
+        let is_Span_1 = travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class1']}</span>` : "";
+        let is_Span_2 = travel_Info[value]['Class2'] && travel_Info[value]['Class2'] !== travel_Info[value]['Class1']? `<span class = "badge bg-success">${travel_Info[value]['Class2']}</span>` : "";
+        let is_Span_3 = travel_Info[value]['Class3'] && travel_Info[value]['Class3'] !== travel_Info[value]['Class2']? `<span class = "badge bg-success">${travel_Info[value]['Class3']}</span>` : "";
+        if (travel_Info[value]['Name'].includes($('input.search-value').val()) || travel_Info[value]['Address'].includes($('input.search-value').val())) {
           $('.category-Items').append(`
-          <div class="travel-item" travel-id="${tra_Station_Infovel[value]['ID']}">
-              <h2 class="view_Name">${tra_Station_Infovel[value]['Name']}</h2>
+          <div class="travel-item" travel-id="${travel_Info[value]['ID']}">
+              <h2 class="view_Name">${travel_Info[value]['Name']}</h2>
               <div class ="view_Span">
                   ${is_Span_1}
                   ${is_Span_2}
                   ${is_Span_3}
               </div>
-            <h3 class="view_address">${tra_Station_Infovel[value]['Address']}
-              <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置"  data-number = "${value}" pos-Lat="${tra_Station_Infovel[value]["Position"]["PositionLat"]}" pos-Lng="${tra_Station_Infovel[value]["Position"]["PositionLon"]}" view="${tra_Station_Infovel[value]['Name']}"></i>
+            <h3 class="view_address">${travel_Info[value]['Address']}
+              <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置"  data-number = "${value}" pos-Lat="${travel_Info[value]["Position"]["PositionLat"]}" pos-Lng="${travel_Info[value]["Position"]["PositionLon"]}" view="${travel_Info[value]['Name']}"></i>
             </h3>
             </div>`);
         }
       })
     } else {
-      Object.keys(tra_Station_Infovel).forEach(function (value, key) {
-        let is_Span_1 = tra_Station_Infovel[value]['Class1'] ? `<span class = "badge bg-success">${tra_Station_Infovel[value]['Class1']}</span>` : "";
-        let is_Span_2 = tra_Station_Infovel[value]['Class2'] && tra_Station_Infovel[value]['Class2'] !== tra_Station_Infovel[value]['Class1']? `<span class = "badge bg-success">${tra_Station_Infovel[value]['Class2']}</span>` : "";
-        let is_Span_3 = tra_Station_Infovel[value]['Class3'] && tra_Station_Infovel[value]['Class3'] !== tra_Station_Infovel[value]['Class2']? `<span class = "badge bg-success">${tra_Station_Infovel[value]['Class3']}</span>` : "";
+      Object.keys(travel_Info).forEach(function (value, key) {
+        let is_Span_1 = travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class1']}</span>` : "";
+        let is_Span_2 = travel_Info[value]['Class2'] && travel_Info[value]['Class2'] !== travel_Info[value]['Class1']? `<span class = "badge bg-success">${travel_Info[value]['Class2']}</span>` : "";
+        let is_Span_3 = travel_Info[value]['Class3'] && travel_Info[value]['Class3'] !== travel_Info[value]['Class2']? `<span class = "badge bg-success">${travel_Info[value]['Class3']}</span>` : "";
         $('.category-Items').append(`
-            <div class="travel-item" travel-id="${tra_Station_Infovel[value]['ID']}">
-              <h2 class="view_Name">${tra_Station_Infovel[value]['Name']}</h2>
+            <div class="travel-item" travel-id="${travel_Info[value]['ID']}">
+              <h2 class="view_Name">${travel_Info[value]['Name']}</h2>
               <div class ="view_Span">
                   ${is_Span_1}
                   ${is_Span_2}
                   ${is_Span_3}
               </div>
-              <h3 class="view_address">${tra_Station_Infovel[value]['Address']}
-                <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置"  data-number = "${value}" pos-Lat="${tra_Station_Infovel[value]["Position"]["PositionLat"]}" pos-Lng="${tra_Station_Infovel[value]["Position"]["PositionLon"]}" view="${tra_Station_Infovel[value]['Name']}"></i>
+              <h3 class="view_address">${travel_Info[value]['Address']}
+                <i class="fas fa-location-arrow" id="go_View_Pos" title="前往該座標位置"  data-number = "${value}" pos-Lat="${travel_Info[value]["Position"]["PositionLat"]}" pos-Lng="${travel_Info[value]["Position"]["PositionLon"]}" view="${travel_Info[value]['Name']}"></i>
               </h3>
               </div>`);
       })
@@ -1206,11 +1214,7 @@ $(function () {
 
 
   /* ========== 美食=========== */
-  let results_Food;
-  // 旅遊
   $('.container-food .city_container').on('click', function () {
-    // 換個縣市，就清空
-    let food_Category = []
     $('.Food-category-List').html('');
     $('.Food-category-Items').html('');
 
@@ -1229,15 +1233,17 @@ $(function () {
 
     // 如果點選的是 Other
     if ($(this).attr('id') == 'Other') {
-      $('.filter_Container_Food .filter_City_List').show();
+      $('.filter_Container_Food').show();
+      $('#go_filter_food').show();
+      return;
     } else {
-      $('.filter_Container_Food .filter_City_List').hide();
+      $('.filter_Container_Food').hide();
+      $('#go_filter_food').hide();
     }
 
     // 預設篩選單先呈現出來，還有顏色
     $('div.filter_Container').show();
-
-    $('i#go_filter').css('color', '#8c7ae6');
+    $('i#go_filter_food').css('color', '#8c7ae6');
 
     if ($(this).attr('id') != 'Other') {
       $.ajax({
@@ -1246,19 +1252,28 @@ $(function () {
         contentType: 'json',
         headers: GetAuthorizationHeader(), // 憑證 API token
         success: function (result) {
-          console.log(result);
-          results_Food = $.parseJSON(JSON.stringify(result));
-          
-
+          let food_Items_Content = '';
           Object.keys(result).forEach(function (value, key) {
-
-            $('.Food-category-Items').append(`
-                <div class="food-item text-center">
-                <h2 class="view_Name ">
-                    ${result[value]["Name"]}
-                </h2>
-                </div>`);
-              });
+            food_Items_Content = food_Items_Content + `
+              <div class="food-item">
+              <h2 class="restaurant_Name">
+                <span class='badge bg-warning mx-1'>
+                  <i class="fas fa-utensils" style='color: green'></i>   
+                </span>
+              ${result[value]["Name"]}
+              </h2>
+                  <h3 class="food_address">
+                    地址：${result[value]["Address"]}
+                    <i class="fab fa-telegram-plane" id = 'go_Restaurant_Pos' shopName = '${result[value]['Name']}' 
+                    shopAddr= '${result[value]['Address']}' shopPhone='${result[value]['Phone']}' 
+                    shopWeb='${result[value]['WebsiteUrl']}' lat='${ result[value]["Position"]["PositionLat"]}' 
+                    lng = '${ result[value]["Position"]["PositionLon"]}' style='color: blue; font-size:18px; cursor:pointer;'></i>
+              </h3>
+              </div>
+            `; 
+          });
+            $('.Food-category-Items').append(food_Items_Content);
+                
             },
         // 當Ajax請求失敗
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -1269,9 +1284,8 @@ $(function () {
       });
     }
   });
-
   let filter_isClicked_Food;
-  $('i#go_filter').on('click', function () {
+  $('i#go_filter_food').on('click', function () {
     if (filter_isClicked_Food) {
       $(this).css('color', '#8c7ae6');
       filter_isClicked_Food = false;
@@ -1285,8 +1299,112 @@ $(function () {
   });
 
 
+  $('span#city_filter_food').on('click', function () {
+    $('.Food-category-Items').html('');
+    $('.city-List *').removeClass('bg-danger');
+    $('.city-List *').addClass('bg-secondary');
+    if ($(this).hasClass('bg-danger')) {
+      $(this).removeClass('bg-danger');
+      $(this).addClass('bg-secondary');
+    } else {
+      $(this).removeClass('bg-secondary');
+      $(this).addClass('bg-danger');
+    }
+    let city_name = $(this).attr('city_filter');
+    $.ajax({
+      url: `https://ptx.transportdata.tw/MOTC/v2/Tourism/Restaurant/${city_name}?$format=JSON`,
+      dataType: 'json',
+      contentType: 'json',
+      headers: GetAuthorizationHeader(),
+      success: function (result) {
+        let food_Items_Content = '';
+        Object.keys(result).forEach(function (value, key) {
+          food_Items_Content = food_Items_Content + `
+            <div class="food-item">
+            <h2 class="restaurant_Name">
+              <span class='badge bg-warning mx-1'>
+                <i class="fas fa-utensils" style='color: green'></i>   
+              </span>
+            ${result[value]["Name"]}
+            </h2>
+            <h3 class="food_address">
+                地址：${result[value]["Address"]}
+                <i class="fab fa-telegram-plane" id = 'go_Restaurant_Pos' shopName = '${result[value]['Name']}' 
+                shopAddr= '${result[value]['Address']}' shopPhone='${result[value]['Phone']}' 
+                shopWeb='${result[value]['WebsiteUrl']}' lat='${ result[value]["Position"]["PositionLat"]}' 
+                lng = '${ result[value]["Position"]["PositionLon"]}' desc = '${result[value]["Description"]}'
+                pic = '${result[value]['Picture']}'style='color: blue; font-size:18px; cursor:pointer;'></i>
+            </h3>
+            </div>
+          `; 
+        });
+          $('.Food-category-Items').append(food_Items_Content);
+      },
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        console.log(XMLHttpRequest);
+        console.log(textStatus);
+        console.log(errorThrown);
+      }
+    });
+  });
+
+  $('.Food-category-Items').on('click', 'i#go_Restaurant_Pos', function () {
+    $('.Food-category-Items .food-item').css('background', '#dcdde1');
+    $(this).parent().parent().css('background', '#ffeaa7');
+    let Lat = $(this).attr('lat');
+    let Lng = $(this).attr('lng');
+    let position = [Lat, Lng];
+    let pic = $(this).attr('pic');
+    let desc = $(this).attr('desc');
+    let restaurant = $(this).attr('shopName');
+    let restaurant_addr = $(this).attr('shopAddr');
+    let web = $(this).attr('shopWeb');
+    let phone = $(this).attr('shopPhone');
+
+    let fly_Marker_Content = `
+      <h2>${restaurant}</h2>
+      <p>地址：<a href = "https://www.google.com.tw/maps/place/${restaurant_addr}/@${Lat},${Lng},17z" target="_blank" style="color: #0984e3">${restaurant_addr}</a></p>
+      ${ web != 'undefined' ? `<p><a href = "${web}" target="_blank" style="color: #0984e3">網站連結：${web}</a></p>` : '<p>網站連結：尚未公開</p>'}
+      <div class="d-flex justify-content-center">
+      <button type="button" id='food_Modal' onclick='open_Info_Food(${pic},${restaurant},${desc})'  class = "btn btn-info mb-2 fw-bolder" data-bs-toggle="modal"  data-bs-target="#open_Info">查看介紹</button>
+      </div>
+      `;
+    fly_To_Marker(Lat, Lng, fly_Marker_Content);
+  });
+
+  
+  open_Info_Food = function(pic, name, desc){
+    let travel_info_Image = travel_Info[info_number]['Picture']['PictureUrl1'] ? ` <img src = "${travel_Info[info_number]['Picture']['PictureUrl1']}" alt ="${travel_Info[info_number]['Name']}照片"></img>
+    <p class="fw-bolder mt-3">圖片提供：${travel_Info[info_number]['Picture']['PictureDescription1']}</p>` : '<p class="fw-bolder mt-3">尚未提供圖片</p>';
+    
+    $('#open_InfoLabel').html(travel_Info[info_number]["Name"]);
+    $('div#open_info_body').html('');
+    $('div#open_info_body').append(`
+        <div class = "travel_Describe_Container">
+        <p class = "mx-3">${travel_Info[info_number]['DescriptionDetail']}</p>
+        </div>
+        <div class = "travel_Image_Container d-flex align-items-center m-3" style="flex-direction: column">
+          ${travel_info_Image}
+        </div>
+        `);
+  }
+  
+
+  $('button.confirm_food').on('click', function () {
+    if (filter_isClicked_Food) {
+      $('i#go_filter_food').css('color', '#8c7ae6');
+      filter_isClicked_Food = false;
+      $('div.filter_Container_Food').show(1000);
+    } else {
+      $('i#go_filter_food').css('color', '#000');
+      filter_isClicked_Food = true;
+      $('div.filter_Container_Food').hide(1000);
+    }
+  });
+
+
   $('.food_Category .go_city_Container').on('click', function () {
-    $('div.bus-loading').show();
+    $('div#food_Load').show();
     // 設立一個 Loading動畫的時間 : 1.5s
     setTimeout(function () {
       // 篩選要清空
@@ -1294,7 +1412,7 @@ $(function () {
       $('i#go_filter').css('color', '#000');
       filter_isClicked = false;
 
-      $('div.bus-loading').hide();
+      $('div#food_Load').hide();
       $('div.food_Category').hide();
       $('.container-food').show();
     }, 1500);
