@@ -235,14 +235,7 @@ $(function () {
   `;
  
   
-  let food_html = `
-  <!-- body -->
-  <div class = "alert alert-primary fade show d-flex justify-content-center" role = "alert" >
-      <div id='home_result' class = "alert-body text-center">
-          <p>努力開發中，功能尚未完整😤</p>
-      </div>
-      </div>
-      
+  let food_html = `     
   <div class='container-food'>
   <div class="city_container" id='Taipei' city_name_Tw='臺北市'>
     <img src="img/food/Taipei.jpg" alt="臺北">
@@ -303,7 +296,7 @@ $(function () {
     <h2 class = "Food_city_Name fw-bolder my-2" style='font-size: 28px'></h2>
       <button type="button" class="btn btn-secondary go_city_Container">上一頁</button>
       <div class="searchBox">
-        <input class="search-value" type="text" placeholder="請搜尋你想找尋的地方">
+        <input class="search-food" type="text" placeholder="請搜尋你想找尋的地方">
         <i class="fas fa-list-alt" id='go_filter_food' data-view="show"></i>
       </div>
       <div class="filter_Container_Food">
@@ -1214,6 +1207,7 @@ $(function () {
 
 
   /* ========== 美食=========== */
+  let restaurant_Info;
   $('.container-food .city_container').on('click', function () {
     $('.Food-category-List').html('');
     $('.Food-category-Items').html('');
@@ -1246,12 +1240,14 @@ $(function () {
     $('i#go_filter_food').css('color', '#8c7ae6');
 
     if ($(this).attr('id') != 'Other') {
+      let select = 'Name,Address,Description,Phone,OpenTime,WebsiteUrl,Position,Picture';
       $.ajax({
-        url: 'https://ptx.transportdata.tw/MOTC/v2/Tourism/Restaurant/' + city_name + '?$select=Name%2CPosition%2CPhone%2CAddress&$format=JSON',
+        url: `https://ptx.transportdata.tw/MOTC/v2/Tourism/Restaurant/${city_name}/?$select=${select}&$format=JSON`,
         dataType: 'json',
         contentType: 'json',
         headers: GetAuthorizationHeader(), // 憑證 API token
         success: function (result) {
+          restaurant_Info = $.parseJSON(JSON.stringify(result));
           let food_Items_Content = '';
           Object.keys(result).forEach(function (value, key) {
             food_Items_Content = food_Items_Content + `
@@ -1262,13 +1258,15 @@ $(function () {
                 </span>
               ${result[value]["Name"]}
               </h2>
-                  <h3 class="food_address">
+                <h3 class="food_address my-1">
                     地址：${result[value]["Address"]}
-                    <i class="fab fa-telegram-plane" id = 'go_Restaurant_Pos' shopName = '${result[value]['Name']}' 
-                    shopAddr= '${result[value]['Address']}' shopPhone='${result[value]['Phone']}' 
-                    shopWeb='${result[value]['WebsiteUrl']}' lat='${ result[value]["Position"]["PositionLat"]}' 
+                    <i class="fab fa-telegram-plane" id = 'go_Restaurant_Pos' data-num = '${value}' lat='${ result[value]["Position"]["PositionLat"]}' 
                     lng = '${ result[value]["Position"]["PositionLon"]}' style='color: blue; font-size:18px; cursor:pointer;'></i>
-              </h3>
+                </h3>
+                <h3 class="view_opentime my-1">
+                    <i class="far fa-clock" title="開放時間"></i>
+                    ${result[value]['OpenTime'] != 'N/A' || result[value]['OpenTime']  ? result[value]['OpenTime'] : "未公開"}
+                </h3>
               </div>
             `; 
           });
@@ -1311,12 +1309,14 @@ $(function () {
       $(this).addClass('bg-danger');
     }
     let city_name = $(this).attr('city_filter');
+    let select = 'Name,Address,Description,Phone,OpenTime,WebsiteUrl,Position,Picture';
     $.ajax({
-      url: `https://ptx.transportdata.tw/MOTC/v2/Tourism/Restaurant/${city_name}?$format=JSON`,
+      url: `https://ptx.transportdata.tw/MOTC/v2/Tourism/Restaurant/${city_name}?$select=${select}&$format=JSON`,
       dataType: 'json',
       contentType: 'json',
       headers: GetAuthorizationHeader(),
       success: function (result) {
+        restaurant_Info = $.parseJSON(JSON.stringify(result));
         let food_Items_Content = '';
         Object.keys(result).forEach(function (value, key) {
           food_Items_Content = food_Items_Content + `
@@ -1327,14 +1327,16 @@ $(function () {
               </span>
             ${result[value]["Name"]}
             </h2>
-            <h3 class="food_address">
+            <h3 class="food_address my-1">
                 地址：${result[value]["Address"]}
-                <i class="fab fa-telegram-plane" id = 'go_Restaurant_Pos' shopName = '${result[value]['Name']}' 
-                shopAddr= '${result[value]['Address']}' shopPhone='${result[value]['Phone']}' 
-                shopWeb='${result[value]['WebsiteUrl']}' lat='${ result[value]["Position"]["PositionLat"]}' 
-                lng = '${ result[value]["Position"]["PositionLon"]}' desc = '${result[value]["Description"]}'
-                pic = '${result[value]['Picture']}'style='color: blue; font-size:18px; cursor:pointer;'></i>
+                <i class="fab fa-telegram-plane" id = 'go_Restaurant_Pos' data-num = '${value}' lat='${ result[value]["Position"]["PositionLat"]}' 
+                lng = '${ result[value]["Position"]["PositionLon"]}' style='color: blue; font-size:18px; cursor:pointer;'></i>
             </h3>
+            <h3 class="view_opentime my-1">
+                <i class="far fa-clock" title="開放時間"></i>
+                ${result[value]['OpenTime'] != 'N/A' || result[value]['OpenTime']  ? result[value]['OpenTime'] : "未公開"}
+            </h3>
+
             </div>
           `; 
         });
@@ -1353,41 +1355,93 @@ $(function () {
     $(this).parent().parent().css('background', '#ffeaa7');
     let Lat = $(this).attr('lat');
     let Lng = $(this).attr('lng');
-    let position = [Lat, Lng];
-    let pic = $(this).attr('pic');
-    let desc = $(this).attr('desc');
-    let restaurant = $(this).attr('shopName');
-    let restaurant_addr = $(this).attr('shopAddr');
-    let web = $(this).attr('shopWeb');
-    let phone = $(this).attr('shopPhone');
-
+    let data_Num = $(this).attr('data-num');
+    let web = restaurant_Info[data_Num]['WebsiteUrl'] != undefined ? `<a href = "${restaurant_Info[data_Num]['WebsiteUrl']}" target="_blank" style="color: #0984e3">${restaurant_Info[data_Num]['WebsiteUrl']}</a>` : `尚未公開`;
     let fly_Marker_Content = `
-      <h2>${restaurant}</h2>
-      <p>地址：<a href = "https://www.google.com.tw/maps/place/${restaurant_addr}/@${Lat},${Lng},17z" target="_blank" style="color: #0984e3">${restaurant_addr}</a></p>
-      ${ web != 'undefined' ? `<p><a href = "${web}" target="_blank" style="color: #0984e3">網站連結：${web}</a></p>` : '<p>網站連結：尚未公開</p>'}
+      <h2>${restaurant_Info[data_Num]['Name']}</h2>
+      <p>地址： <a href = "https://www.google.com.tw/maps/place/${restaurant_Info[data_Num]['Address']}/@${Lat},${Lng},17z" target="_blank" style="color: #0984e3">${restaurant_Info[data_Num]['Address']}</a></p>
+      <p>店家網站：${web}</p>
       <div class="d-flex justify-content-center">
-      <button type="button" id='food_Modal' onclick='open_Info_Food(${pic},${restaurant},${desc})'  class = "btn btn-info mb-2 fw-bolder" data-bs-toggle="modal"  data-bs-target="#open_Info">查看介紹</button>
+      <button type="button" id='food_Modal' onclick='open_Info_Food(${data_Num})'  class = "btn btn-info mb-2 fw-bolder" data-bs-toggle="modal"  data-bs-target="#open_Info">查看介紹</button>
       </div>
       `;
     fly_To_Marker(Lat, Lng, fly_Marker_Content);
   });
 
   
-  open_Info_Food = function(pic, name, desc){
-    let travel_info_Image = travel_Info[info_number]['Picture']['PictureUrl1'] ? ` <img src = "${travel_Info[info_number]['Picture']['PictureUrl1']}" alt ="${travel_Info[info_number]['Name']}照片"></img>
-    <p class="fw-bolder mt-3">圖片提供：${travel_Info[info_number]['Picture']['PictureDescription1']}</p>` : '<p class="fw-bolder mt-3">尚未提供圖片</p>';
+  open_Info_Food = function(info_number){
+    console.log(restaurant_Info);
     
-    $('#open_InfoLabel').html(travel_Info[info_number]["Name"]);
+    $('#open_InfoLabel').html(restaurant_Info[info_number]["Name"]);
     $('div#open_info_body').html('');
     $('div#open_info_body').append(`
-        <div class = "travel_Describe_Container">
-        <p class = "mx-3">${travel_Info[info_number]['DescriptionDetail']}</p>
+        <div class = "travel_Describe_Container" style= 'width: 100%;'>
+        <p class = "mx-3">${restaurant_Info[info_number]['Description']}</p>
         </div>
-        <div class = "travel_Image_Container d-flex align-items-center m-3" style="flex-direction: column">
-          ${travel_info_Image}
-        </div>
+
         `);
   }
+
+  
+
+  $('input.search-food').on('input', function () {
+    let input_Val = $(this).val();
+    if (input_Val) {
+      $('.Food-category-Items').html('');
+      let food_Items_Content = '';
+        Object.keys(restaurant_Info).forEach(function (value, key) {
+          if (restaurant_Info[value]['Name'].includes($('input.search-food').val()) || restaurant_Info[value]['Address'].includes($('input.search-food').val())) {
+          food_Items_Content = food_Items_Content + `
+            <div class="food-item">
+            <h2 class="restaurant_Name">
+              <span class='badge bg-warning mx-1'>
+                <i class="fas fa-utensils" style='color: green'></i>   
+              </span>
+            ${restaurant_Info[value]["Name"]}
+            </h2>
+            <h3 class="food_address my-1">
+                地址：${restaurant_Info[value]["Address"]}
+                <i class="fab fa-telegram-plane" id = 'go_Restaurant_Pos' data-num = '${value}' lat='${ restaurant_Info[value]["Position"]["PositionLat"]}' 
+                lng = '${ restaurant_Info[value]["Position"]["PositionLon"]}' style='color: blue; font-size:18px; cursor:pointer;'></i>
+            </h3>
+            <h3 class="view_opentime my-1">
+                <i class="far fa-clock" title="開放時間"></i>
+                ${restaurant_Info[value]['OpenTime'] != 'N/A' || restaurant_Info[value]['OpenTime']  ? restaurant_Info[value]['OpenTime'] : "未公開"}
+            </h3>
+
+            </div>
+          `; 
+          }
+        });
+          $('.Food-category-Items').append(food_Items_Content);
+          
+    } else {
+        let food_Items_Content = '';
+        Object.keys(restaurant_Info).forEach(function (value, key) {
+          food_Items_Content = food_Items_Content + `
+            <div class="food-item">
+            <h2 class="restaurant_Name">
+              <span class='badge bg-warning mx-1'>
+                <i class="fas fa-utensils" style='color: green'></i>   
+              </span>
+            ${restaurant_Info[value]["Name"]}
+            </h2>
+            <h3 class="food_address my-1">
+                地址：${restaurant_Info[value]["Address"]}
+                <i class="fab fa-telegram-plane" id = 'go_Restaurant_Pos' data-num = '${value}' lat='${ restaurant_Info[value]["Position"]["PositionLat"]}' 
+                lng = '${ restaurant_Info[value]["Position"]["PositionLon"]}' style='color: blue; font-size:18px; cursor:pointer;'></i>
+            </h3>
+            <h3 class="view_opentime my-1">
+                <i class="far fa-clock" title="開放時間"></i>
+                ${restaurant_Info[value]['OpenTime'] != 'N/A' || restaurant_Info[value]['OpenTime']  ? restaurant_Info[value]['OpenTime'] : "未公開"}
+            </h3>
+
+            </div>
+          `; 
+        });
+          $('.Food-category-Items').append(food_Items_Content);
+    }
+  });
   
 
   $('button.confirm_food').on('click', function () {
