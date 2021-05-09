@@ -1,27 +1,29 @@
 $(function () {
 
   let tra_html = `
-  <!-- body -->
-  <div class = "alert alert-primary fade show d-flex justify-content-center" role = "alert" >
-      <div id='home_result' class = "alert-body text-center">
-          <p>這部分可能會有Bug，如有問題請見諒😓</p>
-          <p>本團隊會盡快修復正常😤</p>
-      </div>
-      </div>
-
    <div class='container-List'>
-          <div class="TRA_Origination">
-            <select id="TRA_Origination_Station_List" class="selectpicker" data-live-search="true" data-none-results-text = "沒有搜尋到關鍵字：{0}">
-              <option selected disabled value="null">請選擇起站</option>
-            </select>
 
-          </div>
+        <div class="select-box">
+            <div class="options-container" id = 'O_Station'>
+            </div>
+            <div class="selected" id = "TRA_Origination_Selected">
+                請選擇起站
+            </div>
+            <div class="search-box" id = 'O_Station'>
+              <input type="text" placeholder="請選擇起站" />
+            </div>
+        </div>
 
-          <div class="TRA_Destination">
-            <select id="TRA_Destination_Station_List" class="selectpicker" data-live-search="true" data-none-results-text = "沒有搜尋到關鍵字：{0}">
-              <option selected disabled value="null">請選擇迄站</option>
-            </select>
-          </div>
+        <div class="select-box">
+            <div class="options-container" id = 'D_Station'>
+            </div>
+            <div class="selected" id = "TRA_Destination_Selected">
+                請選擇迄站
+            </div>
+            <div class="search-box" id = 'D_Station'>
+              <input type="text" placeholder="請選擇迄站"  />
+            </div>
+        </div>
 
           <!-- Button trigger modal -->
           <button type="button" id='go_Ticket_Search_TRA' class="btn btn-success">
@@ -647,6 +649,7 @@ $(function () {
   });
 
 
+
   let tra_Station_Info;
   let select = 'LocationCity,StationName,StationID';
   $.ajax({
@@ -657,17 +660,79 @@ $(function () {
     success: function (result) {
       tra_Station_Info = $.parseJSON(JSON.stringify(result));
       let city_arr = [];
-      let picker_Dom = $('select.selectpicker');
+      let picker_Dom = $('div.options-container');
       for (let i = 0; i < result.length; i++) {
         let station_Name = result[i]['StationName']['Zh_tw'];
         let station_id = result[i]['StationID'];
         let city = result[i]['LocationCity'].substr(0, 2);
         if (!(city_arr.includes(city))) {
           city_arr.push(city);
-          picker_Dom.append(`<optgroup label = '${city}'></optgroup>`);
+          picker_Dom.append(`
+              <div class = "city-options" city-name = "${city}">
+                <p class='city-option-Name'>${city}</p>
+              </div>
+          `);
         }
-        $('optgroup[label=' + city + ']').append(`<option StationID='${station_id}'>${station_Name}</option>`);
+        $(`div[city-name="${city}"]`).append(`
+            <div class="option" style="display: block;">
+            <input type="radio" class="radio" id="station_${station_id}" name="category" />
+            <label for="station_${station_id}">${station_Name}</label>
+            </div>        
+        `);
+
+        
       }
+
+
+    // https://www.youtube.com/watch?v=VZzWzRVXPcQ&ab_channel=GTCoding
+    $('.selected').on('click', function(){
+      let select_id = this.id ==  'TRA_Origination_Selected' ? 'O_Station' : 'D_Station';
+      console.log(select_id);
+      $(`.options-container[id="${select_id}"]`).toggleClass('active');
+      $(`.search-box[id="${select_id}"] input`).val = '';
+      filterList("");
+      if ($(`.options-container[id="${select_id}"]`).hasClass("active")) {
+        $(`.search-box[id="${select_id}"] input`).focus();
+      }
+    });
+
+    $('.city-options div.option').on('click', function(){
+      let select_id = $(this).parent().parent().attr('id');
+      let select = select_id == 'O_Station' ?　'TRA_Origination_Selected': 'TRA_Destination_Selected';
+      $(`.selected[id="${select}"]`).html($(this).find('label').text());
+      $(`.options-container[id="${select_id}"]`).removeClass('active');
+    });
+
+    
+    $('.search-box input').on("keyup", function(e) {
+      let search_id = $(this).parent().attr('id');
+      filterList(e.target.value, search_id);
+    });
+
+    const filterList = function(searchTerm, id) {
+        let option_List = $(`.options-container[id="${id}"] div.option`);
+        for(let i = 0 ; i < option_List.length ; i++){
+          let label = option_List.eq(i).find('label').text().toLowerCase();
+          if (label.indexOf(searchTerm) != -1) {
+            option_List.eq(i).css('display', 'block');
+          } else {
+            option_List.eq(i).css('display', 'none');
+          }
+        }
+
+      let city_Select = $(`div.options-container[id="${id}"]`).find('div.city-options');
+      const city_Select_Length = city_Select.length;
+      for(let i = 0 ; i < city_Select_Length; i++){
+        let select_city = city_Select.eq(i).attr('city-name');
+        let station_City_Choose = $(`.options-container[id='${id}'] div[city-name='${select_city}']`);
+        let find_option = station_City_Choose.find('div.option[style="display: block;"]');
+        if(find_option.length == 0){
+          station_City_Choose.hide();
+        }else{
+          station_City_Choose.show();
+        }
+      }
+    };
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       console.log(XMLHttpRequest);
@@ -677,6 +742,8 @@ $(function () {
   });
 
 
+
+
   $('button#go_Ticket_Search_TRA').on('click', function () {
     $('span#spinner-TRA-Ticket').removeAttr("hidden");
     this.disabled = true;
@@ -684,7 +751,7 @@ $(function () {
     let tra_Result_Content = '';
     tra_Result.html("載入中......");
     setTimeout(function () {
-      if ($('#TRA_Origination_Station_List').val() == null || $('#TRA_Destination_Station_List').val() == null) {
+      if ($('#TRA_Origination_Selected').text() == null || $('#TRA_Destination_Selected').text() == null) {
         tra_Result.html("");
         tra_Result.append("<h2> ❗ 請確實填入站點資訊 ❗</h2>");
       }
@@ -692,16 +759,16 @@ $(function () {
         tra_Result.removeClass('text-center');
         tra_Result.html("");
         tra_Result_Content = tra_Result_Content + `
-        <h2>起站: ${$('#TRA_Origination_Station_List').val()}</h2>
-        <h2>迄站: ${$('#TRA_Destination_Station_List').val()}</h2>
+        <h2>起站: ${$('#TRA_Origination_Selected').text()}</h2>
+        <h2>迄站: ${$('#TRA_Destination_Selected').text()}</h2>
         `;
         let station_ID_O;
         let station_ID_D;
         for (let index = 0; index < tra_Station_Info.length; index++) {
-          if (tra_Station_Info[index]['StationName']['Zh_tw'] == $('#TRA_Origination_Station_List').val()) {
+          if (tra_Station_Info[index]['StationName']['Zh_tw'] == $('#TRA_Origination_Selected').text()) {
             station_ID_O = tra_Station_Info[index]['StationID'];
           }
-          if (tra_Station_Info[index]['StationName']['Zh_tw'] == $('#TRA_Destination_Station_List').val()) {
+          if (tra_Station_Info[index]['StationName']['Zh_tw'] == $('#TRA_Destination_Selected').text()) {
             station_ID_D = tra_Station_Info[index]['StationID'];
           }
         }
@@ -740,7 +807,7 @@ $(function () {
 
     tra_Result.html("載入中......");
     setTimeout(function () {
-      if ($('#TRA_Origination_Station_List').val() == null || $('#TRA_Destination_Station_List').val() == null) {
+      if ($('#TRA_Origination_Selected').text() == null || $('#TRA_Destination_Selected').text() == null) {
         tra_Result.html("");
         tra_Result.append("<h2> ❗ 請確實填入站點資訊 ❗</h2>");
       }
@@ -748,10 +815,10 @@ $(function () {
         tra_Result.removeClass('text-center');
         tra_Result.html("");
         for (let index = 0; index < tra_Station_Info.length; index++) {
-          if (tra_Station_Info[index]['StationName']['Zh_tw'] == $('#TRA_Origination_Station_List').val()) {
+          if (tra_Station_Info[index]['StationName']['Zh_tw'] == $('#TRA_Origination_Selected').text()) {
              var station_ID_O = tra_Station_Info[index]['StationID'];
           }
-          if (tra_Station_Info[index]['StationName']['Zh_tw'] == $('#TRA_Destination_Station_List').val()) {
+          if (tra_Station_Info[index]['StationName']['Zh_tw'] == $('#TRA_Destination_Selected').text()) {
              var station_ID_D = tra_Station_Info[index]['StationID'];
           }
         }
