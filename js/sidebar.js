@@ -687,7 +687,6 @@ $(function () {
     // https://www.youtube.com/watch?v=VZzWzRVXPcQ&ab_channel=GTCoding
     $('.selected').on('click', function(){
       let select_id = this.id ==  'TRA_Origination_Selected' ? 'O_Station' : 'D_Station';
-      console.log(select_id);
       $(`.options-container[id="${select_id}"]`).toggleClass('active');
       $(`.search-box[id="${select_id}"] input`).val = '';
       filterList("");
@@ -829,36 +828,39 @@ $(function () {
         const train_Date = year + '-' + month + '-' + date;
 
         $.ajax({
-          url: `https://ptx.transportdata.tw/MOTC/v2/Rail/TRA/DailyTimetable/OD/${station_ID_O}/to/${station_ID_D}/${train_Date}?$format=JSON`,
+          url: `https://ptx.transportdata.tw/MOTC/v3/Rail/TRA/DailyTrainTimetable/OD/${station_ID_O}/to/${station_ID_D}/${train_Date}?$format=JSON`,
           dataType: "json",
           headers: GetAuthorizationHeader(), 
           success: function (result) {
             console.log(result);
-            for (let index = 0; index < result.length; index++) {
-              let train_No = result[index]['DailyTrainInfo']['TrainNo']; 
-              let startingStationName = result[index]['DailyTrainInfo']['StartingStationName']['Zh_tw']; 
-              let endingStationName = result[index]['DailyTrainInfo']['EndingStationName']['Zh_tw']; 
-              let trainTypeName = result[index]['DailyTrainInfo']['TrainTypeName']['Zh_tw']; 
-              let O_stationName = result[index]['OriginStopTime']['StationName']['Zh_tw'];
-              let O_ArrivalTime = result[index]['OriginStopTime']['ArrivalTime']; 
-              let D_stationName = result[index]['DestinationStopTime']['StationName']['Zh_tw'];
-              let D_ArrivalTime = result[index]['DestinationStopTime']['ArrivalTime'];
-              _startTime = O_ArrivalTime.split(":");
+            for (let index = 0; index < result['TrainTimetables'].length; index++) {
+              let train_No = result['TrainTimetables'][index]['TrainInfo']['TrainNo']; 
+              let startingStationName = result['TrainTimetables'][index]['TrainInfo']['StartingStationName']['Zh_tw']; 
+              let endingStationName = result['TrainTimetables'][index]['TrainInfo']['EndingStationName']['Zh_tw']; 
+              let trainTypeName = result['TrainTimetables'][index]['TrainInfo']['TrainTypeName']['Zh_tw']; 
+              let O_stationName = result['TrainTimetables'][index]['StopTimes'][0]['StationName']['Zh_tw'];
+              let O_DepartureTime = result['TrainTimetables'][index]['StopTimes'][0]['DepartureTime']; 
+              let D_stationName = result['TrainTimetables'][index]['StopTimes'][1]['StationName']['Zh_tw'];
+              let D_ArrivalTime = result['TrainTimetables'][index]['StopTimes'][1]['ArrivalTime'];
+              
+              _startTime = O_DepartureTime.split(":");
               _endTime = D_ArrivalTime.split(":");
               var startDate = new Date(0, 0, 0, _startTime[0], _startTime[1], 0);
               var EndDate = new Date(0, 0, 0, _endTime[0], _endTime[1], 0);
               EndDate.setHours(EndDate.getHours() - startDate.getHours());
               EndDate.setMinutes(EndDate.getMinutes() - startDate.getMinutes());
               resultTime = EndDate.getHours() + "小時" + EndDate.getMinutes() + "分鐘";
-
+              let train_Type_Color = '';
+              if(trainTypeName.indexOf('自強') != -1){train_Type_Color = 'red'} else if(trainTypeName.indexOf('莒光') != -1){train_Type_Color = '#e67e22'}else if(trainTypeName.indexOf('區間') != -1){ train_Type_Color = 'blue';}else{train_Type_Color='black';}
+              
               tra_Result_Content = tra_Result_Content + `
               <h2>日期: ${train_Date}</h2>
-              <h2><i class="fas fa-subway" style='color: blue;'></i> ${trainTypeName}_No.${train_No}</h2>
+              <h2><i class="fas fa-subway" style='color: ${train_Type_Color};'></i> ${trainTypeName}_No.${train_No}</h2>
               <h2>(${startingStationName}  →  ${endingStationName})</hw>
-              <h2>起站: <i class="far fa-clock" title="上車時間" style='color: blue'></i> ${O_ArrivalTime}   ${O_stationName}</h2>
+              <h2>起站: <i class="far fa-clock" title="上車時間" style='color: blue'></i> ${O_DepartureTime}   ${O_stationName}</h2>
               <h2>迄站: <i class="far fa-clock" title="下車時間" style='color: blue'></i> ${D_ArrivalTime}   ${D_stationName}</h2>
               <h2>需花費: ${resultTime}</h2>
-              <h2>--------------------------------------------------------</h2>
+              <hr>
               `;
             }
             tra_Result.append(tra_Result_Content);
