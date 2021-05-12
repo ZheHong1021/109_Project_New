@@ -25,19 +25,17 @@ $(function () {
             </div>
         </div>
 
+        <div class = 'tra_Button_Container'>
           <!-- Button trigger modal -->
-          <button type="button" id='go_Ticket_Search_TRA' class="btn btn-success">
-            查詢票價
-            <span class="spinner-border spinner-border-sm" id='spinner-TRA-Ticket' role="status" aria-hidden="true" hidden></span>
-          <button type="button" id='go_Time_Search_TRA' class="btn btn-primary">
+        <button type="button" id='go_Time_Search_TRA' class="btn btn-primary">
             查詢車班
             <span class="spinner-border spinner-border-sm" id='spinner-TRA-Time' role="status" aria-hidden="true" hidden></span>
-
+          </div>
 
         </div>
 
         <div class="alert alert-warning  fade show d-flex justify-content-center" role="alert">
-          <div id='tra_result' lass="alert-body text-center">尚無查詢紀錄</div>
+          <div id='tra_result' class="alert-body text-center" style='width: 100%;'>尚無查詢紀錄</div>
         </div>
       
   `;
@@ -73,7 +71,6 @@ $(function () {
       <label for="Destination_StationName_List" class='select_Label'>迄站</label>
       <select class="form-select form-select-sm" id="Destination_StationName_List"
         aria-label="Default select example">
-
       </select>
     </div>
 
@@ -88,8 +85,6 @@ $(function () {
       hidden
     ></span>
     </button>
-
-
 
     <a class="routing_pic" href="#" data-bs-toggle="modal"  data-bs-target="#exampleModal">查看捷運路線圖</a>
   </div>
@@ -235,8 +230,8 @@ $(function () {
 
   </div>
   `;
- 
-  
+
+
   let food_html = `     
   <div class='container-food'>
   <div class="city_container" id='Taipei' city_name_Tw='臺北市'>
@@ -282,7 +277,6 @@ $(function () {
       <h2>其他縣市</h2>
     </div>
   </div>
-
 
   <div class="bus-loading" style = "padding: 10px 20px; background-color: #eee; border-radius: 20px;">
   <div class = "d-flex justify-content-center align-items-center">
@@ -330,12 +324,13 @@ $(function () {
         
         <div class="Food-category-Items my-3">
         </div>
-    <div id = 'food_Load' class="bus-loading" style = "padding: 10px 20px; background-color: #eee; border-radius: 20px;">
-    <div class = "d-flex justify-content-center align-items-center">
-    <div class="spinner-border text-danger" role="status" ></div>
-      <span class = 'mx-2'>Loading...</span>
-      </div>
-    </div>
+        
+        <div id = 'food_Load' class="bus-loading" style = "padding: 10px 20px; background-color: #eee; border-radius: 20px;">
+        <div class = "d-flex justify-content-center align-items-center">
+        <div class="spinner-border text-danger" role="status" ></div>
+          <span class = 'mx-2'>Loading...</span>
+          </div>
+        </div>
 
   </div>
 
@@ -483,10 +478,10 @@ $(function () {
 
 
   var sidebar = L.control.sidebar({
-      container: 'sidebar',
-    })
+    container: 'sidebar',
+  })
     .addTo(map)
-    .open('home'); 
+    .open('home');
 
   sidebar
     .addPanel({
@@ -535,7 +530,7 @@ $(function () {
       url: `https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/ODFare/${route}?$select=${select}&$format=JSON`,
       dataType: "json",
       contentType: 'json',
-      headers: GetAuthorizationHeader(), 
+      headers: GetAuthorizationHeader(),
       success: function (result) {
         mrt_FareInfo = $.parseJSON(JSON.stringify(result));
         const select_box_Origin = $('div.Origin_Station').find('#Origin_StationName_List');
@@ -574,18 +569,18 @@ $(function () {
     select_box_Origin.length = 0;
     select_box_Destination.length = 0;
     $('div.bus-loading').show();
-    setTimeout(function(){
+    setTimeout(function () {
       select_Route(select_val);
       $('div.bus-loading').hide();
     }, 1500);
   });
   $('button#go_Search_MRT').on('click', function () {
-    $('span#spinner-MRT').removeAttr("hidden"); 
-    $('button#go_Search_MRT').prop("disabled", true); 
-    $('div#mrt_result').html("載入中......"); 
+    $('span#spinner-MRT').removeAttr("hidden");
+    $('button#go_Search_MRT').prop("disabled", true);
+    $('div#mrt_result').html("載入中......");
 
     setTimeout(function () {
-      $('div#mrt_result').removeClass('text-center'); 
+      $('div#mrt_result').removeClass('text-center');
       $('div#mrt_result').html("");
       let mrt_Result_Content = '';
       let origin_List = $('#Origin_StationName_List');
@@ -608,7 +603,7 @@ $(function () {
           if (travel_Distance) {
             mrt_Result_Content = mrt_Result_Content + `<h2>路程距離: ${travel_Distance}公里</h2>`;
           }
-          
+
           for (let i = 0; i < fares.length; i++) {
             if (fares[i]['TicketType'] == 1) {
               switch (fares[i]['FareClass']) {
@@ -648,177 +643,265 @@ $(function () {
     }, 1500);
   });
 
+    let tra_Station_Info;
+    let select = 'LocationCity,StationName,StationID';
+    $.ajax({
+      url: `https://ptx.transportdata.tw/MOTC/v2/Rail/TRA/Station?$select=${select}&$format=JSON`,
+      dataType: "json",
+      contentType: 'json',
+      headers: GetAuthorizationHeader(),
+      success: function (result) {
+        tra_Station_Info = $.parseJSON(JSON.stringify(result));
+        let city_arr = [];
+        let picker_Dom_O = $(`div.options-container[id='O_Station']`);
+        let picker_Dom_D = $(`div.options-container[id='D_Station']`);
+        for (let i = 0; i < result.length; i++) {
+          let station_Name = result[i]['StationName']['Zh_tw'];
+          let station_id = result[i]['StationID'];
+          let city = result[i]['LocationCity'].substr(0, 2);
+          if (!(city_arr.includes(city))) {
+            city_arr.push(city);
+            picker_Dom_O.append(`
+                <div class = "city-options" city-name = "${city}" id='O_Station'>
+                  <p class='city-option-Name'>${city}</p>
+                </div>
+            `);
+            picker_Dom_D.append(`
+                <div class = "city-options" city-name = "${city}" id='D_Station'>
+                  <p class='city-option-Name'>${city}</p>
+                </div>
+            `);
+          }
 
-
-  let tra_Station_Info;
-  let select = 'LocationCity,StationName,StationID';
-  $.ajax({
-    url: `https://ptx.transportdata.tw/MOTC/v2/Rail/TRA/Station?$select=${select}&$format=JSON`,
-    dataType: "json",
-    contentType: 'json',
-    headers: GetAuthorizationHeader(), 
-    success: function (result) {
-      tra_Station_Info = $.parseJSON(JSON.stringify(result));
-      let city_arr = [];
-      let picker_Dom = $('div.options-container');
-      for (let i = 0; i < result.length; i++) {
-        let station_Name = result[i]['StationName']['Zh_tw'];
-        let station_id = result[i]['StationID'];
-        let city = result[i]['LocationCity'].substr(0, 2);
-        if (!(city_arr.includes(city))) {
-          city_arr.push(city);
-          picker_Dom.append(`
-              <div class = "city-options" city-name = "${city}">
-                <p class='city-option-Name'>${city}</p>
-              </div>
+          $(`div[city-name="${city}"][id='O_Station']`).append(`
+              <div class="option" style="display: block;">
+              <input type="radio" class="radio" id="O_Station_${station_id}" name="category" />
+              <label for="O_Station_${station_id}">${station_Name}</label>
+              </div>        
+          `);
+          $(`div[city-name="${city}"][id='D_Station']`).append(`
+              <div class="option" style="display: block;">
+              <input type="radio" class="radio" id="D_Station_${station_id}" name="category" />
+              <label for="D_Station_${station_id}">${station_Name}</label>
+              </div>        
           `);
         }
-        $(`div[city-name="${city}"]`).append(`
-            <div class="option" style="display: block;">
-            <input type="radio" class="radio" id="station_${station_id}" name="category" />
-            <label for="station_${station_id}">${station_Name}</label>
-            </div>        
-        `);
 
-        
-      }
-
-
-    // https://www.youtube.com/watch?v=VZzWzRVXPcQ&ab_channel=GTCoding
-    $('.selected').on('click', function(){
-      let select_id = this.id ==  'TRA_Origination_Selected' ? 'O_Station' : 'D_Station';
-      $(`.options-container[id="${select_id}"]`).toggleClass('active');
-      $(`.search-box[id="${select_id}"] input`).val = '';
-      filterList("");
-      if ($(`.options-container[id="${select_id}"]`).hasClass("active")) {
-        $(`.search-box[id="${select_id}"] input`).focus();
-      }
-    });
-
-    $('.city-options div.option').on('click', function(){
-      let select_id = $(this).parent().parent().attr('id');
-      let select = select_id == 'O_Station' ?　'TRA_Origination_Selected': 'TRA_Destination_Selected';
-      $(`.selected[id="${select}"]`).html($(this).find('label').text());
-      $(`.options-container[id="${select_id}"]`).removeClass('active');
-    });
-
-    
-    $('.search-box input').on("keyup", function(e) {
-      let search_id = $(this).parent().attr('id');
-      filterList(e.target.value, search_id);
-    });
-
-    const filterList = function(searchTerm, id) {
-        let option_List = $(`.options-container[id="${id}"] div.option`);
-        for(let i = 0 ; i < option_List.length ; i++){
-          let label = option_List.eq(i).find('label').text().toLowerCase();
-          if (label.indexOf(searchTerm) != -1) {
-            option_List.eq(i).css('display', 'block');
-          } else {
-            option_List.eq(i).css('display', 'none');
-          }
-        }
-
-      let city_Select = $(`div.options-container[id="${id}"]`).find('div.city-options');
-      const city_Select_Length = city_Select.length;
-      for(let i = 0 ; i < city_Select_Length; i++){
-        let select_city = city_Select.eq(i).attr('city-name');
-        let station_City_Choose = $(`.options-container[id='${id}'] div[city-name='${select_city}']`);
-        let find_option = station_City_Choose.find('div.option[style="display: block;"]');
-        if(find_option.length == 0){
-          station_City_Choose.hide();
-        }else{
-          station_City_Choose.show();
-        }
-      }
-    };
-    },
-    error: function (XMLHttpRequest, textStatus, errorThrown) {
-      console.log(XMLHttpRequest);
-      console.log(textStatus);
-      console.log(errorThrown);
-    }
-  });
-
-
-
-
-  $('button#go_Ticket_Search_TRA').on('click', function () {
-    $('span#spinner-TRA-Ticket').removeAttr("hidden");
-    this.disabled = true;
-    let tra_Result = $('div#tra_result');
-    let tra_Result_Content = '';
-    tra_Result.html("載入中......");
-    setTimeout(function () {
-      if ($('#TRA_Origination_Selected').text() == null || $('#TRA_Destination_Selected').text() == null) {
-        tra_Result.html("");
-        tra_Result.append("<h2> ❗ 請確實填入站點資訊 ❗</h2>");
-      }
-      else {
-        tra_Result.removeClass('text-center');
-        tra_Result.html("");
-        tra_Result_Content = tra_Result_Content + `
-        <h2>起站: ${$('#TRA_Origination_Selected').text()}</h2>
-        <h2>迄站: ${$('#TRA_Destination_Selected').text()}</h2>
-        `;
-        let station_ID_O;
-        let station_ID_D;
-        for (let index = 0; index < tra_Station_Info.length; index++) {
-          if (tra_Station_Info[index]['StationName']['Zh_tw'] == $('#TRA_Origination_Selected').text()) {
-            station_ID_O = tra_Station_Info[index]['StationID'];
-          }
-          if (tra_Station_Info[index]['StationName']['Zh_tw'] == $('#TRA_Destination_Selected').text()) {
-            station_ID_D = tra_Station_Info[index]['StationID'];
-          }
-        }
-        $.ajax({
-          url: "https://ptx.transportdata.tw/MOTC/v2/Rail/TRA/ODFare/" + station_ID_O + "/to/" + station_ID_D + "?$format=JSON",
-          dataType: "json",
-          contentType: 'json',
-          headers: GetAuthorizationHeader(),
-          success: function (result) {
-            let fares = result[0]['Fares'];
-            for (let i = 0; i < fares.length; i++) {
-              let ticketType = fares[i]['TicketType'];
-              let ticketPrice = fares[i]['Price'];
-              tra_Result_Content = tra_Result_Content + `<h2>${ticketType}票: $${ticketPrice}</h2>`;
-            }
-            tra_Result.append(tra_Result_Content);
-          },
-          error: function (XMLHttpRequest, textStatus, errorThrown) {
-            console.log(XMLHttpRequest);
-            console.log(textStatus);
-            console.log(errorThrown);
+        // https://www.youtube.com/watch?v=VZzWzRVXPcQ&ab_channel=GTCoding
+        $('.selected').on('click', function () {
+          let select_id = this.id == 'TRA_Origination_Selected' ? 'O_Station' : 'D_Station';
+          $(`.options-container[id="${select_id}"]`).toggleClass('active');
+          $(`.search-box[id="${select_id}"] input`).val = '';
+          filterList("");
+          if ($(`.options-container[id="${select_id}"]`).hasClass("active")) {
+            $(`.search-box[id="${select_id}"] input`).focus();
           }
         });
+
+        $('.city-options div.option').on('click', function () {
+          let select_id = $(this).parent().parent().attr('id');
+          let select = select_id == 'O_Station' ? 'TRA_Origination_Selected' : 'TRA_Destination_Selected';
+          $(`.selected[id="${select}"]`).html($(this).find('label').text());
+          $(`.options-container[id="${select_id}"]`).removeClass('active');
+        });
+
+
+        $('.search-box input').on("keyup", function (e) {
+          let search_id = $(this).parent().attr('id');
+          filterList(e.target.value, search_id);
+        });
+
+        const filterList = function (searchTerm, id) {
+          let option_List = $(`.options-container[id="${id}"] div.option`);
+          for (let i = 0; i < option_List.length; i++) {
+            let label = option_List.eq(i).find('label').text().toLowerCase();
+            if (label.indexOf(searchTerm) != -1) {
+              option_List.eq(i).css('display', 'block');
+            } else {
+              option_List.eq(i).css('display', 'none');
+            }
+          }
+
+          let city_Select = $(`div.options-container[id="${id}"]`).find('div.city-options');
+          const city_Select_Length = city_Select.length;
+          for (let i = 0; i < city_Select_Length; i++) {
+            let select_city = city_Select.eq(i).attr('city-name');
+            let station_City_Choose = $(`.options-container[id='${id}'] div[city-name='${select_city}']`);
+            let find_option = station_City_Choose.find('div.option[style="display: block;"]');
+            if (find_option.length == 0) {
+              station_City_Choose.hide();
+            } else {
+              station_City_Choose.show();
+            }
+          }
+        };
+      },
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        console.log(XMLHttpRequest);
+        console.log(textStatus);
+        console.log(errorThrown);
       }
-      $('span#spinner-TRA-Ticket').prop("hidden", true);
-      $('button#go_Ticket_Search_TRA').prop("disabled", false);
-    }, 1500);
-  });
+    });
+
+  
+
+  let train_Ticket_Search = function(index,O_id, D_id, Direction, train_Type){
+    let return_Text = '';
+  let trainType = '';
+  let filter = `Direction eq ${Direction} AND TrainType eq ${train_Type}`;
+  $.ajax({
+    url: `https://ptx.transportdata.tw/MOTC/v3/Rail/TRA/ODFare/${O_id}/to/${D_id}?$filter=${filter}&$format=JSON`,
+    dataType: 'json',
+    headers: GetAuthorizationHeader(),
+    contentType: 'json',
+    success: function (result) {
+      // TrainType (Int32): 車種簡碼 = ['1: 太魯閣', '2: 普悠瑪', '3: 自強', '4: 莒光', '5: 復興', '6: 區間', '7: 普快', '10: 區間快'] ,
+      Object.keys(result['ODFares']).forEach(function (value, key) {
+        switch (result['ODFares'][value]['TrainType']){
+          case 1:
+            trainType = '太魯閣' 
+            break 
+          case 2:
+            trainType = '普悠瑪'
+            break
+          case 3:
+            trainType = '自強'
+            break
+          case 4:
+            trainType = '莒光'
+            break
+          case 5:
+            trainType = '復興'
+            break
+          case 6:
+            trainType = '區間'
+            break
+          case 7:
+            trainType = '普快'
+            break
+          case 10:
+            trainType = '區間快'
+            break
+        }
+      // TicketType (Int32): 票種類型 = ['1: 一般票', '2: 來回票', '3: 電子票證', '4: 回數票', '5: 定期票(30天期)', '6: 定期票(60天期)', '7: 早鳥票'] ,
+        Object.keys( result['ODFares'][value]['Fares']).forEach(function (index, key) {
+          let fares = result['ODFares'][value]['Fares'];
+          let ticketType = '';
+          switch (fares[index]['TicketType']){
+            case 1:
+               ticketType = '一般票'; 
+              break 
+            case 2:
+               ticketType = '來回票'; 
+              break 
+            case 3:
+               ticketType = '電子票證'; 
+              break 
+            case 4:
+               ticketType = '回數票'; 
+              break 
+            case 5:
+               ticketType = '定期票(30天期)'; 
+              break 
+            case 6:
+               ticketType = '定期票(60天期)'; 
+              break 
+            case 7:
+               ticketType = '早鳥票'; 
+              break 
+          }
+          let fareClass = '';
+      // FareClass (Int32): 費率等級 = ['1: 成人', '2: 學生', '3: 孩童', '4: 敬老', '5: 愛心', '6: 愛心孩童', '7: 愛心優待/愛心陪伴', '8: 團體', '9: 軍警'] ,
+          switch (fares[index]['FareClass']){
+            case 1:
+               fareClass = '成人'; 
+              break 
+            case 2:
+               fareClass = '學生'; 
+              break 
+            case 3:
+               fareClass = '孩童'; 
+              break 
+            case 4:
+               fareClass = '敬老'; 
+              break 
+            case 5:
+               fareClass = '愛心'; 
+              break 
+            case 6:
+               fareClass = '愛心孩童'; 
+              break 
+            case 7:
+               fareClass = '愛心優待/愛心陪伴'; 
+              break 
+            case 8:
+               fareClass = '團體'; 
+              break 
+            case 9:
+               fareClass = '軍警'; 
+              break 
+          }
+
+          let cabinClass = '';
+          // CabinClass (Int32): 艙等 = ['1: 標準座車廂', '2: 商務座車廂', '3: 自由座車廂'] ,
+          switch (fares[index]['CabinClass']){
+            case 1:
+               cabinClass = '標準座車廂'; 
+              break 
+            case 2:
+               cabinClass = '商務座車廂'; 
+              break 
+            case 3:
+               cabinClass = '自由座車廂'; 
+              break 
+          }
+       
+          return_Text = return_Text + `
+            <div class='fare_Item'>
+              <h2>${fareClass}票</h2>
+              <h2>$${fares[index]['Price']}</h2>
+            </div>
+          `;
+        });
+        
+        console.log('-----------------------------------------------------------------------');
+        $('div.single_Tra_Time').eq(index).append(`
+          <div class='fare_Container'>
+            ${return_Text}
+          </div>
+          <hr>
+        `);
+      });
+      $('.fare_Container').hide();
+    },
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        console.log(XMLHttpRequest);
+        console.log(textStatus);
+        console.log(errorThrown);
+      }
+    });
+  }
 
 
+  let tra_Result_Content = '';
   $('button#go_Time_Search_TRA').on('click', function () {
     $('span#spinner-TRA-Time').removeAttr("hidden");
     this.disabled = true;
     let tra_Result = $('div#tra_result');
-    let tra_Result_Content = '';
-
     tra_Result.html("載入中......");
     setTimeout(function () {
-      if ($('#TRA_Origination_Selected').text() == null || $('#TRA_Destination_Selected').text() == null) {
+      if ($('#TRA_Origination_Selected').text().trim() == '請選擇起站' || $('#TRA_Destination_Selected').text().trim() == '請選擇迄站') {
         tra_Result.html("");
         tra_Result.append("<h2> ❗ 請確實填入站點資訊 ❗</h2>");
       }
       else {
-        tra_Result.removeClass('text-center');
-        tra_Result.html("");
+       
         for (let index = 0; index < tra_Station_Info.length; index++) {
           if (tra_Station_Info[index]['StationName']['Zh_tw'] == $('#TRA_Origination_Selected').text()) {
-             var station_ID_O = tra_Station_Info[index]['StationID'];
+            var station_ID_O = tra_Station_Info[index]['StationID'];
           }
           if (tra_Station_Info[index]['StationName']['Zh_tw'] == $('#TRA_Destination_Selected').text()) {
-             var station_ID_D = tra_Station_Info[index]['StationID'];
+            var station_ID_D = tra_Station_Info[index]['StationID'];
           }
         }
         const Today = new Date()
@@ -826,23 +909,34 @@ $(function () {
         const month = Today.getMonth() + 1 > 10 ? Today.getMonth() + 1 : '0' + (Today.getMonth() + 1);
         const year = Today.getFullYear()
         const train_Date = year + '-' + month + '-' + date;
-
+        
+        tra_Result.removeClass('text-center');
+        tra_Result.html("");
         $.ajax({
-          url: `https://ptx.transportdata.tw/MOTC/v3/Rail/TRA/DailyTrainTimetable/OD/${station_ID_O}/to/${station_ID_D}/${train_Date}?$format=JSON`,
+          url: `https://ptx.transportdata.tw/MOTC/v2/Rail/TRA/DailyTimetable/OD/${station_ID_O}/to/${station_ID_D}/${train_Date}?$format=JSON`,
           dataType: "json",
-          headers: GetAuthorizationHeader(), 
+          headers: GetAuthorizationHeader(),
           success: function (result) {
-            console.log(result);
-            for (let index = 0; index < result['TrainTimetables'].length; index++) {
-              let train_No = result['TrainTimetables'][index]['TrainInfo']['TrainNo']; 
-              let startingStationName = result['TrainTimetables'][index]['TrainInfo']['StartingStationName']['Zh_tw']; 
-              let endingStationName = result['TrainTimetables'][index]['TrainInfo']['EndingStationName']['Zh_tw']; 
-              let trainTypeName = result['TrainTimetables'][index]['TrainInfo']['TrainTypeName']['Zh_tw']; 
-              let O_stationName = result['TrainTimetables'][index]['StopTimes'][0]['StationName']['Zh_tw'];
-              let O_DepartureTime = result['TrainTimetables'][index]['StopTimes'][0]['DepartureTime']; 
-              let D_stationName = result['TrainTimetables'][index]['StopTimes'][1]['StationName']['Zh_tw'];
-              let D_ArrivalTime = result['TrainTimetables'][index]['StopTimes'][1]['ArrivalTime'];
-              
+            // console.log(result);
+            if(result.length == 0){
+              tra_Result.html('<h2><i class="fas fa-exclamation-triangle mx-2" style="color: red;"></i>查無資料</h2>');
+              return;
+            }
+            
+            tra_Result.removeClass('text-center');
+            tra_Result.html("");
+            tra_Result_Content = '';
+
+            for (let index = 0; index < result.length; index++) {
+              let train_No = result[index]['DailyTrainInfo']['TrainNo'];
+              let startingStationName = result[index]['DailyTrainInfo']['StartingStationName']['Zh_tw'];
+              let endingStationName = result[index]['DailyTrainInfo']['EndingStationName']['Zh_tw'];
+              let trainTypeName = result[index]['DailyTrainInfo']['TrainTypeName']['Zh_tw'];
+              let O_stationName = result[index]['OriginStopTime']['StationName']['Zh_tw'];
+              let O_DepartureTime = result[index]['OriginStopTime']['DepartureTime'];
+              let D_stationName = result[index]['DestinationStopTime']['StationName']['Zh_tw'];
+              let D_ArrivalTime = result[index]['DestinationStopTime']['ArrivalTime'];
+
               _startTime = O_DepartureTime.split(":");
               _endTime = D_ArrivalTime.split(":");
               var startDate = new Date(0, 0, 0, _startTime[0], _startTime[1], 0);
@@ -851,18 +945,21 @@ $(function () {
               EndDate.setMinutes(EndDate.getMinutes() - startDate.getMinutes());
               resultTime = EndDate.getHours() + "小時" + EndDate.getMinutes() + "分鐘";
               let train_Type_Color = '';
-              if(trainTypeName.indexOf('自強') != -1){train_Type_Color = 'red'} else if(trainTypeName.indexOf('莒光') != -1){train_Type_Color = '#e67e22'}else if(trainTypeName.indexOf('區間') != -1){ train_Type_Color = 'blue';}else{train_Type_Color='black';}
-              
+              if (trainTypeName.indexOf('自強') != -1) { train_Type_Color = 'red' } else if (trainTypeName.indexOf('莒光') != -1) { train_Type_Color = '#e67e22' } else if (trainTypeName.indexOf('區間') != -1) { train_Type_Color = 'blue'; } else { train_Type_Color = 'black'; }
+
               tra_Result_Content = tra_Result_Content + `
-              <h2>日期: ${train_Date}</h2>
-              <h2><i class="fas fa-subway" style='color: ${train_Type_Color};'></i> ${trainTypeName}_No.${train_No}</h2>
-              <h2>(${startingStationName}  →  ${endingStationName})</hw>
-              <h2>起站: <i class="far fa-clock" title="上車時間" style='color: blue'></i> ${O_DepartureTime}   ${O_stationName}</h2>
-              <h2>迄站: <i class="far fa-clock" title="下車時間" style='color: blue'></i> ${D_ArrivalTime}   ${D_stationName}</h2>
-              <h2>需花費: ${resultTime}</h2>
-              <hr>
+              <div class = 'single_Tra_Time' data-trainType = '${trainTypeName}'>
+                  <h2>日期: ${train_Date}</h2>
+                  <h2><i class="fas fa-subway" style='color: ${train_Type_Color};'></i> ${trainTypeName}_No.${train_No}</h2>
+                  <h2>(${startingStationName}  →  ${endingStationName})</hw>
+                  <h2>起站: <i class="far fa-clock" title="上車時間" style='color: blue'></i> ${O_DepartureTime}   ${O_stationName}</h2>
+                  <h2>迄站: <i class="far fa-clock" title="下車時間" style='color: blue'></i> ${D_ArrivalTime}   ${D_stationName}</h2>
+                  <h2>需花費: ${resultTime}</h2>
+                  <h2><span class='badge bg-secondary' style ='cursor:pointer;' id='ticket_Show' data-num=${index} onclick=ticket_toggle(${index})>票價顯示 / 隱藏</span></h2>
+              </div>
               `;
-            }
+            train_Ticket_Search(index, station_ID_O, station_ID_D, result[index]['DailyTrainInfo']['Direction'], result[index]['DailyTrainInfo']['TrainTypeCode']);
+          }
             tra_Result.append(tra_Result_Content);
           },
           error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -875,9 +972,26 @@ $(function () {
       $('span#spinner-TRA-Time').prop("hidden", true);
       $('button#go_Time_Search_TRA').prop("disabled", false);
     }, 1500);
+    
   });
 
+
+  ticket_toggle = function(num){
+    let ticket_Show = $(`#ticket_Show[data-num='${num}']`);
+      if(ticket_Show.hasClass('bg-secondary')){
+        ticket_Show.removeClass('bg-secondary');
+        ticket_Show.addClass('bg-success');
+        $('div.fare_Container').eq(num).show(1000);
+      }else if(ticket_Show.hasClass('bg-success')){
+        ticket_Show.removeClass('bg-success');
+        ticket_Show.addClass('bg-secondary');
+        $('div.fare_Container').eq(num).hide(1000);
+      }
+    }
+
+
   /* ========== 火車/捷運票價(End)=========== */
+
 
 
 
@@ -955,7 +1069,7 @@ $(function () {
                   無查詢到資料
               </h2>
               </div>`);
-              },
+        },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
           console.log(XMLHttpRequest);
           console.log(textStatus);
@@ -1005,8 +1119,8 @@ $(function () {
           category_content = category_content + `
             <span class="badge bg-secondary category_item" data-category="${travel_Category[i]}" >${travel_Category[i]}</span>
             `;
-          }
-          $('.category-List').append(category_content);
+        }
+        $('.category-List').append(category_content);
 
         $('.category-Items').append(`
         <div class="travel-item text-center">
@@ -1024,7 +1138,7 @@ $(function () {
   });
 
 
-  
+
   let filter_isClicked;
   $('i#go_filter').on('click', function () {
     if (filter_isClicked) {
@@ -1050,12 +1164,12 @@ $(function () {
     }
   });
 
- 
 
-  open_Info = function(info_number){
+
+  open_Info = function (info_number) {
     let travel_info_Image = travel_Info[info_number]['Picture']['PictureUrl1'] ? ` <img src = "${travel_Info[info_number]['Picture']['PictureUrl1']}" alt ="${travel_Info[info_number]['Name']}照片"></img>
     <p class="fw-bolder mt-3">圖片提供：${travel_Info[info_number]['Picture']['PictureDescription1']}</p>` : '<p class="fw-bolder mt-3">尚未提供圖片</p>';
-    
+
     $('#open_InfoLabel').html(travel_Info[info_number]["Name"]);
     $('div#open_info_body').html('');
     $('div#open_info_body').append(`
@@ -1119,14 +1233,14 @@ $(function () {
     }
     if (choose_Items.length > 0) {
       if ($('input.search-value').val()) {
-        Object.keys(travel_Info).forEach(function (value, key) {  
+        Object.keys(travel_Info).forEach(function (value, key) {
           let is_Span_1 = travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class1']}</span>` : "";
-          let is_Span_2 = travel_Info[value]['Class2'] && travel_Info[value]['Class2'] !== travel_Info[value]['Class1']? `<span class = "badge bg-success">${travel_Info[value]['Class2']}</span>` : "";
-          let is_Span_3 = travel_Info[value]['Class3'] && travel_Info[value]['Class3'] !== travel_Info[value]['Class2']? `<span class = "badge bg-success">${travel_Info[value]['Class3']}</span>` : "";
-          if ( choose_Items.includes(travel_Info[value]['Class1']) 
-              || choose_Items.includes(travel_Info[value]['Class2']) 
-              || choose_Items.includes(travel_Info[value]['Class3']) 
-              && (travel_Info[value]['Name'].includes($('input.search-value').val()) 
+          let is_Span_2 = travel_Info[value]['Class2'] && travel_Info[value]['Class2'] !== travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class2']}</span>` : "";
+          let is_Span_3 = travel_Info[value]['Class3'] && travel_Info[value]['Class3'] !== travel_Info[value]['Class2'] ? `<span class = "badge bg-success">${travel_Info[value]['Class3']}</span>` : "";
+          if (choose_Items.includes(travel_Info[value]['Class1'])
+            || choose_Items.includes(travel_Info[value]['Class2'])
+            || choose_Items.includes(travel_Info[value]['Class3'])
+            && (travel_Info[value]['Name'].includes($('input.search-value').val())
               || travel_Info[value]['Address'].includes($('input.search-value').val()))) {
             $('.category-Items').append(`
             <div class="travel-item" travel-id="${travel_Info[value]['ID']}">
@@ -1142,21 +1256,21 @@ $(function () {
               </h3>
               <h3 class="view_opentime">
                   <i class="far fa-clock" title="開放時間"></i>
-                  ${travel_Info[value]['OpenTime'] != 'N/A' || travel_Info[value]['OpenTime']? travel_Info[value]['OpenTime'] : "未公開"}
+                  ${travel_Info[value]['OpenTime'] != 'N/A' || travel_Info[value]['OpenTime'] ? travel_Info[value]['OpenTime'] : "未公開"}
               </h3>
               </div>`);
           }
         })
-          } 
-          else {
-            Object.keys(travel_Info).forEach(function (value, key) {
-              let is_Span_1 = travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class1']}</span>` : "";
-              let is_Span_2 = travel_Info[value]['Class2'] && travel_Info[value]['Class2'] !== travel_Info[value]['Class1']? `<span class = "badge bg-success">${travel_Info[value]['Class2']}</span>` : "";
-              let is_Span_3 = travel_Info[value]['Class3'] && travel_Info[value]['Class3'] !== travel_Info[value]['Class2']? `<span class = "badge bg-success">${travel_Info[value]['Class3']}</span>` : "";
-              if (choose_Items.includes(travel_Info[value]['Class1']) 
-              || choose_Items.includes(travel_Info[value]['Class2']) 
-              || choose_Items.includes(travel_Info[value]['Class3']) ) {
-                $('.category-Items').append(`
+      }
+      else {
+        Object.keys(travel_Info).forEach(function (value, key) {
+          let is_Span_1 = travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class1']}</span>` : "";
+          let is_Span_2 = travel_Info[value]['Class2'] && travel_Info[value]['Class2'] !== travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class2']}</span>` : "";
+          let is_Span_3 = travel_Info[value]['Class3'] && travel_Info[value]['Class3'] !== travel_Info[value]['Class2'] ? `<span class = "badge bg-success">${travel_Info[value]['Class3']}</span>` : "";
+          if (choose_Items.includes(travel_Info[value]['Class1'])
+            || choose_Items.includes(travel_Info[value]['Class2'])
+            || choose_Items.includes(travel_Info[value]['Class3'])) {
+            $('.category-Items').append(`
                 <div class="travel-item" travel-id="${travel_Info[value]['ID']}">
                   <h2 class="view_Name">${travel_Info[value]['Name']}</h2>
                   <div class ="view_Span">
@@ -1169,12 +1283,12 @@ $(function () {
                   </h3>
                   <h3 class="view_opentime">
                       <i class="far fa-clock" title="開放時間"></i>
-                      ${travel_Info[value]['OpenTime'] != 'N/A' || travel_Info[value]['OpenTime']  ? travel_Info[value]['OpenTime'] : "未公開"}
+                      ${travel_Info[value]['OpenTime'] != 'N/A' || travel_Info[value]['OpenTime'] ? travel_Info[value]['OpenTime'] : "未公開"}
                   </h3>
                   </div>`);
-              }
-            })
           }
+        })
+      }
     } else {
       $('.category-Items').append(`
           <div class="travel-item text-center">
@@ -1185,16 +1299,16 @@ $(function () {
     }
   });
 
-    // 全選按鈕
-    $('button.all_choose_items').on('click', function () {
-      $('.category-Items').html('');
-      $('.category-List *').removeClass('bg-secondary');
-      $('.category-List *').addClass('bg-success');
-      Object.keys(travel_Info).forEach(function (value, key) {
-        let is_Span_1 = travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class1']}</span>` : "";
-        let is_Span_2 = travel_Info[value]['Class2'] && travel_Info[value]['Class2'] !== travel_Info[value]['Class1']? `<span class = "badge bg-success">${travel_Info[value]['Class2']}</span>` : "";
-        let is_Span_3 = travel_Info[value]['Class3'] && travel_Info[value]['Class3'] !== travel_Info[value]['Class2']? `<span class = "badge bg-success">${travel_Info[value]['Class3']}</span>` : "";
-          $('.category-Items').append(`
+  // 全選按鈕
+  $('button.all_choose_items').on('click', function () {
+    $('.category-Items').html('');
+    $('.category-List *').removeClass('bg-secondary');
+    $('.category-List *').addClass('bg-success');
+    Object.keys(travel_Info).forEach(function (value, key) {
+      let is_Span_1 = travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class1']}</span>` : "";
+      let is_Span_2 = travel_Info[value]['Class2'] && travel_Info[value]['Class2'] !== travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class2']}</span>` : "";
+      let is_Span_3 = travel_Info[value]['Class3'] && travel_Info[value]['Class3'] !== travel_Info[value]['Class2'] ? `<span class = "badge bg-success">${travel_Info[value]['Class3']}</span>` : "";
+      $('.category-Items').append(`
           <div class="travel-item" travel-id="${travel_Info[value]['ID']}">
             <h2 class="view_Name">${travel_Info[value]['Name']}</h2>
             <div class ="view_Span">
@@ -1210,9 +1324,9 @@ $(function () {
                 ${travel_Info[value]['OpenTime'] != 'N/A' ? travel_Info[value]['OpenTime'] : "未公開"}
             </h3>
             </div>`);
-      })
+    })
 
-    });
+  });
 
   // 清除按鈕
   $('button.clear_items').on('click', function () {
@@ -1234,8 +1348,8 @@ $(function () {
       $('.category-Items').html('');
       Object.keys(travel_Info).forEach(function (value, key) {
         let is_Span_1 = travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class1']}</span>` : "";
-        let is_Span_2 = travel_Info[value]['Class2'] && travel_Info[value]['Class2'] !== travel_Info[value]['Class1']? `<span class = "badge bg-success">${travel_Info[value]['Class2']}</span>` : "";
-        let is_Span_3 = travel_Info[value]['Class3'] && travel_Info[value]['Class3'] !== travel_Info[value]['Class2']? `<span class = "badge bg-success">${travel_Info[value]['Class3']}</span>` : "";
+        let is_Span_2 = travel_Info[value]['Class2'] && travel_Info[value]['Class2'] !== travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class2']}</span>` : "";
+        let is_Span_3 = travel_Info[value]['Class3'] && travel_Info[value]['Class3'] !== travel_Info[value]['Class2'] ? `<span class = "badge bg-success">${travel_Info[value]['Class3']}</span>` : "";
         if (travel_Info[value]['Name'].includes($('input.search-value').val()) || travel_Info[value]['Address'].includes($('input.search-value').val())) {
           $('.category-Items').append(`
           <div class="travel-item" travel-id="${travel_Info[value]['ID']}">
@@ -1254,8 +1368,8 @@ $(function () {
     } else {
       Object.keys(travel_Info).forEach(function (value, key) {
         let is_Span_1 = travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class1']}</span>` : "";
-        let is_Span_2 = travel_Info[value]['Class2'] && travel_Info[value]['Class2'] !== travel_Info[value]['Class1']? `<span class = "badge bg-success">${travel_Info[value]['Class2']}</span>` : "";
-        let is_Span_3 = travel_Info[value]['Class3'] && travel_Info[value]['Class3'] !== travel_Info[value]['Class2']? `<span class = "badge bg-success">${travel_Info[value]['Class3']}</span>` : "";
+        let is_Span_2 = travel_Info[value]['Class2'] && travel_Info[value]['Class2'] !== travel_Info[value]['Class1'] ? `<span class = "badge bg-success">${travel_Info[value]['Class2']}</span>` : "";
+        let is_Span_3 = travel_Info[value]['Class3'] && travel_Info[value]['Class3'] !== travel_Info[value]['Class2'] ? `<span class = "badge bg-success">${travel_Info[value]['Class3']}</span>` : "";
         $('.category-Items').append(`
             <div class="travel-item" travel-id="${travel_Info[value]['ID']}">
               <h2 class="view_Name">${travel_Info[value]['Name']}</h2>
@@ -1329,19 +1443,19 @@ $(function () {
               </h2>
                 <h3 class="food_address my-1">
                     地址：${result[value]["Address"]}
-                    <i class="fab fa-telegram-plane" id = 'go_Restaurant_Pos' data-num = '${value}' lat='${ result[value]["Position"]["PositionLat"]}' 
-                    lng = '${ result[value]["Position"]["PositionLon"]}' style='color: blue; font-size:18px; cursor:pointer;'></i>
+                    <i class="fab fa-telegram-plane" id = 'go_Restaurant_Pos' data-num = '${value}' lat='${result[value]["Position"]["PositionLat"]}' 
+                    lng = '${result[value]["Position"]["PositionLon"]}' style='color: blue; font-size:18px; cursor:pointer;'></i>
                 </h3>
                 <h3 class="view_opentime my-1">
                     <i class="far fa-clock" title="開放時間"></i>
-                    ${result[value]['OpenTime'] != 'N/A' || result[value]['OpenTime']  ? result[value]['OpenTime'] : "未公開"}
+                    ${result[value]['OpenTime'] != 'N/A' || result[value]['OpenTime'] ? result[value]['OpenTime'] : "未公開"}
                 </h3>
               </div>
-            `; 
+            `;
           });
-            $('.Food-category-Items').append(food_Items_Content);
-                
-            },
+          $('.Food-category-Items').append(food_Items_Content);
+
+        },
         // 當Ajax請求失敗
         error: function (XMLHttpRequest, textStatus, errorThrown) {
           console.log(XMLHttpRequest);
@@ -1398,18 +1512,18 @@ $(function () {
             </h2>
             <h3 class="food_address my-1">
                 地址：${result[value]["Address"]}
-                <i class="fab fa-telegram-plane" id = 'go_Restaurant_Pos' data-num = '${value}' lat='${ result[value]["Position"]["PositionLat"]}' 
-                lng = '${ result[value]["Position"]["PositionLon"]}' style='color: blue; font-size:18px; cursor:pointer;'></i>
+                <i class="fab fa-telegram-plane" id = 'go_Restaurant_Pos' data-num = '${value}' lat='${result[value]["Position"]["PositionLat"]}' 
+                lng = '${result[value]["Position"]["PositionLon"]}' style='color: blue; font-size:18px; cursor:pointer;'></i>
             </h3>
             <h3 class="view_opentime my-1">
                 <i class="far fa-clock" title="開放時間"></i>
-                ${result[value]['OpenTime'] != 'N/A' || result[value]['OpenTime']  ? result[value]['OpenTime'] : "未公開"}
+                ${result[value]['OpenTime'] != 'N/A' || result[value]['OpenTime'] ? result[value]['OpenTime'] : "未公開"}
             </h3>
 
             </div>
-          `; 
+          `;
         });
-          $('.Food-category-Items').append(food_Items_Content);
+        $('.Food-category-Items').append(food_Items_Content);
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
         console.log(XMLHttpRequest);
@@ -1437,10 +1551,10 @@ $(function () {
     fly_To_Marker(Lat, Lng, fly_Marker_Content);
   });
 
-  
-  open_Info_Food = function(info_number){
+
+  open_Info_Food = function (info_number) {
     console.log(restaurant_Info);
-    
+
     $('#open_InfoLabel').html(restaurant_Info[info_number]["Name"]);
     $('div#open_info_body').html('');
     $('div#open_info_body').append(`
@@ -1451,15 +1565,15 @@ $(function () {
         `);
   }
 
-  
+
 
   $('input.search-food').on('input', function () {
     let input_Val = $(this).val();
     if (input_Val) {
       $('.Food-category-Items').html('');
       let food_Items_Content = '';
-        Object.keys(restaurant_Info).forEach(function (value, key) {
-          if (restaurant_Info[value]['Name'].includes($('input.search-food').val()) || restaurant_Info[value]['Address'].includes($('input.search-food').val())) {
+      Object.keys(restaurant_Info).forEach(function (value, key) {
+        if (restaurant_Info[value]['Name'].includes($('input.search-food').val()) || restaurant_Info[value]['Address'].includes($('input.search-food').val())) {
           food_Items_Content = food_Items_Content + `
             <div class="food-item">
             <h2 class="restaurant_Name">
@@ -1470,24 +1584,24 @@ $(function () {
             </h2>
             <h3 class="food_address my-1">
                 地址：${restaurant_Info[value]["Address"]}
-                <i class="fab fa-telegram-plane" id = 'go_Restaurant_Pos' data-num = '${value}' lat='${ restaurant_Info[value]["Position"]["PositionLat"]}' 
-                lng = '${ restaurant_Info[value]["Position"]["PositionLon"]}' style='color: blue; font-size:18px; cursor:pointer;'></i>
+                <i class="fab fa-telegram-plane" id = 'go_Restaurant_Pos' data-num = '${value}' lat='${restaurant_Info[value]["Position"]["PositionLat"]}' 
+                lng = '${restaurant_Info[value]["Position"]["PositionLon"]}' style='color: blue; font-size:18px; cursor:pointer;'></i>
             </h3>
             <h3 class="view_opentime my-1">
                 <i class="far fa-clock" title="開放時間"></i>
-                ${restaurant_Info[value]['OpenTime'] != 'N/A' || restaurant_Info[value]['OpenTime']  ? restaurant_Info[value]['OpenTime'] : "未公開"}
+                ${restaurant_Info[value]['OpenTime'] != 'N/A' || restaurant_Info[value]['OpenTime'] ? restaurant_Info[value]['OpenTime'] : "未公開"}
             </h3>
 
             </div>
-          `; 
-          }
-        });
-          $('.Food-category-Items').append(food_Items_Content);
-          
+          `;
+        }
+      });
+      $('.Food-category-Items').append(food_Items_Content);
+
     } else {
-        let food_Items_Content = '';
-        Object.keys(restaurant_Info).forEach(function (value, key) {
-          food_Items_Content = food_Items_Content + `
+      let food_Items_Content = '';
+      Object.keys(restaurant_Info).forEach(function (value, key) {
+        food_Items_Content = food_Items_Content + `
             <div class="food-item">
             <h2 class="restaurant_Name">
               <span class='badge bg-warning mx-1'>
@@ -1497,21 +1611,21 @@ $(function () {
             </h2>
             <h3 class="food_address my-1">
                 地址：${restaurant_Info[value]["Address"]}
-                <i class="fab fa-telegram-plane" id = 'go_Restaurant_Pos' data-num = '${value}' lat='${ restaurant_Info[value]["Position"]["PositionLat"]}' 
-                lng = '${ restaurant_Info[value]["Position"]["PositionLon"]}' style='color: blue; font-size:18px; cursor:pointer;'></i>
+                <i class="fab fa-telegram-plane" id = 'go_Restaurant_Pos' data-num = '${value}' lat='${restaurant_Info[value]["Position"]["PositionLat"]}' 
+                lng = '${restaurant_Info[value]["Position"]["PositionLon"]}' style='color: blue; font-size:18px; cursor:pointer;'></i>
             </h3>
             <h3 class="view_opentime my-1">
                 <i class="far fa-clock" title="開放時間"></i>
-                ${restaurant_Info[value]['OpenTime'] != 'N/A' || restaurant_Info[value]['OpenTime']  ? restaurant_Info[value]['OpenTime'] : "未公開"}
+                ${restaurant_Info[value]['OpenTime'] != 'N/A' || restaurant_Info[value]['OpenTime'] ? restaurant_Info[value]['OpenTime'] : "未公開"}
             </h3>
 
             </div>
-          `; 
-        });
-          $('.Food-category-Items').append(food_Items_Content);
+          `;
+      });
+      $('.Food-category-Items').append(food_Items_Content);
     }
   });
-  
+
 
   $('button.confirm_food').on('click', function () {
     if (filter_isClicked_Food) {
@@ -1594,8 +1708,8 @@ $(function () {
           let busNow_Lon = result[value]['BusPosition']['PositionLon'];
           let busNow_Lat = result[value]['BusPosition']['PositionLat'];
           L.marker(
-            [busNow_Lat, busNow_Lon],{
-              icon: L.AwesomeMarkers.icon({
+            [busNow_Lat, busNow_Lon], {
+            icon: L.AwesomeMarkers.icon({
               markerColor: 'purple',
               prefix: 'fa',
               icon: 'bus'
@@ -1621,128 +1735,128 @@ $(function () {
 
 
   // 自動更新公車時刻表
-  bus_update_Time =  function(city_name, route_UID, direct){
+  bus_update_Time = function (city_name, route_UID, direct) {
     let select = `Direction,PlateNumb,NextBusTime,EstimateTime,StopName`;
-    let Tainan_Swith = direct == 0 ? '1': '2';
-    let filter =  city_name == 'Tainan'? `RouteUID eq '${route_UID}' AND (endswith(SubRouteUID,'${Tainan_Swith}') OR StopStatus ge 2)` : `RouteUID eq '${route_UID}' AND Direction eq ${direct}`;
+    let Tainan_Swith = direct == 0 ? '1' : '2';
+    let filter = city_name == 'Tainan' ? `RouteUID eq '${route_UID}' AND (endswith(SubRouteUID,'${Tainan_Swith}') OR StopStatus ge 2)` : `RouteUID eq '${route_UID}' AND Direction eq ${direct}`;
     $.ajax({
       url: `https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/${city_name}/?$select=${select}&$filter=${filter}&$format=JSON`,
-        dataType: 'json',
-        contentType: 'json',
-        headers: GetAuthorizationHeader(), 
-        success: function (result) {
-          let estimateTime_Status;
-          let is_Record = [];
-          Object.keys(result).forEach(function (value, key) {
-            // console.log(result[value]['StopName']['Zh_tw'] + ": " + parseInt(result[value]['EstimateTime'] / 60) + "分" );
-            let stopName = result[value]['StopName']['Zh_tw'];
-            if( total_Stops.includes(stopName) ){
-              if(result[value]['EstimateTime'] != null){
-                is_Record.push(stopName);
-                let estimateTime = result[value]['EstimateTime'];
-                var indices = [];
-                var idx = total_Stops.indexOf(stopName);
-                while (idx != -1) {
-                  indices.push(idx);
-                  idx = total_Stops.indexOf(stopName, idx + 1);
-                }
-                if(indices.length > 1){
-                  for(let i = 1 ; i < indices.length; i++){
-                      if(result[i]['EstimateTime'] < estimateTime ){
-                          estimateTime = result[i]['EstimateTime'];
-                      }
+      dataType: 'json',
+      contentType: 'json',
+      headers: GetAuthorizationHeader(),
+      success: function (result) {
+        let estimateTime_Status;
+        let is_Record = [];
+        Object.keys(result).forEach(function (value, key) {
+          // console.log(result[value]['StopName']['Zh_tw'] + ": " + parseInt(result[value]['EstimateTime'] / 60) + "分" );
+          let stopName = result[value]['StopName']['Zh_tw'];
+          if (total_Stops.includes(stopName)) {
+            if (result[value]['EstimateTime'] != null) {
+              is_Record.push(stopName);
+              let estimateTime = result[value]['EstimateTime'];
+              var indices = [];
+              var idx = total_Stops.indexOf(stopName);
+              while (idx != -1) {
+                indices.push(idx);
+                idx = total_Stops.indexOf(stopName, idx + 1);
+              }
+              if (indices.length > 1) {
+                for (let i = 1; i < indices.length; i++) {
+                  if (result[i]['EstimateTime'] < estimateTime) {
+                    estimateTime = result[i]['EstimateTime'];
                   }
                 }
-                  if(parseInt(estimateTime / 60) == 0){
-                    estimateTime_Status = "進站中";
-                    $(`span[data-stopName = "${stopName}"]`).removeClass("bg-secondary");
-                    $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
-                    $(`span[data-stopName = "${stopName}"]`).addClass("bg-danger");
-                  }else if(parseInt(estimateTime / 60) <= 3){
-                    estimateTime_Status = "即將進站";
-                    $(`span[data-stopName = "${stopName}"]`).removeClass("bg-secondary");
-                    $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
-                    $(`span[data-stopName = "${stopName}"]`).addClass("bg-warning");
-                  }else{
-                    estimateTime_Status = parseInt(estimateTime / 60) + "分";
-                  }
+              }
+              if (parseInt(estimateTime / 60) == 0) {
+                estimateTime_Status = "進站中";
+                $(`span[data-stopName = "${stopName}"]`).removeClass("bg-secondary");
+                $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+                $(`span[data-stopName = "${stopName}"]`).addClass("bg-danger");
+              } else if (parseInt(estimateTime / 60) <= 3) {
+                estimateTime_Status = "即將進站";
+                $(`span[data-stopName = "${stopName}"]`).removeClass("bg-secondary");
+                $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+                $(`span[data-stopName = "${stopName}"]`).addClass("bg-warning");
+              } else {
+                estimateTime_Status = parseInt(estimateTime / 60) + "分";
+              }
 
-                }
-                else if(result[value]['StopStatus'] == 1){
-                  estimateTime_Status = result[value]['NextBusTime'] ? result[value]['NextBusTime'].substr(result[value]['NextBusTime'].indexOf("T") + 1, 5 ) : "尚未發車";
-                  $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
-                  $(`span[data-stopName = "${stopName}"]`).removeClass("bg-secondary");
-                  $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
-                }
-                else if(result[value]['StopStatus'] == 2){
-                  estimateTime_Status = "此站不停靠";
-                  $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
-                  $(`span[data-stopName = "${stopName}"]`).removeClass("bg-secondary");
-                  $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
-              }
-                else if(result[value]['StopStatus'] == 3){
-                  if(is_Record.indexOf(stopName) != '-1'){
-                    return;
-                  }
-                  estimateTime_Status =  "末班已駛";
-                  $(`span[data-stopName = "${stopName}"]`).removeClass("bg-secondary");
-                  $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
-                  $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
-              }
-                else if(result[value]['StopStatus'] == 4){
-                  estimateTime_Status = "今日停駛";
-                  $(`span[data-stopName = "${stopName}"]`).removeClass("bg-secondary");
-                  $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
-                  $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
-              }
-              $(`span[data-stopName = "${stopName}"]`).html(`${estimateTime_Status}`);
             }
-          });      
+            else if (result[value]['StopStatus'] == 1) {
+              estimateTime_Status = result[value]['NextBusTime'] ? result[value]['NextBusTime'].substr(result[value]['NextBusTime'].indexOf("T") + 1, 5) : "尚未發車";
+              $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+              $(`span[data-stopName = "${stopName}"]`).removeClass("bg-secondary");
+              $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
+            }
+            else if (result[value]['StopStatus'] == 2) {
+              estimateTime_Status = "此站不停靠";
+              $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+              $(`span[data-stopName = "${stopName}"]`).removeClass("bg-secondary");
+              $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
+            }
+            else if (result[value]['StopStatus'] == 3) {
+              if (is_Record.indexOf(stopName) != '-1') {
+                return;
+              }
+              estimateTime_Status = "末班已駛";
+              $(`span[data-stopName = "${stopName}"]`).removeClass("bg-secondary");
+              $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+              $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
+            }
+            else if (result[value]['StopStatus'] == 4) {
+              estimateTime_Status = "今日停駛";
+              $(`span[data-stopName = "${stopName}"]`).removeClass("bg-secondary");
+              $(`span[data-stopName = "${stopName}"]`).removeClass("bg-success");
+              $(`span[data-stopName = "${stopName}"]`).addClass("bg-secondary ");
+            }
+            $(`span[data-stopName = "${stopName}"]`).html(`${estimateTime_Status}`);
+          }
+        });
       },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-          console.log(XMLHttpRequest);
-          console.log(textStatus);
-          console.log(errorThrown);
-        }
-      });
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        console.log(XMLHttpRequest);
+        console.log(textStatus);
+        console.log(errorThrown);
+      }
+    });
   };
 
 
   // 取得該路線的起站、迄站
-  stop_Start_End = function(city_name, route_UID){
+  stop_Start_End = function (city_name, route_UID) {
     let select = `RouteUID,DepartureStopNameZh,DestinationStopNameZh`;
     let filter = `RouteUID eq '${route_UID}'`;
     $.ajax({
       url: `https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/${city_name}/?$select=${select}&$filter=${filter}&$format=JSON`,
-        dataType: 'json',
-        contentType: 'json',
-        headers: GetAuthorizationHeader(),
-        success: function (result) {
-          $(`button[data-direct = '0']`).html('往' + result[0]['DestinationStopNameZh']);
-          $(`button[data-direct = '1']`).html('往' + result[0]['DepartureStopNameZh']);
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-          console.log(XMLHttpRequest);
-          console.log(textStatus);
-          console.log(errorThrown);
-        }
-      });
+      dataType: 'json',
+      contentType: 'json',
+      headers: GetAuthorizationHeader(),
+      success: function (result) {
+        $(`button[data-direct = '0']`).html('往' + result[0]['DestinationStopNameZh']);
+        $(`button[data-direct = '1']`).html('往' + result[0]['DepartureStopNameZh']);
+      },
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        console.log(XMLHttpRequest);
+        console.log(textStatus);
+        console.log(errorThrown);
+      }
+    });
   }
 
 
 
-    let total_Stops = [];
-    let total_Stops_id = [];
-    let marker_BusStop_Arr = new L.layerGroup();
-    let polyLine_Bus = new L.layerGroup();
+  let total_Stops = [];
+  let total_Stops_id = [];
+  let marker_BusStop_Arr = new L.layerGroup();
+  let polyLine_Bus = new L.layerGroup();
 
-    // 透過點擊來顯現公車內容
-    click_bus_info = function (city, route, route_id, direct) {
-        window.estimate_Bus = setTimeout(function(){
-            clearInterval(window.update_busInfo);
-            clearInterval(window.countDown);
-            $(`div#r_${route_id}`).html('');
-            $(`div#r_${route_id}`).append(`
+  // 透過點擊來顯現公車內容
+  click_bus_info = function (city, route, route_id, direct) {
+    window.estimate_Bus = setTimeout(function () {
+      clearInterval(window.update_busInfo);
+      clearInterval(window.countDown);
+      $(`div#r_${route_id}`).html('');
+      $(`div#r_${route_id}`).append(`
             <div class="timer-container">
               <span class="timer badge rounded-pill bg-secondary" count-timer='${route_id}'></span>
               <button id="goToMap" class="btn btn-light m-1 fw-bolder border border-dark" title="導覽到該公車路線上">
@@ -1753,148 +1867,148 @@ $(function () {
               </button> 
             </div>
             `);
-        let update_Time = 15; 
-        function updateCountdown() {
-          if (update_Time <= 0) {
-            update_Time = 15;
-          }
-          update_Time--;
-          $(`span[count-timer="${route_id}"]`).html('下次更新時間: ' + update_Time);
+      let update_Time = 15;
+      function updateCountdown() {
+        if (update_Time <= 0) {
+          update_Time = 15;
         }
+        update_Time--;
+        $(`span[count-timer="${route_id}"]`).html('下次更新時間: ' + update_Time);
+      }
 
-        let is_show = $(`button[data-route="${route_id}"]`).hasClass('collapsed');
-        marker_BusStop_Arr.clearLayers();
-        map.removeLayer(polyLine_Bus);
-        bus_Now_Pos.clearLayers();
+      let is_show = $(`button[data-route="${route_id}"]`).hasClass('collapsed');
+      marker_BusStop_Arr.clearLayers();
+      map.removeLayer(polyLine_Bus);
+      bus_Now_Pos.clearLayers();
 
-        if (!is_show) {
-          window.countDown = setInterval(updateCountdown, 1000);
-          window.update_busInfo = setInterval(function () {
-            click_bus_info(city, route, route_id, direct);
-            get_CurrentBus_Stop(city, route_id, direct);
-            get_CurrentBus_Pos(city, route_id, direct);
-          }, update_Time * 1000 );
+      if (!is_show) {
+        window.countDown = setInterval(updateCountdown, 1000);
+        window.update_busInfo = setInterval(function () {
+          click_bus_info(city, route, route_id, direct);
+          get_CurrentBus_Stop(city, route_id, direct);
+          get_CurrentBus_Pos(city, route_id, direct);
+        }, update_Time * 1000);
 
-          let select = `RouteUID,RouteName,Direction,Stops,SubRouteUID`;
-          let filter = `RouteUID eq '${route_id}' AND Direction eq ${direct}`;
-          $.ajax({
-            url: `https://ptx.transportdata.tw/MOTC/v2/Bus/StopOfRoute/City/${city}?$select=${select}&$filter=${filter}&$format=JSON`,
-            dataType: 'json',
-            contentType: 'json',
-            headers: GetAuthorizationHeader(), 
-            success: function (result) {
-              if(Object.keys(result).length > 0 ){
-                total_Stops = [];
-                total_Stops_id = [];
-                let bus_Route_UID;
-                let maxLength = 0;
-                let max_index = 0;
-                Object.keys(result).forEach(function (value, key) {
-                  bus_Route_UID = result[value]['RouteUID'];
-                  let bus_Route_len = result[value]['Stops'].length;
-                  if(maxLength < bus_Route_len){
-                    maxLength = bus_Route_len;
-                    max_index = value;
-                  }     
-                });
+        let select = `RouteUID,RouteName,Direction,Stops,SubRouteUID`;
+        let filter = `RouteUID eq '${route_id}' AND Direction eq ${direct}`;
+        $.ajax({
+          url: `https://ptx.transportdata.tw/MOTC/v2/Bus/StopOfRoute/City/${city}?$select=${select}&$filter=${filter}&$format=JSON`,
+          dataType: 'json',
+          contentType: 'json',
+          headers: GetAuthorizationHeader(),
+          success: function (result) {
+            if (Object.keys(result).length > 0) {
+              total_Stops = [];
+              total_Stops_id = [];
+              let bus_Route_UID;
+              let maxLength = 0;
+              let max_index = 0;
+              Object.keys(result).forEach(function (value, key) {
+                bus_Route_UID = result[value]['RouteUID'];
+                let bus_Route_len = result[value]['Stops'].length;
+                if (maxLength < bus_Route_len) {
+                  maxLength = bus_Route_len;
+                  max_index = value;
+                }
+              });
 
-                let point_arr = [];
-                for (let i = 0; i < maxLength; i++) {
-                    let stopName =  result[max_index]['Stops'][i]['StopName']['Zh_tw'];
-                    let stopName_id =  result[max_index]['Stops'][i]['StopID'];
-                    let busStop_lat = result[max_index]['Stops'][i]['StopPosition']['PositionLat'];
-                    let busStop_lon = result[max_index]['Stops'][i]['StopPosition']['PositionLon'];
-                    
-                    point_arr.push(new L.LatLng(busStop_lat, busStop_lon));
-                    var geojsonFeature = {
-                      "type": "Feature",
-                      "properties": {
-                        "name": `${i+1}. ${stopName}`,
-                        'category': '公車',
-                        "latitude": busStop_lat,
-                        "longitude": busStop_lon,
-                      },
-                      "geometry": {
-                        "type": "Point",
-                        "coordinates": [busStop_lon, busStop_lat]
-                      }
-                    };
+              let point_arr = [];
+              for (let i = 0; i < maxLength; i++) {
+                let stopName = result[max_index]['Stops'][i]['StopName']['Zh_tw'];
+                let stopName_id = result[max_index]['Stops'][i]['StopID'];
+                let busStop_lat = result[max_index]['Stops'][i]['StopPosition']['PositionLat'];
+                let busStop_lon = result[max_index]['Stops'][i]['StopPosition']['PositionLon'];
 
-                    let color_Marker = direct == 0 ? 'cadetblue': 'orange';
-                    L.geoJSON(geojsonFeature, {
-                      onEachFeature: onEachFeature,
-                      pointToLayer: function (feature, latlng) {
-                        return L.marker(latlng, {
-                          icon: L.AwesomeMarkers.icon({
-                            markerColor: color_Marker,
-                            prefix: 'fa',
-                            icon: 'sign'
-                          })
-                        });
-                      },
-                    }).addTo(marker_BusStop_Arr);
-
-                    if(!total_Stops.includes(stopName)){
-                      total_Stops.splice(i, 0, stopName);
-                      total_Stops_id.splice(i, 0, stopName_id);
-                    }
+                point_arr.push(new L.LatLng(busStop_lat, busStop_lon));
+                var geojsonFeature = {
+                  "type": "Feature",
+                  "properties": {
+                    "name": `${i + 1}. ${stopName}`,
+                    'category': '公車',
+                    "latitude": busStop_lat,
+                    "longitude": busStop_lon,
+                  },
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": [busStop_lon, busStop_lat]
                   }
+                };
 
-                  marker_BusStop_Arr.addTo(map);
-                  polyLine_Bus = new L.Polyline(point_arr, {
-                    smoothFactor: 1,
-                    className: 'bus_polyline'
-                  }).addTo(map);
+                let color_Marker = direct == 0 ? 'cadetblue' : 'orange';
+                L.geoJSON(geojsonFeature, {
+                  onEachFeature: onEachFeature,
+                  pointToLayer: function (feature, latlng) {
+                    return L.marker(latlng, {
+                      icon: L.AwesomeMarkers.icon({
+                        markerColor: color_Marker,
+                        prefix: 'fa',
+                        icon: 'sign'
+                      })
+                    });
+                  },
+                }).addTo(marker_BusStop_Arr);
 
-                $(`div#r_${route_id}`).append(`
+                if (!total_Stops.includes(stopName)) {
+                  total_Stops.splice(i, 0, stopName);
+                  total_Stops_id.splice(i, 0, stopName_id);
+                }
+              }
+
+              marker_BusStop_Arr.addTo(map);
+              polyLine_Bus = new L.Polyline(point_arr, {
+                smoothFactor: 1,
+                className: 'bus_polyline'
+              }).addTo(map);
+
+              $(`div#r_${route_id}`).append(`
                 <div id='${bus_Route_UID}'>
-                  <button id="bus_update_Direct" data-direct = '0' class="btn ${direct == 0 ? "btn-primary": "btn-secondary"} m-1 fw-bolder"></button>
-                  <button id="bus_update_Direct" data-direct = '1' class="btn ${direct == 1 ? "btn-warning": "btn-secondary"} m-1 fw-bolder"></button>
+                  <button id="bus_update_Direct" data-direct = '0' class="btn ${direct == 0 ? "btn-primary" : "btn-secondary"} m-1 fw-bolder"></button>
+                  <button id="bus_update_Direct" data-direct = '1' class="btn ${direct == 1 ? "btn-warning" : "btn-secondary"} m-1 fw-bolder"></button>
                 </div>
                 `);
-                
-                let str_total_Stops = '';
-                for (let i = 0; i < total_Stops.length; i++) {
-                  str_total_Stops = str_total_Stops + 
-                    `<h2 id = "stop_Name" data-stopName = "${total_Stops[i]}" data-stopID="${total_Stops_id[i]}">
+
+              let str_total_Stops = '';
+              for (let i = 0; i < total_Stops.length; i++) {
+                str_total_Stops = str_total_Stops +
+                  `<h2 id = "stop_Name" data-stopName = "${total_Stops[i]}" data-stopID="${total_Stops_id[i]}">
                         <span class = "badge bg-success" data-stopName = "${total_Stops[i]}"></span>
                         ${total_Stops[i]}
                     </h2>`;
-                }
-                $(`div#${bus_Route_UID}`).append(str_total_Stops);
+              }
+              $(`div#${bus_Route_UID}`).append(str_total_Stops);
 
 
-                
-                bus_update_Time(city_name = city, routeUID = route_id, direct = direct);
-                // setTimeout(function(){
-                get_CurrentBus_Stop(city, route_id, direct);
-                get_CurrentBus_Pos(city, route_id, direct);
-                // }, 1500);
 
-                // 到座標點的範圍內
-                $('button#goToMap').on('click', function(){
-                  let start_Lat = result[max_index]['Stops'][0]['StopPosition']['PositionLat'];
-                  let start_Lng = result[max_index]['Stops'][0]['StopPosition']['PositionLon'];
-                  let end_Lat = result[max_index]['Stops'][maxLength - 1]['StopPosition']['PositionLat'];
-                  let end_Lng = result[max_index]['Stops'][maxLength - 1]['StopPosition']['PositionLon'];
-                  map.fitBounds([
-                    [start_Lat, start_Lng],
-                    [end_Lat, end_Lng]  
-                  ]);
-                });
+              bus_update_Time(city_name = city, routeUID = route_id, direct = direct);
+              // setTimeout(function(){
+              get_CurrentBus_Stop(city, route_id, direct);
+              get_CurrentBus_Pos(city, route_id, direct);
+              // }, 1500);
 
-                // 重新整理
-                $(`div#r_${route_id}`).on('click', 'button#redo_bus',function(){
-                  clearTimeout(window.estimate_Bus);
-                  click_bus_info(city, route, route_id, direct);
-                });
-              
-              }else{
+              // 到座標點的範圍內
+              $('button#goToMap').on('click', function () {
+                let start_Lat = result[max_index]['Stops'][0]['StopPosition']['PositionLat'];
+                let start_Lng = result[max_index]['Stops'][0]['StopPosition']['PositionLon'];
+                let end_Lat = result[max_index]['Stops'][maxLength - 1]['StopPosition']['PositionLat'];
+                let end_Lng = result[max_index]['Stops'][maxLength - 1]['StopPosition']['PositionLon'];
+                map.fitBounds([
+                  [start_Lat, start_Lng],
+                  [end_Lat, end_Lng]
+                ]);
+              });
 
-                $(`div#r_${route_id}`).append(`
+              // 重新整理
+              $(`div#r_${route_id}`).on('click', 'button#redo_bus', function () {
+                clearTimeout(window.estimate_Bus);
+                click_bus_info(city, route, route_id, direct);
+              });
+
+            } else {
+
+              $(`div#r_${route_id}`).append(`
                 <div>
-                <button id="bus_update_Direct" data-direct = '0' class="btn ${direct == 0 ? "btn-primary": "btn-secondary"} m-1 fw-bolder"></button>
-                <button id="bus_update_Direct" data-direct = '1' class="btn ${direct == 1 ? "btn-primary": "btn-secondary"} m-1 fw-bolder"></button>
+                <button id="bus_update_Direct" data-direct = '0' class="btn ${direct == 0 ? "btn-primary" : "btn-secondary"} m-1 fw-bolder"></button>
+                <button id="bus_update_Direct" data-direct = '1' class="btn ${direct == 1 ? "btn-primary" : "btn-secondary"} m-1 fw-bolder"></button>
                 </div>    
                 <!-- body -->
                 <div class = "alert alert-warning fade show d-flex justify-content-center" role = "alert" >
@@ -1902,26 +2016,26 @@ $(function () {
                     <!--<p><button onclick="addUser()">add user</button></b>--!>
                 </div>
                 `);
-                
-              }
-              // 顯示起站 / 迄站
-              stop_Start_End(city, route_id);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-              console.log(XMLHttpRequest);
-              console.log(textStatus);
-              console.log(errorThrown);
+
             }
-          });
-        }
-      }, 1000);
-      
-      // 透過點擊來更換公車路線
-      $(`div#r_${route_id}`).on('click', 'button#bus_update_Direct',function(){
-          let this_direct = $(this).attr('data-direct');
-          clearTimeout(window.estimate_Bus);
-          click_bus_info(city, route, route_id, this_direct);
-      });
+            // 顯示起站 / 迄站
+            stop_Start_End(city, route_id);
+          },
+          error: function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log(XMLHttpRequest);
+            console.log(textStatus);
+            console.log(errorThrown);
+          }
+        });
+      }
+    }, 1000);
+
+    // 透過點擊來更換公車路線
+    $(`div#r_${route_id}`).on('click', 'button#bus_update_Direct', function () {
+      let this_direct = $(this).attr('data-direct');
+      clearTimeout(window.estimate_Bus);
+      click_bus_info(city, route, route_id, this_direct);
+    });
   };
 
 
@@ -1943,7 +2057,7 @@ $(function () {
       url: `https://ptx.transportdata.tw/MOTC/v2/Bus/Route/City/${city}?$select=${select}&$orderby=${orderBy}&$format=JSON`,
       dataType: 'json',
       contentType: 'json',
-      headers: GetAuthorizationHeader(), 
+      headers: GetAuthorizationHeader(),
       success: function (result) {
         Object.keys(result).forEach(function (value, key) {
           let bus_Route = result[value]['RouteName']['Zh_tw'];
@@ -1961,9 +2075,9 @@ $(function () {
           $('div.list-route-group').html('');
           for (let i = 0; i < route.length; i++) {
             list_BusRoute_Content = list_BusRoute_Content +
-            `<div class="accordion-item" >
+              `<div class="accordion-item" >
                 <h2 class="accordion-header" id="headingOne">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c_${i}" aria-expanded="true" aria-controls="c_${i}" data-route="${route_id[i]}" onclick=click_bus_info('${city}','${route[i].replace(" ","")}','${route_id[i]}',0)>
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c_${i}" aria-expanded="true" aria-controls="c_${i}" data-route="${route_id[i]}" onclick=click_bus_info('${city}','${route[i].replace(" ", "")}','${route_id[i]}',0)>
                   ${route[i]} (${route_start[i]} - ${route_last[i]})
                   </button>
                 </h2>
@@ -1996,7 +2110,7 @@ $(function () {
     $(this).removeClass('bus-loading-mask');
     setTimeout(function () {
       if (data_city !== 'Other') {
-        get_bus_info(data_city); 
+        get_bus_info(data_city);
       }
       $('div.Bus-City-info').hide();
       $('h2#city_Name').text(city_Name);
@@ -2020,13 +2134,13 @@ $(function () {
     $(this).css('background-color', '#686de0');
 
     for (let i = 0; i < route.length; i++) {
-      let route_filter = $(this).attr('getroute-first') ? route[i].includes($(this).attr('route_info')): route[i].substr(0, 1) == $(this).attr('route_info');
-      if(route_filter){
+      let route_filter = $(this).attr('getroute-first') ? route[i].includes($(this).attr('route_info')) : route[i].substr(0, 1) == $(this).attr('route_info');
+      if (route_filter) {
         $('.list-route-group').append(`
         <div class="accordion-item" >
           <h2 class="accordion-header" id="headingOne">
           <!-- replace(" ","")是因為一些路線名稱的問題，像是黃11 小黃公車 --!>
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c_${i}" aria-expanded="true" aria-controls="c_${i}" data-route="${route_id[i]}" onclick=click_bus_info('${$(this).parent().attr('city_name_EN')}','${route[i].replace(" ","")}','${route_id[i]}',0)>
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c_${i}" aria-expanded="true" aria-controls="c_${i}" data-route="${route_id[i]}" onclick=click_bus_info('${$(this).parent().attr('city_name_EN')}','${route[i].replace(" ", "")}','${route_id[i]}',0)>
             ${route[i]} (${route_start[i]} - ${route_last[i]})
             </button>
           </h2>
@@ -2050,7 +2164,7 @@ $(function () {
             <div class="accordion-item" >
               <h2 class="accordion-header" id="headingOne">
               <!-- replace(" ","")是因為一些路線名稱的問題，像是黃11 小黃公車 --!>
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c_${i}" aria-expanded="true" aria-controls="c_${i}" data-route="${route_id[i]}" onclick=click_bus_info('${$(this).parent().attr('city_name_EN')}','${route[i].replace(" ","")}','${route_id[i]}',0)>
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c_${i}" aria-expanded="true" aria-controls="c_${i}" data-route="${route_id[i]}" onclick=click_bus_info('${$(this).parent().attr('city_name_EN')}','${route[i].replace(" ", "")}','${route_id[i]}',0)>
                 ${route[i]} (${route_start[i]} - ${route_last[i]})
                 </button>
               </h2>
@@ -2060,7 +2174,7 @@ $(function () {
               </div>
             </div>
           `);
-           
+
           }
         }
       }

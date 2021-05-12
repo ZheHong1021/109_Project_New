@@ -206,8 +206,17 @@ label.select_Label {
 	font-weight: bolder;
 }
 
-.container-List button {
-	margin-top: 10px;
+
+.tra_Button_Container{
+	display: flex;
+	padding: 10px;
+	width: 100%;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-around;
+}
+
+.container-tra_Button_Container button {
 	font-weight: bolder;
 	padding: 5px 15px;
 }
@@ -450,6 +459,8 @@ footer {
 	z-index: 999;
 	font-size: large;
 }
+
+
 
 .bus-loading-mask {
 	background-color: rgb(0, 0, 0, .3);
@@ -982,6 +993,8 @@ h3.food_address{
   .selected {
 	padding: 12px 24px;
 	cursor: pointer;
+	font-size: 14px;
+
   }
   
   .select-box .option:hover {
@@ -1025,3 +1038,35 @@ h3.food_address{
 	  margin-left: 5px;
 	  font-weight: bolder;
   }
+
+  .trainType_Filter{
+	background-color: #81ecec;
+}
+
+.trainType_Filter .train_Type{
+	width: 100%;
+	cursor: pointer;
+	color: green;
+}
+
+.fare_Container{
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;	
+	justify-content: center;
+}
+
+.fare_Item{
+	display: flex;
+    flex-direction: column;
+    width: auto;
+    height: auto;
+    font-size: 16px;
+    background: #7ed6df;
+    padding: 5px;
+    border: 2px solid #0097e6;
+    border-radius: 10px;
+	text-align: center;
+	margin: 5px;
+}

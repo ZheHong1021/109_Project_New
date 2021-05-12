@@ -43,6 +43,8 @@ $(function () {
     icon: 'bus'
   });
 
+
+     
   window.map = new L.Map('map');
 
   L.control.fullscreen({
@@ -61,13 +63,82 @@ $(function () {
     errorTileUrl: 'http://bpic.588ku.com/element_pic/16/12/07/706f7ff4f15725b17ba1d30d384e6468.jpg'
   }).addTo(map);
 
+  
+  const blueIcon = L.icon.pulse({
+    iconSize: [20, 20],
+    color: '#2e72f0',
+    fillColor: '#2e72f0'
+  })
 
-  navigator.geolocation.getCurrentPosition(showPosition, showError, {
-    enableHighAccuracy: true,
-    maximumAge: 5000,
-    timeout: 3000
+  const error_Position = [22.620894, 120.311859];
 
-  });
+  const blueMarker = L.marker(error_Position, {
+    icon: blueIcon,
+    title: '跟 <a> 的 title 一樣', // 跟 <a> 的 title 一樣
+    opacity: 1.0
+  }).addTo(map);
+
+  map.locate({ setView: true, watch: false, maxZoom: 18, enableHighAccuracy: true });
+
+  
+  function errorHandler(e) {
+    console.log("e", e);
+    window.alert('無法判斷您的所在位置，無法使用此功能。預設地點將為 台北市動物園');
+    map.setView(error_Position, 18); // 中心移到動物園
+    moveTo(map); // 移動到指定座標（平滑 || 縮放 效果）
+    panBy(map); // 移動 x, y 位置
+  }
+  map.on('locationerror', errorHandler);
+
+  // 使用者提供位置
+  function foundHandler(e) {
+    // console.log("e", e);
+    blueMarker.setLatLng(e.latlng); // 移動 marker
+    moveTo(map); // 移動到指定座標（平滑 || 縮放 效果）
+    panBy(map); // 移動 x, y 位置
+
+    const goBackPosition = document.querySelector('.js-goBackPosition')
+      goBackPosition.addEventListener('click', () => {
+        map.setView(e.latlng,  17)
+      })
+  }
+
+  map.on('locationfound', foundHandler);
+
+  function moveTo(map) {
+    const btnPanto = document.querySelectorAll('.js-panto');
+    Array.prototype.forEach.call(btnPanto, pan => {
+      pan.addEventListener('click', e => {
+        e.preventDefault();
+        let latLng = e.target.dataset.to.split(',');
+        let name = e.target.textContent;
+        let toggleFly = document.getElementById('flyTo').checked;
+        const popup = L.popup();
+        popup
+          .setLatLng(latLng)
+          .setContent(`${name}`)
+          .openOn(map);
+        toggleFly ? map.flyTo(latLng) : map.panTo(latLng);
+      })
+    })
+  }
+
+  // 移動 x, y 位置
+  function panBy(map) {
+    const btnPanby = document.querySelectorAll('.js-panby');
+    Array.prototype.forEach.call(btnPanby, pan => {
+      pan.addEventListener('click', e => {
+        e.preventDefault();
+        let times = e.target.dataset.times;
+        let point = 50 * times;
+        let points = [point, point];
+        map.panBy(points);
+      })
+    })
+  }
+
+
+
 
 
   let circle = {
