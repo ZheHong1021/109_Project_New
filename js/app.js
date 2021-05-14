@@ -22,7 +22,6 @@ $(function () {
     markerColor: 'red',
     prefix: 'fa',
     icon: 'subway',
-
   });
 
   let MRT_Marker = L.AwesomeMarkers.icon({
@@ -31,10 +30,10 @@ $(function () {
     icon: 'train'
   });
 
-  let LRT_Marker = L.AwesomeMarkers.icon({
-    markerColor: 'orange',
+  let THRS_Marker = L.AwesomeMarkers.icon({
+    markerColor: 'purple',
     prefix: 'fa',
-    icon: 'tram'
+    icon: 'subway',
   });
 
   let BUS_Marker = L.AwesomeMarkers.icon({
@@ -147,6 +146,7 @@ $(function () {
   };
   let markers = {
     train: new L.MarkerClusterGroup(),
+    thsr: new L.MarkerClusterGroup(),
     mrt: {
       TRTC: new L.MarkerClusterGroup(),
       KRTC: new L.MarkerClusterGroup(),
@@ -195,6 +195,42 @@ $(function () {
   });
   tileLoadingProgress.addTo(map);
 
+  //   let weather_Result;
+  //   $.ajax({
+  //     url: "osm.php",
+  //     data: {
+  //       action: 'weather_Data', // ajax到 OSM.php，並執行 Get_Transportation函式
+  //     },
+  //     dataType: 'json',
+  //     type: 'post',
+  //     headers: GetAuthorizationHeader(),
+  //     success: function (result) {
+  //       weather_Result = $.parseJSON(JSON.stringify(result));
+  //     },
+  //     error: function (XMLHttpRequest, textStatus, errorThrown) {
+  //       console.log(XMLHttpRequest);
+  //       console.log(textStatus);
+  //       console.log(errorThrown);
+  //     }
+  //   })
+
+  // let get_Match_Weather;
+  // let can_Get;
+  // let match_Weather_Addr = function(addr){
+  //   can_Get = false;
+  //   get_Match_Weather = [];
+  //   for(let i = 0 ; i < weather_Result.length ; i++){
+  //     if(addr.includes(weather_Result[i]['City'])){
+  //         if(addr.includes(weather_Result[i]['District'])){
+  //           can_Get = true;
+  //           get_Match_Weather.push(weather_Result[i]['PoP6h']);
+  //           get_Match_Weather.push(weather_Result[i]['T']);
+  //           get_Match_Weather.push(weather_Result[i]['AT']);
+  //         }
+  //     }
+  //   }
+  // }
+
 
   let select = `StationPosition,StationName,StationAddress`;
   $.ajax({
@@ -206,11 +242,13 @@ $(function () {
       Object.keys(result).forEach(function (value, key) {
         let latitude = result[value]['StationPosition']['PositionLat'];
         let longitude = result[value]['StationPosition']['PositionLon'];
+        let name =  result[value]['StationName']['Zh_tw'];
+        let address =  result[value]['StationAddress'];
         var geojsonFeature = {
           "type": "Feature",
           "properties": {
-            "name": result[value]['StationName']['Zh_tw'],
-            "address": result[value]['StationAddress'],
+            "name": name,
+            "address": address,
             'category': '台鐵',
             "latitude": latitude,
             "longitude": longitude,
@@ -228,6 +266,49 @@ $(function () {
             });
           },
         }).addTo(markers.train);
+      });
+    },
+    error: function (XMLHttpRequest, textStatus, errorThrown) {
+      console.log(XMLHttpRequest);
+      console.log(textStatus);
+      console.log(errorThrown);
+    }
+  });
+
+  select = `StationPosition,StationName,StationAddress,StationID`;
+  $.ajax({
+    url: `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/Station?$select=${select}&format=JSON`,
+    dataType: 'json',
+    contentType: 'json',
+    headers: GetAuthorizationHeader(), 
+    success: function (result) {
+      Object.keys(result).forEach(function (value, key) {
+        let latitude = result[value]['StationPosition']['PositionLat'];
+        let longitude = result[value]['StationPosition']['PositionLon'];
+        let name =  result[value]['StationName']['Zh_tw'];
+        let address =  result[value]['StationAddress'];
+        var geojsonFeature = {
+          "type": "Feature",
+          "properties": {
+            "name": name,
+            "address": address,
+            'category': '高鐵',
+            "latitude": latitude,
+            "longitude": longitude,
+          },
+          "geometry": {
+            "type": "Point",
+            "coordinates": [longitude, latitude]
+          }
+        };
+        L.geoJSON(geojsonFeature, {
+          onEachFeature: onEachFeature,
+          pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, {
+              icon: THRS_Marker
+            });
+          },
+        }).addTo(markers.thsr);
       });
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -270,15 +351,17 @@ $(function () {
           Object.keys(result).forEach(function (value, key) {
             let latitude = result[value]['StationPosition']['PositionLat'];
             let longitude = result[value]['StationPosition']['PositionLon'];
+            let name =  result[value]['StationName']['Zh_tw'];
+            let address =  result[value]['StationAddress'];
             var geojsonFeature = {
               "type": "Feature",
               "properties": {
-                "name": result[value]['StationName']['Zh_tw'],
-                "address": result[value]['StationAddress'],
+                "name": name,
+                "address": address,
                 'category': '捷運',
                 "latitude": latitude,
                 "longitude": longitude,
-
+             
               },
               "geometry": {
                 "type": "Point",
@@ -516,6 +599,12 @@ $(function () {
           expanded: true,
           layers: {
             "全部": markers.train
+          }
+        },
+        {
+          groupName: "高鐵",
+          layers: {
+            "全部": markers.thsr
           }
         },
         {

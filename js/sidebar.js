@@ -40,6 +40,45 @@ $(function () {
       
   `;
 
+  let thsr_html = `
+   <div class='container-List'>
+        <div class="select-box" id='thsr'>
+            <div class="options-container-thsr" id = 'O_Station'>
+            </div>
+            <div class="selected-thsr" id = "THSR_Origination_Selected">
+                請選擇起站
+            </div>
+            <div class="search-box-thsr" id = 'O_Station'>
+              <input type="text" placeholder="請選擇起站" />
+            </div>
+        </div>
+
+        <div class="select-box" id='thsr'>
+            <div class="options-container-thsr" id = 'D_Station'>
+            </div>
+            <div class="selected-thsr" id = "THSR_Destination_Selected">
+                請選擇迄站
+            </div>
+            <div class="search-box-thsr" id = 'D_Station'>
+              <input type="text" placeholder="請選擇迄站"  />
+            </div>
+        </div>
+
+        <div class = 'thsr_Button_Container'>
+          <!-- Button trigger modal -->
+        <button type="button" id='go_Time_Search_THSR' class="btn btn-primary">
+            查詢車班
+            <span class="spinner-border spinner-border-sm" id='spinner-THSR-Time' role="status" aria-hidden="true" hidden></span>
+          </div>
+
+        </div>
+
+        <div class="alert alert-warning  fade show d-flex justify-content-center" role="alert">
+          <div id='thsr_result' class="alert-body text-center" style='width: 100%;'>尚無查詢紀錄</div>
+        </div>
+      
+  `;
+
   // mrt-sidebar-body
   let mrt_html =
     `<div class="container-List">
@@ -512,6 +551,13 @@ $(function () {
       title: '火車',
       pane: tra_html,
     })
+    .addPanel({
+      id: 'thsr',
+      // tab: '<i class="fas fa-subway"></i>',
+      tab: '<img src="img/high-speed-train.svg" style="width:65%; height:65%;"></img>',
+      title: '高鐵',
+      pane: thsr_html,
+    })
 
     .addPanel({
       id: 'mrt',
@@ -520,6 +566,7 @@ $(function () {
       pane: mrt_html,
     })
 
+    $('img[src="img/high-speed-train.svg"]').parent().addClass('d-flex justify-content-center align-items-center');
 
 
   /* ==========  火車/捷運票價 ======= */
@@ -888,6 +935,9 @@ $(function () {
     $('span#spinner-TRA-Time').removeAttr("hidden");
     this.disabled = true;
     let tra_Result = $('div#tra_result');
+    if(!tra_Result.hasClass('text-center')){
+      tra_Result.addClass('text-center');
+    }
     tra_Result.html("載入中......");
     setTimeout(function () {
       if ($('#TRA_Origination_Selected').text().trim() == '請選擇起站' || $('#TRA_Destination_Selected').text().trim() == '請選擇迄站') {
@@ -910,7 +960,6 @@ $(function () {
         const year = Today.getFullYear()
         const train_Date = year + '-' + month + '-' + date;
         
-        tra_Result.removeClass('text-center');
         tra_Result.html("");
         $.ajax({
           url: `https://ptx.transportdata.tw/MOTC/v2/Rail/TRA/DailyTimetable/OD/${station_ID_O}/to/${station_ID_D}/${train_Date}?$format=JSON`,
@@ -922,7 +971,6 @@ $(function () {
               tra_Result.html('<h2><i class="fas fa-exclamation-triangle mx-2" style="color: red;"></i>查無資料</h2>');
               return;
             }
-            
             tra_Result.removeClass('text-center');
             tra_Result.html("");
             tra_Result_Content = '';
@@ -972,9 +1020,7 @@ $(function () {
       $('span#spinner-TRA-Time').prop("hidden", true);
       $('button#go_Time_Search_TRA').prop("disabled", false);
     }, 1500);
-    
   });
-
 
   ticket_toggle = function(num){
     let ticket_Show = $(`#ticket_Show[data-num='${num}']`);
@@ -988,11 +1034,178 @@ $(function () {
         $('div.fare_Container').eq(num).hide(1000);
       }
     }
-
-
   /* ========== 火車/捷運票價(End)=========== */
 
 
+      /* ========== 高鐵=========== */
+      let Thsr_Station_Info;
+      let picker_Dom_O = $(`.options-container-thsr[id='O_Station']`);
+      let picker_Dom_D = $(`.options-container-thsr[id='D_Station']`);
+      select = `StationName,StationID`;
+      $.ajax({
+        url: `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/Station?$select=${select}&format=JSON`,
+        dataType: 'json',
+        contentType: 'json',
+        headers: GetAuthorizationHeader(), 
+        success: function (result) {
+          Thsr_Station_Info = $.parseJSON(JSON.stringify(result));
+          Object.keys(result).forEach(function (value, key) {
+              let station_Name = result[value]['StationName']['Zh_tw'];
+              let station_id = result[value]['StationID'];
+              picker_Dom_O.append(`
+              <div class="option" style="display: block;">
+              <input type="radio" class="radio" id="O_Station_${station_id}" name="category" />
+              <label for="O_Station_${station_id}">${station_Name}</label>
+              </div>     
+              `);
+              picker_Dom_D.append(`
+              <div class="option" style="display: block;">
+              <input type="radio" class="radio" id="D_Station_${station_id}" name="category" />
+              <label for="D_Station_${station_id}">${station_Name}</label>
+              </div>    
+              `);
+        });
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+          console.log(XMLHttpRequest);
+          console.log(textStatus);
+          console.log(errorThrown);
+        }
+      });
+
+        // https://www.youtube.com/watch?v=VZzWzRVXPcQ&ab_channel=GTCoding
+        $('.selected-thsr').on('click', function () {
+          let select_id = this.id == 'THSR_Origination_Selected' ? 'O_Station' : 'D_Station';
+          $(`.options-container-thsr[id="${select_id}"]`).toggleClass('active');
+          $(`.search-box-thsr[id="${select_id}"] input`).val = '';
+          filterList("");
+          if ($(`.options-container-thsr[id="${select_id}"]`).hasClass("active")) {
+            $(`.search-box-thsr[id="${select_id}"] input`).focus();
+          }
+        });
+      
+        picker_Dom_O.delegate('.option', 'click' ,function () {
+          let select_id = $(this).parent().attr('id');
+          let select = select_id == 'O_Station' ? 'THSR_Origination_Selected' : 'THSR_Destination_Selected';
+          $(`.selected-thsr[id="${select}"]`).html($(this).find('label').text());
+          $(`.options-container-thsr[id="${select_id}"]`).removeClass('active');
+        });
+        picker_Dom_D.on('click', '.option',function () {
+          let select_id = $(this).parent().attr('id');
+          let select = select_id == 'O_Station' ? 'THSR_Origination_Selected' : 'THSR_Destination_Selected';
+          $(`.selected-thsr[id="${select}"]`).html($(this).find('label').text());
+          $(`.options-container-thsr[id="${select_id}"]`).removeClass('active');
+        });
+
+
+        $('.search-box-thsr input').on("keyup", function (e) {
+          let search_id = $(this).parent().attr('id');
+          filterList(e.target.value, search_id);
+        });
+
+        const filterList = function (searchTerm, id) {
+          let option_List = $(`.options-container-thsr[id="${id}"] div.option`);
+          for (let i = 0; i < option_List.length; i++) {
+            let label = option_List.eq(i).find('label').text().toLowerCase();
+            if (label.indexOf(searchTerm) != -1) {
+              option_List.eq(i).css('display', 'block');
+            } else {
+              option_List.eq(i).css('display', 'none');
+            }
+          }
+        };
+
+        // 高鐵時刻
+  let thsr_Result_Content = '';
+  $('button#go_Time_Search_THSR').on('click', function () {
+    $('span#spinner-THSR-Time').removeAttr("hidden");
+    this.disabled = true;
+    let thsr_Result = $('div#thsr_result');
+    if(!thsr_Result.hasClass('text-center')){
+      thsr_Result.addClass('text-center');
+    }
+    thsr_Result.html("載入中......");
+    setTimeout(function () {
+      if ($('#THSR_Origination_Selected').text().trim() == '請選擇起站' || $('#THSR_Destination_Selected').text().trim() == '請選擇迄站') {
+        thsr_Result.html("");
+        thsr_Result.append("<h2> ❗ 請確實填入站點資訊 ❗</h2>");
+      }
+      else {
+       
+        for (let index = 0; index < Thsr_Station_Info.length; index++) {
+          if (Thsr_Station_Info[index]['StationName']['Zh_tw'] == $('#THSR_Origination_Selected').text()) {
+            var station_ID_O = Thsr_Station_Info[index]['StationID'];
+          }
+          if (Thsr_Station_Info[index]['StationName']['Zh_tw'] == $('#THSR_Destination_Selected').text()) {
+            var station_ID_D = Thsr_Station_Info[index]['StationID'];
+          }
+        }
+        const Today = new Date()
+        const date = Today.getDate() + 1 > 10 ? Today.getDate() : '0' + Today.getDate();
+        const month = Today.getMonth() + 1 > 10 ? Today.getMonth() + 1 : '0' + (Today.getMonth() + 1);
+        const year = Today.getFullYear()
+        const nowDate = year + '-' + month + '-' + date;
+        
+        thsr_Result.html("");
+        $.ajax({
+          url: `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${station_ID_O}/to/${station_ID_D}/${nowDate}?&$format=JSON`,
+          dataType: "json",
+          headers: GetAuthorizationHeader(),
+          success: function (result) {
+            if(result.length == 0){
+              thsr_Result.html('<h2><i class="fas fa-exclamation-triangle mx-2" style="color: red;"></i>查無資料</h2>');
+              return;
+            }
+            thsr_Result.removeClass('text-center');
+            thsr_Result.html("");
+            thsr_Result_Content = '';
+
+            for (let index = 0; index < result.length; index++) {
+              let train_No = result[index]['DailyTrainInfo']['TrainNo'];
+              let startingStationName = result[index]['DailyTrainInfo']['StartingStationName']['Zh_tw'];
+              let endingStationName = result[index]['DailyTrainInfo']['EndingStationName']['Zh_tw'];
+              let O_stationName = result[index]['OriginStopTime']['StationName']['Zh_tw'];
+              let O_DepartureTime = result[index]['OriginStopTime']['DepartureTime'];
+              let D_stationName = result[index]['DestinationStopTime']['StationName']['Zh_tw'];
+              let D_ArrivalTime = result[index]['DestinationStopTime']['ArrivalTime'];
+
+              _startTime = O_DepartureTime.split(":");
+              _endTime = D_ArrivalTime.split(":");
+              var startDate = new Date(0, 0, 0, _startTime[0], _startTime[1], 0);
+              var EndDate = new Date(0, 0, 0, _endTime[0], _endTime[1], 0);
+              EndDate.setHours(EndDate.getHours() - startDate.getHours());
+              EndDate.setMinutes(EndDate.getMinutes() - startDate.getMinutes());
+              resultTime = EndDate.getHours() + "小時" + EndDate.getMinutes() + "分鐘";
+
+              thsr_Result_Content = thsr_Result_Content + `
+              <div class = 'single_Thsr_Time' >
+                  <h2>日期: ${nowDate}</h2>
+                  <h2><i class="fas fa-subway"></i>  No. ${train_No}</h2>
+                  <h2>(${startingStationName}  →  ${endingStationName})</hw>
+                  <h2>起站: <i class="far fa-clock" title="上車時間" style='color: blue'></i> ${O_DepartureTime}   ${O_stationName}</h2>
+                  <h2>迄站: <i class="far fa-clock" title="下車時間" style='color: blue'></i> ${D_ArrivalTime}   ${D_stationName}</h2>
+                  <h2>需花費: ${resultTime}</h2>
+                  <h2><span class='badge bg-secondary' style ='cursor:pointer;' id='ticket_Show' data-num=${index} onclick=ticket_toggle(${index})>票價顯示 / 隱藏</span></h2>
+              </div>
+              <hr>
+              `;
+            // train_Ticket_Search(index, station_ID_O, station_ID_D, result[index]['DailyTrainInfo']['Direction'], result[index]['DailyTrainInfo']['TrainTypeCode']);
+          }
+            thsr_Result.append(thsr_Result_Content);
+          },
+          error: function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log(XMLHttpRequest);
+            console.log(textStatus);
+            console.log(errorThrown);
+          }
+        });
+      }
+      $('span#spinner-THSR-Time').prop("hidden", true);
+      $('button#go_Time_Search_THSR').prop("disabled", false);
+    }, 1500);
+  });
+
+/* ========== 高鐵(End)=========== */
 
 
   /* ========== 旅遊=========== */

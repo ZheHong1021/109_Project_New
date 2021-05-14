@@ -63,9 +63,10 @@ get_day = []
 for filename in file:
     try:
         data = f.read(filename).decode('utf8')
-        soup = BeautifulSoup(data, "xml")
+        # print(data)
+        soup = BeautifulSoup(data, features="xml")
         city = soup.locationsName.text   # 捕捉縣市
-        # print("city= " + city)
+        print("city= " + city)
         a = soup.find_all("location")  # 捕捉該縣市的鄉鎮區數量
         for i in range(0, len(a)):
             location = a[i]
@@ -151,7 +152,7 @@ for filename in file:
                 PoP12h.append(pop12)
                 PoP12h.append(pop12)
                 PoP12h.append(pop12)
-        # print("----------------------")
+        print("----------------------")
     except:
         print("Some Error")
         break

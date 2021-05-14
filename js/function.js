@@ -17,42 +17,24 @@ function onEachFeature(feature, layer) {
 
 // 利用 geoJSON將從 ajax的資料來 popup到 marker座標中來呈現資料
 function makePopupContent(station) {
-  let return_html = `<div>
-      <h2>${station.properties.name} - ${station.properties.category}</h2>
-      <p>${station.properties.address}</p>
-    </div>
-    `;
+  let return_html =     
+    `<div>
+    <h2>${station.properties.name} - ${station.properties.category}</h2>
+    <p>${station.properties.address}</p>
+  `
   switch (station.properties.category) {
-    case "台鐵":
-      var category = "火車站";
-      break;
-    case "捷運":
-      var category = "捷運站";
-      break;
-    case "輕軌":
-      var category = "輕軌站";
-      break;
     case "公車":
       var category = "公車站";
-
       return_html =     
       `<div>
       <h2>${station.properties.name} - ${station.properties.category}</h2>
-    
+      <p>${station.properties.address}</p>
     </div>
     `
-    //   return_html =     
-    //   `<div>
-    //   <h2>${station.properties.name} - ${station.properties.category}</h2>
-    //   <p>經度：${station.properties.latitude}</p>
-    //   <p>緯度：${station.properties.longitude}</p>
-    // </div>
-    // `
       break;
   }
   return return_html;
 }
-
 
 
 /*---------------點擊事件---------------*/

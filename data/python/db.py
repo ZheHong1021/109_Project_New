@@ -7,7 +7,7 @@ class DB:
             'host': '127.0.0.1',
             'port': 3306,
             'user': 'root',
-            'password': '123456',
+            'password': 'haha45La',
             'db': '109p2',
             'charset': 'utf8mb4',
             'cursorclass': pymysql.cursors.DictCursor,
