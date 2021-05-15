@@ -1068,7 +1068,8 @@ h3.food_address{
 	color: green;
 }
 
-.fare_Container{
+.fare_Container,
+.fare_Container_THSR{
 	width: 100%;
 	display: flex;
 	flex-direction: row;

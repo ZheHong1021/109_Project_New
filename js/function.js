@@ -28,7 +28,6 @@ function makePopupContent(station) {
       return_html =     
       `<div>
       <h2>${station.properties.name} - ${station.properties.category}</h2>
-      <p>${station.properties.address}</p>
     </div>
     `
       break;

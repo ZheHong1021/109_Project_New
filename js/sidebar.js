@@ -2,7 +2,7 @@ $(function () {
 
   let tra_html = `
    <div class='container-List'>
-
+        <img src='./img/TRA_LOGO.webp' style='width:60%; height:60%; margin: 15px 0;'></img>
         <div class="select-box">
             <div class="options-container" id = 'O_Station'>
             </div>
@@ -42,6 +42,7 @@ $(function () {
 
   let thsr_html = `
    <div class='container-List'>
+   <img src='./img/THSR_LOGO.webp' style='width:80%; height:80%; margin-bottom: 15px;'></img>
         <div class="select-box" id='thsr'>
             <div class="options-container-thsr" id = 'O_Station'>
             </div>
@@ -553,7 +554,6 @@ $(function () {
     })
     .addPanel({
       id: 'thsr',
-      // tab: '<i class="fas fa-subway"></i>',
       tab: '<img src="img/high-speed-train.svg" style="width:65%; height:65%;"></img>',
       title: '高鐵',
       pane: thsr_html,
@@ -1115,7 +1115,45 @@ $(function () {
           }
         };
 
-        // 高鐵時刻
+  // 高鐵票價
+  
+  let THSR_Ticket_Search = function(index,O_id, D_id, Direction){
+  let return_Text = '';
+  let filter = `Direction eq ${Direction}`;
+  $.ajax({
+    url: `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/ODFare/${O_id}/to/${D_id}?$filter=${filter}&$format=JSON`,
+    dataType: 'json',
+    headers: GetAuthorizationHeader(),
+    contentType: 'json',
+    success: function (result) {
+      // TrainType (Int32): 車種簡碼 = ['1: 太魯閣', '2: 普悠瑪', '3: 自強', '4: 莒光', '5: 復興', '6: 區間', '7: 普快', '10: 區間快'] ,
+      Object.keys(result[0]['Fares']).forEach(function (value, key) {
+          return_Text = return_Text + `
+            <div class='fare_Item'>
+              <h2>${result[0]['Fares'][value]['TicketType']}</h2>
+              <h2>$${result[0]['Fares'][value]['Price']}</h2>
+            </div>
+          `;
+        });
+        
+        $('div.single_Thsr_Time').eq(index).append(`
+          <div class='fare_THRS_Container'>
+            ${return_Text}
+          </div>
+          <hr>
+        `);
+      $('.fare_THRS_Container').hide();
+    },
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        console.log(XMLHttpRequest);
+        console.log(textStatus);
+        console.log(errorThrown);
+      }
+    });
+  }
+
+
+  // 高鐵時刻
   let thsr_Result_Content = '';
   $('button#go_Time_Search_THSR').on('click', function () {
     $('span#spinner-THSR-Time').removeAttr("hidden");
@@ -1185,11 +1223,10 @@ $(function () {
                   <h2>起站: <i class="far fa-clock" title="上車時間" style='color: blue'></i> ${O_DepartureTime}   ${O_stationName}</h2>
                   <h2>迄站: <i class="far fa-clock" title="下車時間" style='color: blue'></i> ${D_ArrivalTime}   ${D_stationName}</h2>
                   <h2>需花費: ${resultTime}</h2>
-                  <h2><span class='badge bg-secondary' style ='cursor:pointer;' id='ticket_Show' data-num=${index} onclick=ticket_toggle(${index})>票價顯示 / 隱藏</span></h2>
+                  <h2><span class='badge bg-secondary' style ='cursor:pointer;' id='ticket_Show_THSR' data-num=${index} onclick=ticket_toggle_THSR(${index})>票價顯示 / 隱藏</span></h2>
               </div>
-              <hr>
               `;
-            // train_Ticket_Search(index, station_ID_O, station_ID_D, result[index]['DailyTrainInfo']['Direction'], result[index]['DailyTrainInfo']['TrainTypeCode']);
+            THSR_Ticket_Search(index, station_ID_O, station_ID_D, result[index]['DailyTrainInfo']['Direction']);
           }
             thsr_Result.append(thsr_Result_Content);
           },
@@ -1205,7 +1242,23 @@ $(function () {
     }, 1500);
   });
 
+  ticket_toggle_THSR = function(num){
+    let ticket_Show = $(`#ticket_Show_THSR[data-num='${num}']`);
+      if(ticket_Show.hasClass('bg-secondary')){
+        ticket_Show.removeClass('bg-secondary');
+        ticket_Show.addClass('bg-success');
+        $('div.fare_THRS_Container').eq(num).show(1000);
+      }else if(ticket_Show.hasClass('bg-success')){
+        ticket_Show.removeClass('bg-success');
+        ticket_Show.addClass('bg-secondary');
+        $('div.fare_THRS_Container').eq(num).hide(1000);
+      }
+    }
+
 /* ========== 高鐵(End)=========== */
+
+
+
 
 
   /* ========== 旅遊=========== */

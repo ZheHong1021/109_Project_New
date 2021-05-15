@@ -82,7 +82,7 @@ $(function () {
   
   function errorHandler(e) {
     console.log("e", e);
-    window.alert('無法判斷您的所在位置，無法使用此功能。預設地點將為 台北市動物園');
+    window.alert('無法判斷您的所在位置，無法使用此功能。預設地點將為 「高雄市政府」');
     map.setView(error_Position, 18); // 中心移到動物園
     moveTo(map); // 移動到指定座標（平滑 || 縮放 效果）
     panBy(map); // 移動 x, y 位置
