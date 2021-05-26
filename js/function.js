@@ -31,6 +31,24 @@ function makePopupContent(station) {
     </div>
     `
       break;
+      case "自行車":
+        let avaiable = station.properties.available == undefined ? '目前資料提供不全' :  station.properties.available ;
+        return_html =     
+        `<div>
+        <h2>${station.properties.name} - ${station.properties.category}</h2>
+        <p>${station.properties.address}</p>
+          <p>自行車可容納數量: <span class='badge bg-success'>${station.properties.bikesCapacity}</span></p>
+            <p>可租借的數量: <span class='badge bg-danger'>${avaiable}</span></p>
+      </div>
+      `
+        break;
+      case "bike_Route":
+        return_html =     
+        `<div>
+        <h2>自行車路線 - ${station.properties.route_Name}</h2>
+        </div>
+      `
+        break;
   }
   return return_html;
 }
@@ -40,27 +58,21 @@ function makePopupContent(station) {
 
 
 let fly_Marker;
-
-// 移動到指定座標
 function fly_To_Marker(lat, lng, content) {
   let go_Marker = L.AwesomeMarkers.icon({
     markerColor: 'red',
     prefix: 'fa',
     icon: 'crosshairs'
   });
-
-  // 先前點選得要清掉
   if (fly_Marker) {
     map.removeLayer(fly_Marker);
   }
-
   fly_Marker = L.marker([lat, lng], {
     icon: go_Marker
   }).bindPopup(content).openPopup().addTo(map);
   map.flyTo([lat, lng], 16, {
     duration: 3 // 移動動畫時間
   });
-
   // 設立延遲，3000毫秒(3秒)，搭配上述的移動動畫，要在動畫結束之後才能顯性 popup內容
   setTimeout(function () {
     L.popup({

@@ -377,8 +377,6 @@ $(function () {
   `;
 
 
-
-
   let bus_html = `
   <div class="Bus-City-info">
 
@@ -510,10 +508,113 @@ $(function () {
       </div>
     </div>
   </div>
-
-  
-
 </div>
+  `;
+
+  let bike_html = `
+  <div class = 'bike-city-Category'>
+    <div class="city_Bike" id='Taipei' city_name_Tw='臺北市'>
+        <i class="fas fa-biking"></i>
+        <h2>台北市</h2>
+    </div>
+    <div class="city_Bike" id='NewTaipei' city_name_Tw='新北市'>
+        <i class="fas fa-biking"></i>
+        <h2>新北市</h2>
+    </div>
+    <div class="city_Bike" id='Taoyuan' city_name_Tw='桃園市'>
+        <i class="fas fa-biking"></i>
+        <h2>桃園市</h2>
+    </div>
+
+    <div class="city_Bike" id='Tainan' city_name_Tw='臺南市'>
+        <i class="fas fa-biking"></i>
+        <h2>臺南市</h2>
+    </div>
+    <div class="city_Bike" id='NewTaipei' city_name_Tw='新北市'>
+        <i class="fas fa-biking"></i>
+        <h2>新北市</h2>
+    </div>
+    <div class="city_Bike" id='Kaohsiung' city_name_Tw='高雄市'>
+        <i class="fas fa-biking"></i>
+        <h2>高雄市</h2>
+    </div>
+
+
+    <div class="city_Bike" id='Keelung' city_name_Tw='基隆市'>
+        <i class="fas fa-biking"></i>
+        <h2>基隆市</h2>
+    </div>
+    <div class="city_Bike" id='HsinchuCounty' city_name_Tw='新竹縣'>
+        <i class="fas fa-biking"></i>
+        <h2>新竹縣</h2>
+    </div>
+    <div class="city_Bike" id='MiaoliCounty' city_name_Tw='苗栗縣'>
+        <i class="fas fa-biking"></i>
+        <h2>苗栗縣</h2>
+    </div>
+
+    
+    <div class="city_Bike" id='ChanghuaCounty' city_name_Tw='彰化縣'>
+        <i class="fas fa-biking"></i>
+        <h2>彰化縣</h2>
+    </div>
+    <div class="city_Bike" id='NantouCounty' city_name_Tw='南投縣'>
+        <i class="fas fa-biking"></i>
+        <h2>南投縣</h2>
+    </div>
+    <div class="city_Bike" id='YunlinCounty' city_name_Tw='雲林縣'>
+        <i class="fas fa-biking"></i>
+        <h2>雲林縣</h2>
+    </div>
+
+    <div class="city_Bike" id='ChiayiCounty' city_name_Tw='嘉義縣'>
+        <i class="fas fa-biking"></i>
+        <h2>嘉義縣</h2>
+    </div>
+    <div class="city_Bike" id='Chiayi' city_name_Tw='嘉義市'>
+        <i class="fas fa-biking"></i>
+        <h2>嘉義市</h2>
+    </div>
+    <div class="city_Bike" id='PingtungCounty' city_name_Tw='屏東縣'>
+        <i class="fas fa-biking"></i>
+        <h2>屏東縣</h2>
+    </div>
+
+    <div class="city_Bike" id='YilanCounty' city_name_Tw='宜蘭縣'>
+        <i class="fas fa-biking"></i>
+        <h2>宜蘭縣</h2>
+    </div>
+    <div class="city_Bike" id='HualienCounty' city_name_Tw='花蓮縣'>
+        <i class="fas fa-biking"></i>
+        <h2>花蓮縣</h2>
+    </div>
+    <div class="city_Bike" id='TaitungCounty' city_name_Tw='臺東縣'>
+        <i class="fas fa-biking"></i>
+        <h2>臺東縣</h2>
+    </div>
+    <div class="city_Bike" id='KinmenCounty' city_name_Tw='金門縣'>
+        <i class="fas fa-biking"></i>
+        <h2>金門縣</h2>
+    </div>
+    <div class="city_Bike" id='PenghuCounty' city_name_Tw='澎湖縣'>
+        <i class="fas fa-biking"></i>
+        <h2>澎湖縣</h2>
+    </div>
+
+  </div>
+
+
+    <div class = 'bike-container' hidden>
+      <i class="fas fa-bicycle text-center" style='font-size: 60px;'></i>
+      <h2 class='bike-city'>台中市</h2>
+      <div class="searchBox">
+        <input class="search-bike" type="text" placeholder="請搜尋你想找尋的地方">
+      </div>
+      <div class = 'route-Group'>
+
+      </div>
+    
+    </div>
   `;
 
 
@@ -565,8 +666,17 @@ $(function () {
       title: '捷運',
       pane: mrt_html,
     })
+    .addPanel({
+      id: 'bike',
+      tab: '<i class="fas fa-biking"></i>',
+      title: '自行車',
+      pane: bike_html,
+    })
 
     $('img[src="img/high-speed-train.svg"]').parent().addClass('d-flex justify-content-center align-items-center');
+
+
+
 
 
   /* ==========  火車/捷運票價 ======= */
@@ -598,7 +708,6 @@ $(function () {
         }
         select_box_Origin.append(select_item);
         select_box_Destination.append(select_item);
-
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
         console.log(XMLHttpRequest);
@@ -621,11 +730,12 @@ $(function () {
       $('div.bus-loading').hide();
     }, 1500);
   });
+
+
   $('button#go_Search_MRT').on('click', function () {
     $('span#spinner-MRT').removeAttr("hidden");
     $('button#go_Search_MRT').prop("disabled", true);
     $('div#mrt_result').html("載入中......");
-
     setTimeout(function () {
       $('div#mrt_result').removeClass('text-center');
       $('div#mrt_result').html("");
@@ -634,8 +744,7 @@ $(function () {
       let Destination_List = $('#Destination_StationName_List');
       mrt_Result_Content = mrt_Result_Content + `
       <h2>起站: ${origin_List.val()}</h2>
-      <h2>迄站: ${Destination_List.val()}</h2>
-      `;
+      <h2>迄站: ${Destination_List.val()}</h2>`;
       for (let index = 0; index < mrt_FareInfo.length; index++) {
         var station_Name_O = mrt_FareInfo[index]['OriginStationID'] + ' ' + mrt_FareInfo[index]['OriginStationName']['Zh_tw'];
         var station_Name_D = mrt_FareInfo[index]['DestinationStationID'] + ' ' + mrt_FareInfo[index]['DestinationStationName']['Zh_tw'];
@@ -650,7 +759,6 @@ $(function () {
           if (travel_Distance) {
             mrt_Result_Content = mrt_Result_Content + `<h2>路程距離: ${travel_Distance}公里</h2>`;
           }
-
           for (let i = 0; i < fares.length; i++) {
             if (fares[i]['TicketType'] == 1) {
               switch (fares[i]['FareClass']) {
@@ -689,6 +797,8 @@ $(function () {
       $('button#go_Search_MRT').prop("disabled", false);
     }, 1500);
   });
+
+
 
     let tra_Station_Info;
     let select = 'LocationCity,StationName,StationID';
@@ -1072,7 +1182,6 @@ $(function () {
           console.log(errorThrown);
         }
       });
-
         // https://www.youtube.com/watch?v=VZzWzRVXPcQ&ab_channel=GTCoding
         $('.selected-thsr').on('click', function () {
           let select_id = this.id == 'THSR_Origination_Selected' ? 'O_Station' : 'D_Station';
@@ -1090,6 +1199,7 @@ $(function () {
           $(`.selected-thsr[id="${select}"]`).html($(this).find('label').text());
           $(`.options-container-thsr[id="${select_id}"]`).removeClass('active');
         });
+
         picker_Dom_D.on('click', '.option',function () {
           let select_id = $(this).parent().attr('id');
           let select = select_id == 'O_Station' ? 'THSR_Origination_Selected' : 'THSR_Destination_Selected';
@@ -1126,7 +1236,6 @@ $(function () {
     headers: GetAuthorizationHeader(),
     contentType: 'json',
     success: function (result) {
-      // TrainType (Int32): 車種簡碼 = ['1: 太魯閣', '2: 普悠瑪', '3: 自強', '4: 莒光', '5: 復興', '6: 區間', '7: 普快', '10: 區間快'] ,
       Object.keys(result[0]['Fares']).forEach(function (value, key) {
           return_Text = return_Text + `
             <div class='fare_Item'>
@@ -1169,7 +1278,6 @@ $(function () {
         thsr_Result.append("<h2> ❗ 請確實填入站點資訊 ❗</h2>");
       }
       else {
-       
         for (let index = 0; index < Thsr_Station_Info.length; index++) {
           if (Thsr_Station_Info[index]['StationName']['Zh_tw'] == $('#THSR_Origination_Selected').text()) {
             var station_ID_O = Thsr_Station_Info[index]['StationID'];
@@ -1183,7 +1291,6 @@ $(function () {
         const month = Today.getMonth() + 1 > 10 ? Today.getMonth() + 1 : '0' + (Today.getMonth() + 1);
         const year = Today.getFullYear()
         const nowDate = year + '-' + month + '-' + date;
-        
         thsr_Result.html("");
         $.ajax({
           url: `https://ptx.transportdata.tw/MOTC/v2/Rail/THSR/DailyTimetable/OD/${station_ID_O}/to/${station_ID_D}/${nowDate}?&$format=JSON`,
@@ -1197,7 +1304,6 @@ $(function () {
             thsr_Result.removeClass('text-center');
             thsr_Result.html("");
             thsr_Result_Content = '';
-
             for (let index = 0; index < result.length; index++) {
               let train_No = result[index]['DailyTrainInfo']['TrainNo'];
               let startingStationName = result[index]['DailyTrainInfo']['StartingStationName']['Zh_tw'];
@@ -1206,7 +1312,6 @@ $(function () {
               let O_DepartureTime = result[index]['OriginStopTime']['DepartureTime'];
               let D_stationName = result[index]['DestinationStopTime']['StationName']['Zh_tw'];
               let D_ArrivalTime = result[index]['DestinationStopTime']['ArrivalTime'];
-
               _startTime = O_DepartureTime.split(":");
               _endTime = D_ArrivalTime.split(":");
               var startDate = new Date(0, 0, 0, _startTime[0], _startTime[1], 0);
@@ -1214,7 +1319,6 @@ $(function () {
               EndDate.setHours(EndDate.getHours() - startDate.getHours());
               EndDate.setMinutes(EndDate.getMinutes() - startDate.getMinutes());
               resultTime = EndDate.getHours() + "小時" + EndDate.getMinutes() + "分鐘";
-
               thsr_Result_Content = thsr_Result_Content + `
               <div class = 'single_Thsr_Time' >
                   <h2>日期: ${nowDate}</h2>
@@ -1241,6 +1345,8 @@ $(function () {
       $('button#go_Time_Search_THSR').prop("disabled", false);
     }, 1500);
   });
+
+
 
   ticket_toggle_THSR = function(num){
     let ticket_Show = $(`#ticket_Show_THSR[data-num='${num}']`);
@@ -1439,12 +1545,12 @@ $(function () {
     $('#open_InfoLabel').html(travel_Info[info_number]["Name"]);
     $('div#open_info_body').html('');
     $('div#open_info_body').append(`
-        <div class = "travel_Describe_Container">
-        <p class = "mx-3">${travel_Info[info_number]['DescriptionDetail']}</p>
-        </div>
-        <div class = "travel_Image_Container d-flex align-items-center m-3" style="flex-direction: column">
-          ${travel_info_Image}
-        </div>
+      <div class = "travel_Image_Container d-flex align-items-center m-3" style="flex-direction: column">
+      ${travel_info_Image}
+      </div>
+      <div class = "travel_Describe_Container">
+      <p class = "mx-3">${travel_Info[info_number]['DescriptionDetail']}</p>
+      </div>
         `);
   }
 
@@ -2268,9 +2374,7 @@ $(function () {
                 clearTimeout(window.estimate_Bus);
                 click_bus_info(city, route, route_id, direct);
               });
-
             } else {
-
               $(`div#r_${route_id}`).append(`
                 <div>
                 <button id="bus_update_Direct" data-direct = '0' class="btn ${direct == 0 ? "btn-primary" : "btn-secondary"} m-1 fw-bolder"></button>
@@ -2282,7 +2386,6 @@ $(function () {
                     <!--<p><button onclick="addUser()">add user</button></b>--!>
                 </div>
                 `);
-
             }
             // 顯示起站 / 迄站
             stop_Start_End(city, route_id);
@@ -2295,7 +2398,6 @@ $(function () {
         });
       }
     }, 1000);
-
     // 透過點擊來更換公車路線
     $(`div#r_${route_id}`).on('click', 'button#bus_update_Direct', function () {
       let this_direct = $(this).attr('data-direct');
@@ -2339,6 +2441,7 @@ $(function () {
         });
         if (!master_City.includes(city)) {
           $('div.list-route-group').html('');
+          let list_BusRoute_Content ;
           for (let i = 0; i < route.length; i++) {
             list_BusRoute_Content = list_BusRoute_Content +
               `<div class="accordion-item" >
@@ -2465,6 +2568,126 @@ $(function () {
   });
   /* ==========  公車(End)  ========== */
 
+
+let bike_Route_Info = '';
+let bike_Route = [];
+let bike_Route_Town = [];
+  $.ajax({
+    url: `https://ptx.transportdata.tw/MOTC/v2/Cycling/Shape/Taichung?&$format=JSON`,
+    dataType: 'json',
+    contentType: 'json',
+    headers: GetAuthorizationHeader(),
+    success: function (result) {
+      let bike_Route_Content = '';
+      Object.keys(result).forEach(function (value, key) {
+       bike_Route.push(result[value]['RouteName']);
+       bike_Route_Town.push(result[value]['Town']);
+        
+        bike_Route_Info = $.parseJSON(JSON.stringify(result));
+        let arrow = result[value]['City'] == '雙向' ? `<i class="fas fa-arrows-alt-v"></i>`: `<i class="fas fa-long-arrow-alt-down"></i>`;
+        let span_info = result[value]['Town'] == undefined ?   '' : `<span class='badge bg-primary p-2 mx-1'>${result[value]['Town']}</span>`;
+        bike_Route_Content = bike_Route_Content + `
+            <div class='route-item'>
+                <div class='route-item-header'>
+                  <h2>${result[value]['RouteName']}</h2>
+                  <div class='d-flex flex-row'>
+                    <span class='badge bg-danger p-2'>${result[value]['City']}</span>
+                    ${span_info}
+                  </div>
+                  <h3 style='font-size: 16px;'>路線長度: ${result[value]['CyclingLength']/1000}公里</h3>
+
+                </div>
+                <div class='route-item-body my-2'>
+                    <div class = 'bike-Route-Direct'>
+                    <p>
+                      ${result[value]['RoadSectionStart'] == undefined ? '未提供路線起點': result[value]['RoadSectionStart']}
+                    </p>
+                      ${arrow}
+                    <p>
+                      ${result[value]['RoadSectionEnd']  == undefined ? '未提供路線終點': result[value]['RoadSectionEnd']}
+                    </p>
+
+                    <button id='show_bike_Route' type="button" class="btn btn-success my-2" data-num = '${value}'>顯現路線</button>
+                    </div>
+                </div>
+            </div>
+        `;
+      });
+      $('.route-Group').append(bike_Route_Content);
+
+    },
+    error: function (XMLHttpRequest, textStatus, errorThrown) {
+      console.log(XMLHttpRequest);
+      console.log(textStatus);
+      console.log(errorThrown);
+    }
+  });
+// }
+
+// fetch_bike_Route(0);
+
+  let bike_geoJSON;
+  $('div.route-Group').delegate('button#show_bike_Route', 'click' ,function () {
+    let num = $(this).attr('data-num');
+    let geometry = bike_Route_Info[num]['Geometry']
+    geometry_Transit = geometry.replace('MULTILINESTRING', '').replaceAll('(', '').replaceAll(')', '').replaceAll(',', ' ').split(' ');
+    let coordinate = [];
+    let start_point;
+    let end_point;
+    for(let i = 1; i < geometry_Transit.length; i++){
+      if(i % 2 == 0){
+        if(i == 2){
+          start_point = [parseFloat(geometry_Transit[i]) ,parseFloat(geometry_Transit[i-1])];
+        }
+        end_point = [parseFloat(geometry_Transit[i]) ,parseFloat(geometry_Transit[i-1])];
+        coordinate.push([parseFloat(geometry_Transit[i-1]) ,parseFloat(geometry_Transit[i])]);
+      }
+    }
+    let routename = bike_Route_Info[num]['RouteName']
+
+    if(bike_geoJSON){
+      map.removeLayer(bike_geoJSON);
+    }
+
+    let bikeLines = [{
+      "type": "LineString",
+      "properties": {
+        "category": "bike_Route",
+        "route_Name": routename,
+      },
+        "coordinates": coordinate
+      }];
+        var myStyle = {
+            "color": "#000",
+            "weight": 5,
+        };
+        
+      bike_geoJSON = L.geoJSON(bikeLines, {
+             onEachFeature: onEachFeature,
+            style: myStyle
+        }).addTo(map);
+        map.fitBounds([
+          start_point,
+          end_point
+        ]);
+  });
+
+  $('input.search-bike').on('keyup', function(){
+    let this_Val = $(this).val();
+    if(this_Val == ""){
+      $('.route-Group .route-item').show();
+    }else{
+      $('.route-Group .route-item').hide();
+
+      for(let i = 0 ; i < bike_Route.length; i++){
+        let name = bike_Route[i];
+        let town = bike_Route_Town[i];
+        if(name.indexOf(this_Val) != -1 || town.indexOf(this_Val) != -1){
+          $(`.route-item:nth-child(${i+1})`).show();
+        }
+      }
+    }
+  });
 
 
 

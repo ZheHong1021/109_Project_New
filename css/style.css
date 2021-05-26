@@ -263,10 +263,12 @@ div#tra_result,
 div#thsr_result,
 div#mrt_result,
 div#bus_result,
+div#ptxAPI-info,
 div#home_result {
 	font-size: 18px;
 	font-weight: bolder;
 }
+
 
 
 
@@ -355,12 +357,14 @@ footer {
 }
 
 /* StyleControlGroup */
-.menu-item-checkbox {
+.menu-item-checkbox,
+.menu-item-radio {
 	padding: 5px 10px;
 	font-size: 16px;
 }
 
-.menu-item-checkbox input {
+.menu-item-checkbox input
+.menu-item-radio input {
 	margin: 0 5px;
 }
 
@@ -447,8 +451,6 @@ footer {
 
 .card:hover p {
 	max-height: 40px;
-	/* opacity: 1; */
-	font-size: 20px;
 }
 
 .bus-loading {
@@ -748,7 +750,7 @@ div.travel-item {
 	justify-content: start;
 	padding: 10px;
 	font-weight: bolder;
-	width: 380px; 
+	/* width: 380px;  */
 	height: auto;
 	padding-bottom: 10px;
 	background-color: #dcdde1;
@@ -769,7 +771,7 @@ h2.view_Name {
 
 div.view_Span {
 	position: absolute;
-	font-size: 20px;
+	/* font-size: 20px; */
 	right: 10px;
 	top: 10px;
 	display: flex;
@@ -814,7 +816,7 @@ div#travel_info_body{
 
 
 div.travel_Describe_Container{
-	width: 60%;
+	/* width: 60%; */
 	padding: 10px;
 	border: 2px solid #333;;
 	letter-spacing: 3px;
@@ -822,7 +824,7 @@ div.travel_Describe_Container{
 	text-indent: 2rem;
 }
 div.travel_Image_Container{
-	width: 40%;
+	/* width: 40%; */
 	padding: 10px;
 }
 .travel_Image_Container img{
@@ -901,7 +903,7 @@ div.food-item{
     justify-content: start;
     padding: 10px;
     font-weight: bolder;
-    width: 380px;
+    /* width: 380px; */
     height: auto;
 	padding: 5px;
 	border: 2px solid #000;
@@ -1090,3 +1092,186 @@ h3.food_address{
 	text-align: center;
 	margin: 5px;
 }
+
+.fa-search-location{
+	background-color: #fdcb6e; 
+	font-size: 18px;
+    padding: 6px;
+    border: 2px solid rgba(0,0,0,0.2);
+	border-radius: 3px;
+    cursor: pointer;
+}
+
+.bike-popup{
+	display: flex;
+	flex-direction: row;
+
+}
+
+.bike-popup .bike-popup-item {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 5px;
+	font-size: 20px;
+}
+.bike-popup .bike-popup-item:nth-child(1) {
+	background-color: #ffbe76;
+	width: 50%;
+}
+.bike-popup .bike-popup-item:nth-child(2) {
+	width: 50%;
+	background-color: #ffeaa7;
+}
+
+.bike-popup .bike-popup-item .bike-popup-h3 {
+	margin: 5px 0;
+	padding: 0;
+	height: 30%;
+	text-align: center;
+}
+
+.bike-popup .bike-popup-item p {
+	font-size: 20px;
+	text-align: center;
+	font-weight: bolder;
+	margin: 5px 0;
+}
+
+.route-item{
+	margin: 10px 0;
+	border: 2px solid #333;
+	padding: 10px 20px;
+	border-radius: 5px;
+}
+
+.route-item-header{
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.route-item-header h2{
+	font-size: 20px;
+	font-weight: bolder;
+}
+
+.bike-Route-Direct{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+}
+.bike-Route-Direct p{
+	font-size: 14px;
+}
+.bike-Route-Direct i{
+	font-size: 24px;
+}
+
+.bike-container{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding: 5px;
+}
+.bike-container .bike-city{
+	text-align: center;
+	font-weight: bolder;
+	font-size: 24px;
+}
+
+.bike-city-Category{
+	padding: 5px;
+	display: flex;
+	/* flex-direction: column; */
+	/* align-items: center; */
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.bike-city-Category .city_Bike{
+	padding: 10px;
+	border: 2px solid #333;
+	border-radius: 5px;
+	background-color: #7bed9f;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100px;
+	height: 100px;
+	margin: 10px;
+	cursor: pointer;
+	transition: .4s;
+}
+.bike-city-Category .city_Bike:hover{
+	background-color: #81ecec;
+}
+
+.bike-city-Category .city_Bike i{
+	font-size: 36px;
+	margin: 10px 0;
+}
+
+.bike-city-Category .city_Bike h2{
+	font-size: 18px;
+	font-weight: bolder;
+}
+
+/* 手機：解析度為0px~320px使用 phone.css */
+@media screen and (max-width:767px){
+    .travel-item,
+	.food-item {
+		width: 300px;
+	}
+
+	.card:hover p {
+		font-size: 16px;
+	}
+	.filter_Container_Food span, 
+	.filter_Container_Travel span{
+		padding: 10px;
+		font-size: 14px;
+	}
+
+	.modal-body{
+		flex-direction: column;
+	}
+	.travel_Describe_Container,
+	.travel_Image_Container {
+		width: 100%;
+	}
+
+	h2.view_Name ,
+	h3.view_address {
+		width: 70%;
+	}
+	.view_Span{
+		font-size: 16px;
+	}
+} 
+
+
+/* 一般電腦裝置(螢幕尺寸>1025px) */
+@media screen and (min-width:1025px){   
+	.travel-item,
+	.food-item {
+		width: 380px;
+	}
+	.card:hover p {
+		font-size: 20px;
+	}
+	.travel_Describe_Container{
+		width: 60%;
+	}
+	.travel_Image_Container {
+		width: 40%;
+	}
+	.view_Span{
+		font-size: 20px;
+	}
+}
+
+

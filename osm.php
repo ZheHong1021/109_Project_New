@@ -13,6 +13,8 @@ if (isset($_POST['action']) && !empty($_POST['action'])) //判別使用哪個fun
         case 'weather_Data':
             get_WeatherData();
             break;
+        case 'Insert_Users_Pos':
+            Insert_Users_Pos();
     }
 }
 
@@ -97,3 +99,45 @@ function getdata()
 
     echo json_encode($position);
 }
+
+
+
+
+// function get_Users_Pos()
+// {
+//     global $conn;
+//     $position = [];
+//     $sql = "SELECT * FROM user_Position";
+//     $stmt = $conn->query($sql);
+//     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);;
+//     $count = 0;
+
+//     // 透過迴圈將資料庫資料都丟入到position陣列中，最後透過json_decode將結果傳回給 js
+//     foreach ($rows as $key => $value) {
+//         $position['sign'][$count]['guest_id'] = $value['id'];
+//         $position['sign'][$count]['Lat'] = $value['lat'];
+//         $position['sign'][$count]['Lng'] = $value['lng'];
+//         $count++;
+//     }
+
+//     echo json_encode($position);
+// }
+
+function Insert_Users_Pos()
+{
+    $id = isset($_POST['guest_id']) ? $_POST['guest_id']: '';
+    $lat = isset($_POST['lat']) ? $_POST['lat']: '';
+    $lng = isset($_POST['lng']) ? $_POST['lng']: '';
+ 
+    global $conn;
+    // $input = array(':id' => $id,':lat' => $lat,':lng' => $lng);
+    // $sql = "UPDATE  `user_position`  SET id=:id, lat=:lat, lng=:lng";
+    // $sth = $conn->prepare($sql);
+    // $sth->execute($input);
+    
+    $input = array(':id' => $id,':lat' => $lat,':lng' => $lng);
+    $sql = "INSERT INTO `user_position` (id, lat, lng) VALUES(:id,:lat,:lng)";
+    $sth = $conn->prepare($sql);
+    $sth->execute($input);
+}
+
