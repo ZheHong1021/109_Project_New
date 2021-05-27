@@ -42,13 +42,7 @@ function makePopupContent(station) {
       </div>
       `
         break;
-      case "bike_Route":
-        return_html =     
-        `<div>
-        <h2>自行車路線 - ${station.properties.route_Name}</h2>
-        </div>
-      `
-        break;
+     
   }
   return return_html;
 }

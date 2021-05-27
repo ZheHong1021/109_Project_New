@@ -513,90 +513,90 @@ $(function () {
 
   let bike_html = `
   <div class = 'bike-city-Category'>
-    <div class="city_Bike" id='Taipei' city_name_Tw='臺北市'>
+    <div class="city_Bike master-city" id='Taipei' city_name_Tw='臺北市'>
         <i class="fas fa-biking"></i>
         <h2>台北市</h2>
     </div>
-    <div class="city_Bike" id='NewTaipei' city_name_Tw='新北市'>
+    <div class="city_Bike master-city" id='NewTaipei' city_name_Tw='新北市'>
         <i class="fas fa-biking"></i>
         <h2>新北市</h2>
     </div>
-    <div class="city_Bike" id='Taoyuan' city_name_Tw='桃園市'>
+    <div class="city_Bike master-city" id='Taoyuan' city_name_Tw='桃園市'>
         <i class="fas fa-biking"></i>
         <h2>桃園市</h2>
     </div>
 
-    <div class="city_Bike" id='Tainan' city_name_Tw='臺南市'>
+    <div class="city_Bike master-city" id='Tainan' city_name_Tw='臺南市'>
         <i class="fas fa-biking"></i>
         <h2>臺南市</h2>
     </div>
-    <div class="city_Bike" id='NewTaipei' city_name_Tw='新北市'>
+    <div class="city_Bike master-city" id='NewTaipei' city_name_Tw='新北市'>
         <i class="fas fa-biking"></i>
         <h2>新北市</h2>
     </div>
-    <div class="city_Bike" id='Kaohsiung' city_name_Tw='高雄市'>
+    <div class="city_Bike master-city" id='Kaohsiung' city_name_Tw='高雄市'>
         <i class="fas fa-biking"></i>
         <h2>高雄市</h2>
     </div>
 
 
-    <div class="city_Bike" id='Keelung' city_name_Tw='基隆市'>
+    <div class="city_Bike N1_City"  id='Keelung' city_name_Tw='基隆市'>
         <i class="fas fa-biking"></i>
         <h2>基隆市</h2>
     </div>
-    <div class="city_Bike" id='HsinchuCounty' city_name_Tw='新竹縣'>
+    <div class="city_Bike N1_City" id='HsinchuCounty' city_name_Tw='新竹縣'>
         <i class="fas fa-biking"></i>
         <h2>新竹縣</h2>
     </div>
-    <div class="city_Bike" id='MiaoliCounty' city_name_Tw='苗栗縣'>
+    <div class="city_Bike N1_City" id='MiaoliCounty' city_name_Tw='苗栗縣'>
         <i class="fas fa-biking"></i>
         <h2>苗栗縣</h2>
     </div>
 
     
-    <div class="city_Bike" id='ChanghuaCounty' city_name_Tw='彰化縣'>
+    <div class="city_Bike N1_City" id='ChanghuaCounty' city_name_Tw='彰化縣'>
         <i class="fas fa-biking"></i>
         <h2>彰化縣</h2>
     </div>
-    <div class="city_Bike" id='NantouCounty' city_name_Tw='南投縣'>
+    <div class="city_Bike N1_City" id='NantouCounty' city_name_Tw='南投縣'>
         <i class="fas fa-biking"></i>
         <h2>南投縣</h2>
     </div>
-    <div class="city_Bike" id='YunlinCounty' city_name_Tw='雲林縣'>
+    <div class="city_Bike N1_City" id='YunlinCounty' city_name_Tw='雲林縣'>
         <i class="fas fa-biking"></i>
         <h2>雲林縣</h2>
     </div>
 
-    <div class="city_Bike" id='ChiayiCounty' city_name_Tw='嘉義縣'>
+    <div class="city_Bike N2_City" id='ChiayiCounty' city_name_Tw='嘉義縣'>
         <i class="fas fa-biking"></i>
         <h2>嘉義縣</h2>
     </div>
-    <div class="city_Bike" id='Chiayi' city_name_Tw='嘉義市'>
+    <div class="city_Bike N2_City" id='Chiayi' city_name_Tw='嘉義市'>
         <i class="fas fa-biking"></i>
         <h2>嘉義市</h2>
     </div>
-    <div class="city_Bike" id='PingtungCounty' city_name_Tw='屏東縣'>
+    <div class="city_Bike N2_City" id='PingtungCounty' city_name_Tw='屏東縣'>
         <i class="fas fa-biking"></i>
         <h2>屏東縣</h2>
     </div>
 
-    <div class="city_Bike" id='YilanCounty' city_name_Tw='宜蘭縣'>
+    <div class="city_Bike N2_City" id='YilanCounty' city_name_Tw='宜蘭縣'>
         <i class="fas fa-biking"></i>
         <h2>宜蘭縣</h2>
     </div>
-    <div class="city_Bike" id='HualienCounty' city_name_Tw='花蓮縣'>
+    <div class="city_Bike N2_City" id='HualienCounty' city_name_Tw='花蓮縣'>
         <i class="fas fa-biking"></i>
         <h2>花蓮縣</h2>
     </div>
-    <div class="city_Bike" id='TaitungCounty' city_name_Tw='臺東縣'>
+    <div class="city_Bike N2_City" id='TaitungCounty' city_name_Tw='臺東縣'>
         <i class="fas fa-biking"></i>
         <h2>臺東縣</h2>
     </div>
-    <div class="city_Bike" id='KinmenCounty' city_name_Tw='金門縣'>
+    <div class="city_Bike N2_City" id='KinmenCounty' city_name_Tw='金門縣'>
         <i class="fas fa-biking"></i>
         <h2>金門縣</h2>
     </div>
-    <div class="city_Bike" id='PenghuCounty' city_name_Tw='澎湖縣'>
+    <div class="city_Bike N2_City" id='PenghuCounty' city_name_Tw='澎湖縣'>
         <i class="fas fa-biking"></i>
         <h2>澎湖縣</h2>
     </div>
@@ -604,12 +604,14 @@ $(function () {
   </div>
 
 
-    <div class = 'bike-container' hidden>
+    <div class = 'bike-container'>
       <i class="fas fa-bicycle text-center" style='font-size: 60px;'></i>
-      <h2 class='bike-city'>台中市</h2>
+      <h2 class='bike-city'></h2>
       <div class="searchBox">
-        <input class="search-bike" type="text" placeholder="請搜尋你想找尋的地方">
+      <input class="search-bike" type="text" placeholder="請搜尋你想找尋的地方">
       </div>
+      <button type="button" class="btn btn-secondary go_Bike_Container p-2 m-2" style='width: auto;'>上一頁</button>
+
       <div class = 'route-Group'>
 
       </div>
@@ -2571,18 +2573,22 @@ $(function () {
 
 let bike_Route_Info = '';
 let bike_Route = [];
-let bike_Route_Town = [];
-  $.ajax({
-    url: `https://ptx.transportdata.tw/MOTC/v2/Cycling/Shape/Taichung?&$format=JSON`,
+$('.bike-container').hide();
+  $('.city_Bike').on('click', function(){
+    $('.bike-city-Category').hide();
+    $('.bike-city').html($(this).attr('city_name_Tw'));
+    $('.bike-container').show();
+    let select_City = $(this).attr('id');
+    $.ajax({
+    url: `https://ptx.transportdata.tw/MOTC/v2/Cycling/Shape/${select_City}?&$format=JSON`,
     dataType: 'json',
     contentType: 'json',
     headers: GetAuthorizationHeader(),
     success: function (result) {
       let bike_Route_Content = '';
+      $('.route-Group').html();
       Object.keys(result).forEach(function (value, key) {
        bike_Route.push(result[value]['RouteName']);
-       bike_Route_Town.push(result[value]['Town']);
-        
         bike_Route_Info = $.parseJSON(JSON.stringify(result));
         let arrow = result[value]['City'] == '雙向' ? `<i class="fas fa-arrows-alt-v"></i>`: `<i class="fas fa-long-arrow-alt-down"></i>`;
         let span_info = result[value]['Town'] == undefined ?   '' : `<span class='badge bg-primary p-2 mx-1'>${result[value]['Town']}</span>`;
@@ -2594,7 +2600,7 @@ let bike_Route_Town = [];
                     <span class='badge bg-danger p-2'>${result[value]['City']}</span>
                     ${span_info}
                   </div>
-                  <h3 style='font-size: 16px;'>路線長度: ${result[value]['CyclingLength']/1000}公里</h3>
+                  <h3 style='font-size: 16px;'>路線長度: ${ result[value]['CyclingLength'] ? result[value]['CyclingLength']/1000 + '公里' : '未提供路線長度' }</h3>
 
                 </div>
                 <div class='route-item-body my-2'>
@@ -2622,13 +2628,23 @@ let bike_Route_Town = [];
       console.log(errorThrown);
     }
   });
-// }
+  });
+    
+  $('.go_Bike_Container').on('click', function(){
+    $('.bike-container').hide();
+    $('.bike-city-Category').show();
+    $('.route-Group').html('');
+    bike_Route_Info = '';
+    bike_Route = [];
+  });
 
-// fetch_bike_Route(0);
 
-  let bike_geoJSON;
+  let antPolyline;
   $('div.route-Group').delegate('button#show_bike_Route', 'click' ,function () {
     let num = $(this).attr('data-num');
+    $(`.route-item`).css('background-color', '#ffffff');
+    $(`.route-item:nth-child(${num + 1})`).css('background-color', '#ffbe76');
+
     let geometry = bike_Route_Info[num]['Geometry']
     geometry_Transit = geometry.replace('MULTILINESTRING', '').replaceAll('(', '').replaceAll(')', '').replaceAll(',', ' ').split(' ');
     let coordinate = [];
@@ -2640,32 +2656,19 @@ let bike_Route_Town = [];
           start_point = [parseFloat(geometry_Transit[i]) ,parseFloat(geometry_Transit[i-1])];
         }
         end_point = [parseFloat(geometry_Transit[i]) ,parseFloat(geometry_Transit[i-1])];
-        coordinate.push([parseFloat(geometry_Transit[i-1]) ,parseFloat(geometry_Transit[i])]);
+        coordinate.push([parseFloat(geometry_Transit[i]) ,parseFloat(geometry_Transit[i-1])]);
       }
     }
-    let routename = bike_Route_Info[num]['RouteName']
-
-    if(bike_geoJSON){
-      map.removeLayer(bike_geoJSON);
+    if(antPolyline){
+      map.removeLayer(antPolyline);
     }
+         // Using the constructor...
+           antPolyline = new L.Polyline.AntPath(coordinate, {
+            use: L.polyline,
+            fillColor: "red"
+          }).addTo(map);
 
-    let bikeLines = [{
-      "type": "LineString",
-      "properties": {
-        "category": "bike_Route",
-        "route_Name": routename,
-      },
-        "coordinates": coordinate
-      }];
-        var myStyle = {
-            "color": "#000",
-            "weight": 5,
-        };
-        
-      bike_geoJSON = L.geoJSON(bikeLines, {
-             onEachFeature: onEachFeature,
-            style: myStyle
-        }).addTo(map);
+
         map.fitBounds([
           start_point,
           end_point
@@ -2678,11 +2681,9 @@ let bike_Route_Town = [];
       $('.route-Group .route-item').show();
     }else{
       $('.route-Group .route-item').hide();
-
       for(let i = 0 ; i < bike_Route.length; i++){
         let name = bike_Route[i];
-        let town = bike_Route_Town[i];
-        if(name.indexOf(this_Val) != -1 || town.indexOf(this_Val) != -1){
+        if( name.includes(this_Val)){
           $(`.route-item:nth-child(${i+1})`).show();
         }
       }

@@ -1185,8 +1185,6 @@ h3.food_address{
 .bike-city-Category{
 	padding: 5px;
 	display: flex;
-	/* flex-direction: column; */
-	/* align-items: center; */
 	justify-content: center;
 	flex-wrap: wrap;
 }
@@ -1195,7 +1193,6 @@ h3.food_address{
 	padding: 10px;
 	border: 2px solid #333;
 	border-radius: 5px;
-	background-color: #7bed9f;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -1206,8 +1203,30 @@ h3.food_address{
 	cursor: pointer;
 	transition: .4s;
 }
-.bike-city-Category .city_Bike:hover{
+
+.master-city{
+	background-color: #ffa502;
+}
+
+.N1_City{
+	background-color: #7bed9f;
+}
+
+.N2_City{
+	background-color: #ff7979;
+}
+
+
+.bike-city-Category .master-city:hover{
+	background-color: #ffbe76;
+}
+
+.bike-city-Category .N1_City:hover{
 	background-color: #81ecec;
+}
+
+.bike-city-Category .N2_City:hover{
+	background-color: #fab1a0;
 }
 
 .bike-city-Category .city_Bike i{
@@ -1219,6 +1238,8 @@ h3.food_address{
 	font-size: 18px;
 	font-weight: bolder;
 }
+
+
 
 /* 手機：解析度為0px~320px使用 phone.css */
 @media screen and (max-width:767px){
