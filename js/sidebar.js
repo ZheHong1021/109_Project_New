@@ -515,7 +515,7 @@ $(function () {
   <div class = 'bike-city-Category'>
     <div class="city_Bike master-city" id='Taipei' city_name_Tw='臺北市'>
         <i class="fas fa-biking"></i>
-        <h2>台北市</h2>
+        <h2>臺北市</h2>
     </div>
     <div class="city_Bike master-city" id='NewTaipei' city_name_Tw='新北市'>
         <i class="fas fa-biking"></i>
@@ -525,14 +525,13 @@ $(function () {
         <i class="fas fa-biking"></i>
         <h2>桃園市</h2>
     </div>
-
+    <div class="city_Bike master-city" id='Taichung' city_name_Tw='臺中市'>
+        <i class="fas fa-biking"></i>
+        <h2>臺中市</h2>
+    </div>
     <div class="city_Bike master-city" id='Tainan' city_name_Tw='臺南市'>
         <i class="fas fa-biking"></i>
         <h2>臺南市</h2>
-    </div>
-    <div class="city_Bike master-city" id='NewTaipei' city_name_Tw='新北市'>
-        <i class="fas fa-biking"></i>
-        <h2>新北市</h2>
     </div>
     <div class="city_Bike master-city" id='Kaohsiung' city_name_Tw='高雄市'>
         <i class="fas fa-biking"></i>
@@ -2642,8 +2641,8 @@ $('.bike-container').hide();
   let antPolyline;
   $('div.route-Group').delegate('button#show_bike_Route', 'click' ,function () {
     let num = $(this).attr('data-num');
-    $(`.route-item`).css('background-color', '#ffffff');
-    $(`.route-item:nth-child(${num + 1})`).css('background-color', '#ffbe76');
+    // $(`.route-item`).css('background-color', '#ffffff');
+    // $(`.route-item:nth-child(${num + 1})`).css('background-color', '#ffbe76');
 
     let geometry = bike_Route_Info[num]['Geometry']
     geometry_Transit = geometry.replace('MULTILINESTRING', '').replaceAll('(', '').replaceAll(')', '').replaceAll(',', ' ').split(' ');
@@ -2665,7 +2664,10 @@ $('.bike-container').hide();
          // Using the constructor...
            antPolyline = new L.Polyline.AntPath(coordinate, {
             use: L.polyline,
-            fillColor: "red"
+            color: "#E293E3",
+            pulseColor: "#0707EF",
+            weight: 7,
+
           }).addTo(map);
 
 
