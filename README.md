@@ -55,7 +55,7 @@
 ## 使用到程式&工具:
 > * **XAMPP**
 > **用來建構 Apache Web Server**
-![](https://i.imgur.com/4F0iLX4.png =100x100)
+![](https://i.imgur.com/4F0iLX4.png)
 
 <br>
 
@@ -68,7 +68,7 @@
 
 > * **Leaflet (a JavaScript library for interactive maps)**
 > **建構 Web 地圖應用平台，搭配地圖圖層資訊顯示在網頁中，經常用於設計互動式地圖**
-![](https://i.imgur.com/U3tDW8g.png =300x100)
+![](https://i.imgur.com/U3tDW8g.png)
 
 <br>
 
