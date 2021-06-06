@@ -110,6 +110,30 @@
 
 
 
-```
+**透過 NPM Install將插件模組載入**
+```cmd=
+C:\xampp\htdocs\Code\109_Project_New>npm install
 
 ```
+
+**修改資料庫設定**
+```php=
+<?php
+// db_connect.php 自行修改
+$server = 'Your Server';
+$dbname = 'Your DBNAME';
+$user = 'Your Username';
+$passwd = 'Password';
+```
+
+**資料庫檔案**
+```cmd=
+109_Project_New\data\109p2.sql
+```
+
+---
+## 【成品展示】
+[DEMO](https://163.18.42.31/Code/109_Project_New)
+
+![](https://i.imgur.com/UyId7B1.png)
+
